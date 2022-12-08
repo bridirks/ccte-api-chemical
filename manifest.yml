@@ -1,0 +1,15 @@
+---
+applications:
+  - name: ccte-chemical
+    routes:
+#      - route: ccte-api-p.app.cloud.gov
+      - route: ccte-chemical-p.app.cloud.gov
+      - route: ccte-api-p.app.cloud.gov/chemical
+    memory: 2G
+    instances: 1
+    random-route: false
+    path: target/chemical.jar
+    buildpacks:
+    - https://github.com/cloudfoundry/java-buildpack
+    env:
+      SPRING_PROFILES_ACTIVE: cloud
