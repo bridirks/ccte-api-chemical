@@ -42,7 +42,7 @@ public class ChemicalDetailResource {
      * @param dtxcid the matching dtxcid of the chemicalDetail to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalDetail}.
      */
-    @RequestMapping(value = "chemical/search/detail/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
+    @RequestMapping(value = "chemical/detail/search/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
     public @ResponseBody
     List<ChemicalDetail> detailsByDtxcid(@PathVariable("dtxcid") String dtxcid) throws IOException {
 
