@@ -15,4 +15,11 @@ public interface ChemicalPropertyRepository extends JpaRepository<ChemicalProper
     @RestResource(rel = "findByDtxsid", path = "by-dtxsid", exported = false)
     List<ChemicalProperty> findByDtxsid(String dtxsid);
 
+    @Transactional(readOnly = true)
+    @RestResource(rel = "findByDtxsid", path = "by-dtxsid", exported = false)
+    List<ChemicalProperty> findByDtxsidAndPropTypeOrderByName(String dtxsid, String type);
+
+    @Transactional(readOnly = true)
+    @RestResource(rel = "findByPropertyValueRange", path = "by-range", exported = false)
+    List<ChemicalProperty> findByNameAndValueBetweenAllIgnoreCaseOrderByDtxsid(String name, Double start, Double end);
 }

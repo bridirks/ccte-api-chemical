@@ -23,7 +23,7 @@ public class ExceptionTranslator implements ProblemHandling {
 
     @Override
     public boolean isCausalChainsEnabled() {
-        return false; // enable stack traces as part of error message
+        return false; // disable stack traces as part of error message
     }
 
 }

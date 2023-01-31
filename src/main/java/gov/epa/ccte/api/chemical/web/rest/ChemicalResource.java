@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @CrossOrigin
-@Hidden
+@Hidden // OpenAPI annotation for hidding endpoints from documentation generator
 public class ChemicalResource {
     @GetMapping("test")
     public String greeting(){

@@ -1,0 +1,31 @@
+package gov.epa.ccte.api.chemical.dto;
+
+import lombok.Data;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.io.Serializable;
+
+/**
+ * A DTO for the {@link gov.epa.ccte.api.chemical.domain.ChemicalSearch} entity
+ */
+@Data
+public class ChemicalSearchDto implements Serializable {
+    @NotNull
+    private final Integer id;
+    @Size(max = 20)
+    private final String dtxsid;
+    @Size(max = 20)
+    private final String dtxcid;
+    @Size(max = 255)
+    private final String casrn;
+    private final String smiles;
+    @Size(max = 255)
+    private final String preferredName;
+    @Size(max = 50)
+    private final String searchName;
+    private final String searchValue;
+    private final Integer rank;
+    private final Integer hasStructureImage;
+    private final Integer isMarkush;
+}

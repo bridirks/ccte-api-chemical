@@ -11,14 +11,16 @@ import org.springframework.web.cors.CorsConfiguration;
  * Properties are configured in the {@code application.yml} file.
  */
 @Getter
+@Setter
 @ConfigurationProperties(prefix = "application", ignoreUnknownFields = true)
 public class ApplicationProperties {
 
-    private String docHostReplacement;
-    private int docHostPort;
-    private String docHostHttpProtocol;
-    private Integer startPort;
-    private Integer endPort;
-    private Integer serverPort;
+    private String apiKeyName;
+//    private String docHostReplacement;
+//    private int docHostPort;
+//    private String docHostHttpProtocol;
+//    private Integer startPort;
+//    private Integer endPort;
+//    private Integer serverPort;
     private final CorsConfiguration cors = new CorsConfiguration();
 }

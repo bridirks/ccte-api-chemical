@@ -8,13 +8,14 @@ import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @RepositoryRestResource(collectionResourceRel = "chemicalListDetails", path = "chemical-lists-details", itemResourceRel = "chemicalListDetail", exported = false)
 public interface ChemicalListDetailRepository extends JpaRepository<ChemicalListDetail, Integer> {
 
     @Transactional(readOnly = true)
     @RestResource(rel = "findByListName", path = "by-listname", exported = false)
-    List<ChemicalListDetail> findByListNameOrderByDtxsid(String name);
+    Optional<List<ChemicalListDetail>> findByListNameOrderByDtxsid(String name);
 
     @Transactional(readOnly = true)
     @RestResource(rel = "findByDtxsid", path = "by-dtxsid", exported = false)

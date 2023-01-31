@@ -5,7 +5,9 @@ import gov.epa.ccte.api.chemical.config.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
@@ -17,9 +19,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 
-
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication (exclude = {ErrorMvcAutoConfiguration.class})
 @EnableConfigurationProperties({ApplicationProperties.class})
 public class ChemicalApplication {
 
@@ -56,7 +57,7 @@ public class ChemicalApplication {
 	public static void main(String[] args) {
 		log.info("*** Application is started. ***");
 
-  		SpringApplication app = new SpringApplication(ChemicalApplication.class);
+		SpringApplication app = new SpringApplication(ChemicalApplication.class);
 		ConfigurableApplicationContext ctx = app.run(args);
 		Environment env = ctx.getEnvironment();
 
@@ -103,3 +104,4 @@ public class ChemicalApplication {
 		);
 	}
 }
+

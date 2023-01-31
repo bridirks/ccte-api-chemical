@@ -4,8 +4,11 @@ import com.epam.indigo.Indigo;
 import com.epam.indigo.IndigoObject;
 import com.epam.indigo.IndigoRenderer;
 import gov.epa.ccte.api.chemical.domain.ImageFormat;
-import gov.epa.ccte.api.chemical.repository.ChemicalFileRepository;
-import gov.epa.ccte.api.chemical.service.ChemicalImageUtils;
+import gov.epa.ccte.api.chemical.repository.ChemicalDetailRepository;
+import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundProblem;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +20,14 @@ import static org.springframework.http.MediaType.IMAGE_PNG;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
 
 /**
- * REST controller for getting the {@link gov.epa.ccte.api.chemical.domain.ChemicalFile}s.
+ * REST controller for getting the {@link gov.epa.ccte.api.chemical.domain.ChemicalDetail}s.
  */
+@Tag(name = "Chemical File Resource",
+        description = "API endpoints for getting chemical structure data in mol, mrv and image (png or svg format) for given Chemical Identifier (DTXSID or DTXCID).")
+@SecurityRequirement(name = "api_key")
 @Slf4j
 @RestController
+@CrossOrigin
 public class ChemicalFileResource {
 
     //image size constants
@@ -30,10 +37,11 @@ public class ChemicalFileResource {
     private static final int MAX_WIDTH = 2560;
     private static final int MAX_HEIGHT = 2560;
 
-    final private ChemicalFileRepository fileRepository;
+    final private ChemicalDetailRepository detailRepository;
 
-    public ChemicalFileResource(ChemicalFileRepository fileRepository) {
-        this.fileRepository = fileRepository;
+    public ChemicalFileResource(ChemicalDetailRepository detailRepository) {
+
+        this.detailRepository = detailRepository;
     }
 
     /**
@@ -44,19 +52,21 @@ public class ChemicalFileResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical image}.
      */
+    @Operation(summary = "Get a Chemicals structure image by its dtxsid")
     @RequestMapping(value = "chemical/file/image/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<byte[]> imageByDtxsid(@PathVariable("dtxsid") String dtxsid,
-                                         @RequestParam(value = "format", required = false) ImageFormat format) throws IOException {
+                                         @RequestParam(value = "format", required = false) ImageFormat format){
 
         log.debug("dtxsid = {}, format = {}", dtxsid, format);
 
 
         if(format == ImageFormat.PNG || format == null){
-            byte[] image = fileRepository.getMolImageForDtxsid(dtxsid);
+            byte[] image = detailRepository.getMolImageForDtxsid(dtxsid);
             return ResponseEntity.ok().contentType(IMAGE_PNG).body(image);
         }else if(format == ImageFormat.SVG){
-            String mol = fileRepository.getMolFileForDtxsid(dtxsid);
+            String mol = detailRepository.getMolFileForDtxsid(dtxsid)
+                    .orElseThrow(()->new IdentifierNotFoundProblem("DTXSID",dtxsid));
 
             byte[] image = getSvgImage(mol);
 
@@ -74,19 +84,21 @@ public class ChemicalFileResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical image}.
      */
+    @Operation(summary = "Get a Chemicals structure image by its dtxcid")
     @RequestMapping(value = "chemical/file/image/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<byte[]> imageByDtxcid(@PathVariable("dtxcid") String dtxcid,
-                                         @RequestParam(value = "format", required = false) ImageFormat format) throws IOException {
+                                         @RequestParam(value = "format", required = false) ImageFormat format) {
 
         log.debug("dtxcid = {}, format = {}", dtxcid, format);
 
 
         if(format == ImageFormat.PNG || format == null){
-            byte[] image = fileRepository.getMolImageForDtxcid(dtxcid);
+            byte[] image = detailRepository.getMolImageForDtxcid(dtxcid);
             return ResponseEntity.ok().contentType(IMAGE_PNG).body(image);
         }else if(format == ImageFormat.SVG){
-            String mol = fileRepository.getMolFileForDtxcid(dtxcid);
+            String mol = detailRepository.getMolFileForDtxcid(dtxcid)
+                    .orElseThrow(()->new IdentifierNotFoundProblem("DTXCID", dtxcid));
 
             byte[] image = getSvgImage(mol);
 
@@ -130,13 +142,15 @@ public class ChemicalFileResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical mol file}.
      */
+    @Operation(summary = "Get a Chemicals mol file by its dtxsid")
     @RequestMapping(value = "chemical/file/mol/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<String> molByDtxsid(@PathVariable("dtxsid") String dtxsid) throws IOException {
+    ResponseEntity<String> molByDtxsid(@PathVariable("dtxsid") String dtxsid){
 
         log.debug("dtxsid = {}", dtxsid);
 
-        String mol = fileRepository.getMolFileForDtxsid(dtxsid);
+        String mol = detailRepository.getMolFileForDtxsid(dtxsid)
+                .orElseThrow(()->new IdentifierNotFoundProblem("DTXSID", dtxsid));
 
         return ResponseEntity.ok().contentType(TEXT_PLAIN).body(mol);
     }
@@ -148,12 +162,15 @@ public class ChemicalFileResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical mol file}.
      */
+    @Operation(summary = "Get a Chemicals mol file by its dtxcid")
+
     @RequestMapping(value = "chemical/file/mol/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<String> molByDtxcid(@PathVariable("dtxcid") String dtxcid) throws IOException {
+    ResponseEntity<String> molByDtxcid(@PathVariable("dtxcid") String dtxcid){
         log.debug("dtxsid = {}", dtxcid);
 
-        String mol = fileRepository.getMolFileForDtxcid(dtxcid);
+        String mol = detailRepository.getMolFileForDtxcid(dtxcid)
+                .orElseThrow(()->new IdentifierNotFoundProblem("DTXCID", dtxcid));
 
         return ResponseEntity.ok().contentType(TEXT_PLAIN).body(mol);
     }
@@ -165,13 +182,15 @@ public class ChemicalFileResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical mrv file}.
      */
+    @Operation(summary = "Get a Chemicals mrv file by its dtxsid")
     @RequestMapping(value = "chemical/file/mrv/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<String> mrvByDtxsid(@PathVariable("dtxsid") String dtxsid) throws IOException {
+    ResponseEntity<String> mrvByDtxsid(@PathVariable("dtxsid") String dtxsid){
 
         log.debug("dtxsid = {}", dtxsid);
 
-        String mol = fileRepository.getMrvFileForDtxsid(dtxsid);
+        String mol = detailRepository.getMrvFileForDtxsid(dtxsid)
+                .orElseThrow(()-> new IdentifierNotFoundProblem("DTXSID",dtxsid));
 
         return ResponseEntity.ok().contentType(TEXT_PLAIN).body(mol);
     }
@@ -183,12 +202,14 @@ public class ChemicalFileResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical mrv file}.
      */
+    @Operation(summary = "Get a Chemicals mrv file by its dtxcid")
     @RequestMapping(value = "chemical/file/mrv/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<String> mrvByDtxcid(@PathVariable("dtxcid") String dtxcid) throws IOException {
+    ResponseEntity<String> mrvByDtxcid(@PathVariable("dtxcid") String dtxcid){
         log.debug("dtxsid = {}", dtxcid);
 
-        String mol = fileRepository.getMrvFileForDtxcid(dtxcid);
+        String mol = detailRepository.getMrvFileForDtxcid(dtxcid)
+                .orElseThrow(()-> new IdentifierNotFoundProblem("DTXCID",dtxcid));
 
         return ResponseEntity.ok().contentType(TEXT_PLAIN).body(mol);
     }

@@ -1,40 +1,84 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
 import gov.epa.ccte.api.chemical.domain.ChemicalProperty;
+import gov.epa.ccte.api.chemical.domain.PropertyType;
+import gov.epa.ccte.api.chemical.dto.ChemicalPropertyDto;
+import gov.epa.ccte.api.chemical.dto.mapper.ChemicalPropertyMapper;
 import gov.epa.ccte.api.chemical.repository.ChemicalPropertyRepository;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for getting the {@link ChemicalProperty}s.
  */
+@Tag(name = "Chemical Property Resource",
+        description = "API endpoints for getting chemical properties (experimental and/or predictive) for given DTXSID (Chemical Identifier).")
+@SecurityRequirement(name = "api_key")
 @Slf4j
 @RestController
+@CrossOrigin
 public class ChemicalPropertyResource {
 
     final private ChemicalPropertyRepository repository;
-
-    public ChemicalPropertyResource(ChemicalPropertyRepository repository) {
+    final private ChemicalPropertyMapper chemicalPropertyMapper;
+    public ChemicalPropertyResource(ChemicalPropertyRepository repository, ChemicalPropertyMapper chemicalPropertyMapper) {
         this.repository = repository;
+        this.chemicalPropertyMapper = chemicalPropertyMapper;
     }
 
     /**
-     * {@code GET  /fate/by-dtxsid/{dtxsid} : get list of Chemical Property data for the "dtxsid".
+     * {@code GET  /chemical/property/search/by-dtxsid/{dtxsid} : get list of Chemical Property data for the "dtxsid".
      *
      * @param dtxsid the matching dtxsid of the Chemical Property data to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of Chemical Property data}.
      */
+    @Operation(summary = "Get chemicals properties for given dtxsid")
     @RequestMapping(value = "chemical/property/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
-    List<ChemicalProperty> propertyByDtxsid(@PathVariable("dtxsid") String dtxsid) throws IOException {
+    List<ChemicalPropertyDto> propertyByDtxsid(@PathVariable("dtxsid") String dtxsid,
+                                            @RequestParam(value = "type", required = false) PropertyType type
+                                            ) {
 
-        log.debug("dtxsid = {}", dtxsid);
+        log.info("dtxsid = {}, Property Type ={}", dtxsid, type);
+        List<ChemicalProperty> properties;
 
-        return repository.findByDtxsid(dtxsid);
+        if(type == null)
+            properties = repository.findByDtxsid(dtxsid);
+        else
+            properties = repository.findByDtxsidAndPropTypeOrderByName(dtxsid, type.toString().toLowerCase());
+
+        return properties.stream()
+                .map(chemicalPropertyMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * {@code GET  /chemical/property/search/by-dtxsid/{dtxsid} : get list of Chemical Property data for the "dtxsid".
+     *
+     * @param dtxsid the matching dtxsid of the Chemical Property data to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of Chemical Property data}.
+     */
+    @Operation(summary = "Get chemicals for given property and it's value range")
+    @RequestMapping(value = "chemical/property/search/by-range/{property}/{start}/{end}", method = RequestMethod.GET)
+    public @ResponseBody
+    List<ChemicalPropertyDto> propertyByRange(@PathVariable("property") String property,
+                                           @PathVariable("start") Double start,
+                                           @PathVariable("end") Double end ) {
+
+        log.debug("property = {}, start = {}, end = {}", property, start, end);
+
+        List<ChemicalProperty> properties = repository.findByNameAndValueBetweenAllIgnoreCaseOrderByDtxsid(property, start, end);
+
+        return properties.stream()
+                .map(chemicalPropertyMapper::toDto)
+                .collect(Collectors.toList());
     }
 
 }

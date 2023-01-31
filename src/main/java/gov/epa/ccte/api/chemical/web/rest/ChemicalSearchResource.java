@@ -1,30 +1,41 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
 import gov.epa.ccte.api.chemical.domain.ChemicalSearch;
+import gov.epa.ccte.api.chemical.dto.ChemicalSearchDto;
+import gov.epa.ccte.api.chemical.dto.mapper.ChemicalSearchMapper;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * REST controller for getting the {@link gov.epa.ccte.api.chemical.domain.ChemicalSearch}s.
  */
+@Tag(name = "Chemical Search Resource",
+        description = "API endpoints for searching chemicals using different identifiers or characteristics.")
+@SecurityRequirement(name = "api_key")
 @Slf4j
 @RestController
+@CrossOrigin
 public class ChemicalSearchResource {
 
     final private ChemicalSearchRepository searchRepository;
     final private SearchChemicalService chemicalService;
+    final private ChemicalSearchMapper mapper;
     private final List<String> searchMatchWithoutInchikey;
     private final List<String> searchMatchAll;
 
-    public ChemicalSearchResource(ChemicalSearchRepository searchRepository, SearchChemicalService chemicalService) {
+    public ChemicalSearchResource(ChemicalSearchRepository searchRepository, SearchChemicalService chemicalService, ChemicalSearchMapper mapper) {
         this.searchRepository = searchRepository;
         this.chemicalService = chemicalService;
+        this.mapper = mapper;
 
         searchMatchWithoutInchikey = Arrays.asList("Deleted CAS-RN","PC-Code","Substance_id","Approved Name","Alternate CAS-RN",
                 "CAS-RN","Synonym","Integrated Source CAS-RN","DSSTox_Compound_Id","Systematic Name","Integrated Source Name",
@@ -41,9 +52,10 @@ public class ChemicalSearchResource {
      * @param word the starting word of the chemicalSearch to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalSearch}.
      */
+
     @RequestMapping(value = "chemical/search/start-with/{word}", method = RequestMethod.GET)
     public @ResponseBody
-    List<ChemicalSearch> chemicalStartWith(@PathVariable("word") String word ) throws Exception {
+    List<ChemicalSearchDto> chemicalStartWith(@PathVariable("word") String word ) throws Exception {
 
         String searchWord = chemicalService.preprocessingSearchWord(word);
 
@@ -60,7 +72,11 @@ public class ChemicalSearchResource {
         }
         log.debug("{} records match for {}", searchResult.size(), word);
 
-        return chemicalService.removeDuplicates(searchResult);
+        searchResult = chemicalService.removeDuplicates(searchResult);
+
+        return searchResult.stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -70,14 +86,17 @@ public class ChemicalSearchResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalSearch}.
      */
     @RequestMapping(value = "chemical/search/equal/{word}", method = RequestMethod.GET)
-    List<ChemicalSearch> chemicalEqual (@PathVariable("word") String word) throws Exception{
+    List<ChemicalSearchDto> chemicalEqual (@PathVariable("word") String word) throws Exception{
 
         String searchWord = chemicalService.preprocessingSearchWord(word);
 
         log.debug("input search word = {} and process search word = {}. ", word, searchWord);
 
-        return searchRepository.findByModifiedValue(searchWord);
+        List<ChemicalSearch> result =searchRepository.findByModifiedValue(searchWord);
 
+        return result.stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -87,12 +106,17 @@ public class ChemicalSearchResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalSearch}.
      */
     @RequestMapping(value = "chemical/search/contain/{word}", method = RequestMethod.GET)
-    List<ChemicalSearch> chemicalContain(@PathVariable("word") String word) throws Exception{
+    List<ChemicalSearchDto> chemicalContain(@PathVariable("word") String word) throws Exception{
         String searchWord = chemicalService.preprocessingSearchWord(word);
 
         log.debug("input search word = {} and process search word = {}. ", word, searchWord);
 
-        return searchRepository.findByModifiedValueContains(searchWord);
+        List<ChemicalSearch>  result =  searchRepository.findByModifiedValueContains(searchWord);
+
+        return result.stream()
+                .map(mapper::toDto)
+                .collect(Collectors.toList());
+
     }
 
     /**
