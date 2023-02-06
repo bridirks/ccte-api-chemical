@@ -1,6 +1,6 @@
 ---
 applications:
-  - name: ccte-chemical
+  - name: ccte-chemical-prod
     routes:
 #      - route: ccte-chemical-p.app.cloud.gov
       - route: api-ccte.epa.gov/chemical
