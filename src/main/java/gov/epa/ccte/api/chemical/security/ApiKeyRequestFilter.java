@@ -34,13 +34,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ApiKeyRequestFilter extends GenericFilterBean {
 
     private ConcurrentHashMap<UUID, String> keyStore;// = new ConcurrentHashMap();
-    private final ApiKeyRepository repository;
 
     private final ObjectMapper mapper = new ObjectMapper();
     private final String keyName;
 
     public ApiKeyRequestFilter(ApiKeyRepository repository, @Value("${application.api-key-name}") String keyName) {
-        this.repository = repository;
         this.keyName = keyName;
 
         initializeKeyStore(repository);
@@ -53,6 +51,8 @@ public class ApiKeyRequestFilter extends GenericFilterBean {
 
         for(ApiKey key : keys)
             keyStore.put(key.getId(), key.getEmail());
+
+        log.info("*** {} keys are loaded. *** ", keys.size());
     }
 
     @Override
@@ -65,6 +65,7 @@ public class ApiKeyRequestFilter extends GenericFilterBean {
 //            return;
 //        }
 
+        // Get apikey from the http header
         String key = req.getHeader(keyName) == null ? "" : req.getHeader(keyName);
         log.debug("Trying {}: {}", keyName, key );
 
@@ -80,25 +81,45 @@ public class ApiKeyRequestFilter extends GenericFilterBean {
             }
         }
 
-        if(isKeyExist(key)){
+        if(key == null || key.equals("")){
+            returnErrorMsg(servletResponse, key);
+        } else if(isKeyExist(key)){
             filterChain.doFilter(servletRequest, servletResponse);
         }else{
-            HttpServletResponse resp = (HttpServletResponse) servletResponse;
-            String error = "Invalid API KEY";
+            returnErrorMsg(servletResponse, key);
 
-            AuthorizationProblem problem = AuthorizationProblem.builder()
-                    .title("API Key Not Found")
-                    .detail("Please contact API admin for requesting a valid API key.")
+            log.info("*** API key {} not recognized *** ", key);
+        }
+    }
+
+    private void returnErrorMsg(ServletResponse servletResponse, String key) throws IOException {
+        HttpServletResponse resp = (HttpServletResponse) servletResponse;
+        String error = "Invalid API KEY";
+
+        AuthorizationProblem problem;
+
+        if(key == null || key.equals("")){
+            // header is missing
+            problem = AuthorizationProblem.builder()
+                    .title("API Header Not Found")
+                    .detail("Every API call should pass assigned API key through http header. Request is missing header " + keyName+ "." )
                     .build();
 
-            String obj = mapper.writeValueAsString(problem);
-
-            resp.reset();
-            resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            resp.setContentType("application/json");
-            servletResponse.setContentLength(obj.length());
-            servletResponse.getWriter().write(obj.toString());
+        }else{
+            // incorrect apikey
+            problem = AuthorizationProblem.builder()
+                    .title("API Key Not Found")
+                    .detail("Please contact API admin for requesting a valid API key. Key " + key + " not found.")
+                    .build();
         }
+
+        String obj = mapper.writeValueAsString(problem);
+
+        resp.reset();
+        resp.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        resp.setContentType("application/json");
+        servletResponse.setContentLength(obj.length());
+        servletResponse.getWriter().write(obj);
     }
 
     private boolean isKeyExist(String key) {

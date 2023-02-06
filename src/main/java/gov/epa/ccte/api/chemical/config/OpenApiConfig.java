@@ -21,8 +21,8 @@ import io.swagger.v3.oas.annotations.servers.Server;
                         email = "rashid.asif@epa.gov"
                 ),
                 license = @License(
-                        name = "MIT Licence",
-                        url = "https://github.com/thombergs/code-examples/blob/master/LICENSE")),
+                        name = "No Licence",
+                        url = "")),
         servers = @Server(url = "https://api-ccte.epa.gov")
 )
 @SecurityScheme(

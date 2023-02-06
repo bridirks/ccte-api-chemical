@@ -45,7 +45,7 @@ public class ChemicalFileResource {
     }
 
     /**
-     * {@code GET  /chemical/file/image/by-dtxsid/:dtxsid} : get the "dtxsid" chemical image.
+     * {@code GET  /chemical/file/image/search/by-dtxsid/:dtxsid} : get the "dtxsid" chemical image.
      *
      * @param dtxsid the matching dtxsid of the chemical image to retrieve.
      * @param format is enum with two values pgn and svg
@@ -53,7 +53,7 @@ public class ChemicalFileResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical image}.
      */
     @Operation(summary = "Get a Chemicals structure image by its dtxsid")
-    @RequestMapping(value = "chemical/file/image/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
+    @RequestMapping(value = "chemical/file/image/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<byte[]> imageByDtxsid(@PathVariable("dtxsid") String dtxsid,
                                          @RequestParam(value = "format", required = false) ImageFormat format){
@@ -77,7 +77,7 @@ public class ChemicalFileResource {
     }
 
     /**
-     * {@code GET  /chemical/file/image/by-dtxcid/:dtxcid} : get the "dtxcid" chemical image.
+     * {@code GET  /chemical/file/image/search/by-dtxcid/:dtxcid} : get the "dtxcid" chemical image.
      *
      * @param dtxcid the matching dtxcid of the chemical image to retrieve.
      * @param format is enum with two values pgn and svg
@@ -85,7 +85,7 @@ public class ChemicalFileResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical image}.
      */
     @Operation(summary = "Get a Chemicals structure image by its dtxcid")
-    @RequestMapping(value = "chemical/file/image/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
+    @RequestMapping(value = "chemical/file/image/search/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<byte[]> imageByDtxcid(@PathVariable("dtxcid") String dtxcid,
                                          @RequestParam(value = "format", required = false) ImageFormat format) {
@@ -136,14 +136,14 @@ public class ChemicalFileResource {
     }
 
     /**
-     * {@code GET  /chemical/file/mol/by-dtxsid/:dtxsid} : get the "dtxsid" chemical mol file.
+     * {@code GET  /chemical/file/mol/search/by-dtxsid/:dtxsid} : get the "dtxsid" chemical mol file.
      *
      * @param dtxsid the matching dtxsid of the chemical mol file to retrieve.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical mol file}.
      */
     @Operation(summary = "Get a Chemicals mol file by its dtxsid")
-    @RequestMapping(value = "chemical/file/mol/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
+    @RequestMapping(value = "chemical/file/mol/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<String> molByDtxsid(@PathVariable("dtxsid") String dtxsid){
 
@@ -156,7 +156,7 @@ public class ChemicalFileResource {
     }
 
     /**
-     * {@code GET  /chemical/file/mol/by-dtxcid/:dtxcid} : get the "dtxcid" chemical mol file.
+     * {@code GET  /chemical/file/mol/search/by-dtxcid/:dtxcid} : get the "dtxcid" chemical mol file.
      *
      * @param dtxcid the matching dtxcid of the chemical mol file to retrieve.
      *
@@ -164,7 +164,7 @@ public class ChemicalFileResource {
      */
     @Operation(summary = "Get a Chemicals mol file by its dtxcid")
 
-    @RequestMapping(value = "chemical/file/mol/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
+    @RequestMapping(value = "chemical/file/mol/search/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<String> molByDtxcid(@PathVariable("dtxcid") String dtxcid){
         log.debug("dtxsid = {}", dtxcid);
@@ -176,14 +176,14 @@ public class ChemicalFileResource {
     }
 
     /**
-     * {@code GET  /chemical/file/mol/by-dtxsid/:dtxsid} : get the "dtxsid" chemical mrv file.
+     * {@code GET  chemical/file/mrv/search/by-dtxsid/{dtxsid}" : get the "dtxsid" chemical mrv file.
      *
      * @param dtxsid the matching dtxcid of the chemical mrv file to retrieve.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical mrv file}.
      */
     @Operation(summary = "Get a Chemicals mrv file by its dtxsid")
-    @RequestMapping(value = "chemical/file/mrv/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
+    @RequestMapping(value = "chemical/file/mrv/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<String> mrvByDtxsid(@PathVariable("dtxsid") String dtxsid){
 
@@ -196,14 +196,14 @@ public class ChemicalFileResource {
     }
 
     /**
-     * {@code GET  /chemical/file/mol/by-dtxcid/:dtxcid} : get the "dtxcid" chemical mrv file.
+     * {@code GET  chemical/file/mrv/search/by-dtxcid/{dtxcid} : get the "dtxcid" chemical mrv file.
      *
      * @param dtxcid the matching dtxcid of the chemical mrv file to retrieve.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical mrv file}.
      */
     @Operation(summary = "Get a Chemicals mrv file by its dtxcid")
-    @RequestMapping(value = "chemical/file/mrv/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
+    @RequestMapping(value = "chemical/file/mrv/search/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<String> mrvByDtxcid(@PathVariable("dtxcid") String dtxcid){
         log.debug("dtxsid = {}", dtxcid);
