@@ -33,3 +33,10 @@ springdoc:
     enabled: true
   swagger-ui:
     enabled: false
+# Logging
+logging:
+  level:
+    com.zaxxer.hikari.HikariConfig: info
+    org.hibernate.SQL: info
+    gov.epa.ccte.api.*: info
+    org.springframework: warn

@@ -5,14 +5,10 @@ import gov.epa.ccte.api.chemical.domain.ApiKey;
 import gov.epa.ccte.api.chemical.repository.ApiKeyRepository;
 import gov.epa.ccte.api.chemical.web.rest.errors.AuthorizationProblem;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
-import org.zalando.problem.Problem;
-import org.zalando.problem.Status;
-import org.zalando.problem.ThrowableProblem;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -21,9 +17,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URI;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -65,31 +60,55 @@ public class ApiKeyRequestFilter extends GenericFilterBean {
 //            return;
 //        }
 
-        // Get apikey from the http header
-        String key = req.getHeader(keyName) == null ? "" : req.getHeader(keyName);
-        log.debug("Trying {}: {}", keyName, key );
+        // get from header
 
-        // In case user is provided api key through requrest parameter api-key
+        String key = getApiKeyfromHttpHeader(req.getHeader(keyName));
+
+        // In case user is provided api key through parameter x-api-key
         if(key == null || key.equals("")){
-            String queryString = req.getQueryString();
-            if(StringUtils.isNoneEmpty(queryString)){
-                queryString = URLDecoder.decode(queryString, StandardCharsets.UTF_8.toString());
-                int pos = StringUtils.indexOfIgnoreCase(queryString, keyName + "=");
-                String keyValue = StringUtils.substring(queryString, pos+8);
-                key = StringUtils.substringBefore(keyValue,"&");
-                // key = StringUtils.substringBetween(queryString, "api_key=","&");
-            }
+            // get key from the URL parameter
+            key = getApiKeyFromQueryParam(req.getQueryString());
         }
 
         if(key == null || key.equals("")){
+            // api key is missing
             returnErrorMsg(servletResponse, key);
         } else if(isKeyExist(key)){
+            // api key found
             filterChain.doFilter(servletRequest, servletResponse);
         }else{
+            // api doesn't match
             returnErrorMsg(servletResponse, key);
-
             log.info("*** API key {} not recognized *** ", key);
         }
+    }
+
+    private String getApiKeyFromQueryParam(String query) throws UnsupportedEncodingException {
+
+        // an example -  format=svg&x-api-key=f1d96bdd-223a-434e-b1c0-af373a59a19e
+
+        if(query != null){
+            String[] params = query.split("&");
+
+            for(String param: params){
+                int idx = param.indexOf("=");
+                if(param.substring(0,idx).equalsIgnoreCase(keyName)){
+                    return URLDecoder.decode(param.substring(idx + 1),"UTF-8");
+                }
+            }
+        }
+        return "";
+    }
+
+    private String getApiKeyfromHttpHeader(String key) {
+        // Get apikey from the http header
+        //String key = req.getHeader(keyName) == null ? "" : req.getHeader(keyName);
+
+        if(key == null || key.equals("")){
+            log.debug("Custom http  header {} not found", keyName);
+        }
+
+        return key;
     }
 
     private void returnErrorMsg(ServletResponse servletResponse, String key) throws IOException {
@@ -102,7 +121,7 @@ public class ApiKeyRequestFilter extends GenericFilterBean {
             // header is missing
             problem = AuthorizationProblem.builder()
                     .title("API Header Not Found")
-                    .detail("Every API call should pass assigned API key through http header. Request is missing header " + keyName+ "." )
+                    .detail("Every API call should pass assigned API key through custom http header or query parameter. Request is missing " + keyName+ "." )
                     .build();
 
         }else{

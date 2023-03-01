@@ -35,7 +35,7 @@ public class ChemicalProperty {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "value")
+    @Column(name = "prop_value")
     private Double value;
 
     @Size(max = 255)

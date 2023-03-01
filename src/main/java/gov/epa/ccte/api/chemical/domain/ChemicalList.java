@@ -18,7 +18,7 @@ public class ChemicalList {
     private Integer id;
 
     @Size(max = 255)
-    @Column(name = "name")
+    @Column(name = "list_name")
     private String name;
 
     @Size(max = 255)

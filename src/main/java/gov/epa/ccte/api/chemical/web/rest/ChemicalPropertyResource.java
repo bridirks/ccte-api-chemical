@@ -81,4 +81,34 @@ public class ChemicalPropertyResource {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * {@code GET  /chemical/property/experimental/name : get list of Chemical Property names in experimental type.".
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of Chemical Property Names}.
+     */
+    @Operation(summary = "Get list of Chemical Property names in experimental type")
+    @RequestMapping(value = "chemical/property/experimental/name", method = RequestMethod.GET)
+    public @ResponseBody
+    List<String> experimentalPropertyNames() {
+
+        log.debug("experimental property names");
+
+        return repository.getExperimentalPropertiesList();
+    }
+
+    /**
+     * {@code GET  /chemical/property/experimental/name : get list of Chemical Property names in experimental type.".
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of Chemical Property Names}.
+     */
+    @Operation(summary = "Get list of Chemical Property names in experimental type")
+    @RequestMapping(value = "chemical/property/predicted/name", method = RequestMethod.GET)
+    public @ResponseBody
+    List<String> predictedPropertyNames() {
+
+        log.debug("predicted property names");
+
+        return repository.getPredictedPropertiesList();
+    }
+
 }
