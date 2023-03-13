@@ -6,6 +6,7 @@ import gov.epa.ccte.api.chemical.dto.ChemicalPropertyDto;
 import gov.epa.ccte.api.chemical.dto.mapper.ChemicalPropertyMapper;
 import gov.epa.ccte.api.chemical.repository.ChemicalPropertyRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -42,8 +43,9 @@ public class ChemicalPropertyResource {
     @Operation(summary = "Get chemicals properties for given dtxsid")
     @RequestMapping(value = "chemical/property/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
-    List<ChemicalPropertyDto> propertyByDtxsid(@PathVariable("dtxsid") String dtxsid,
-                                            @RequestParam(value = "type", required = false) PropertyType type
+    List<ChemicalPropertyDto> propertyByDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID7020182") @PathVariable("dtxsid") String dtxsid,
+                                               @Parameter(name = "Property Type", description = "In case of absence, both types of properties return")
+                                               @RequestParam(value = "type", required = false) PropertyType type
                                             ) {
 
         log.info("dtxsid = {}, Property Type ={}", dtxsid, type);
@@ -68,7 +70,7 @@ public class ChemicalPropertyResource {
     @Operation(summary = "Get chemicals for given property and it's value range")
     @RequestMapping(value = "chemical/property/search/by-range/{property}/{start}/{end}", method = RequestMethod.GET)
     public @ResponseBody
-    List<ChemicalPropertyDto> propertyByRange(@PathVariable("property") String property,
+    List<ChemicalPropertyDto> propertyByRange(@PathVariable("property_id") String property,
                                            @PathVariable("start") Double start,
                                            @PathVariable("end") Double end ) {
 

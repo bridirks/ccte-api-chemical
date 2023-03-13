@@ -13,16 +13,14 @@ import io.swagger.v3.oas.annotations.servers.Server;
 //@Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "CCTE Chemical APIs",
+                title = "Computational Toxicology and Exposure Data APIs - Chemical",
                 description = "These are part of CCTE Public APIs and provide a variety of chemical information through a set of API endpoints. These include the ability to search for chemicals, retrieve chemical structure files in various formats, access both experimental and predictive chemical properties, obtain fate data, and access other chemical-related data. These APIs allow users to easily access and utilize a wide range of chemical information.",
                 contact = @Contact(
-                        name = "Asif Rashid",
+                        name = "",
                         url = "",
-                        email = "rashid.asif@epa.gov"
+                        email = "rashid.asif@epa.gov"),
+                version = "1.0.0"
                 ),
-                license = @License(
-                        name = "No Licence",
-                        url = "")),
         servers = @Server(url = "https://api-ccte.epa.gov")
 )
 @SecurityScheme(

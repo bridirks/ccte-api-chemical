@@ -7,6 +7,7 @@ import gov.epa.ccte.api.chemical.domain.ImageFormat;
 import gov.epa.ccte.api.chemical.repository.ChemicalDetailRepository;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundProblem;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -55,8 +56,8 @@ public class ChemicalFileResource {
     @Operation(summary = "Get a Chemicals structure image by its dtxsid")
     @RequestMapping(value = "chemical/file/image/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<byte[]> imageByDtxsid(@PathVariable("dtxsid") String dtxsid,
-                                         @RequestParam(value = "format", required = false) ImageFormat format){
+    ResponseEntity<byte[]> imageByDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID7020182") @PathVariable("dtxsid") String dtxsid,
+                                         @Parameter(name = "Image Format", description = "In case of absence, it will return png image") @RequestParam(value = "format", required = false) ImageFormat format){
 
         log.debug("dtxsid = {}, format = {}", dtxsid, format);
 
@@ -87,8 +88,8 @@ public class ChemicalFileResource {
     @Operation(summary = "Get a Chemicals structure image by its dtxcid")
     @RequestMapping(value = "chemical/file/image/search/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<byte[]> imageByDtxcid(@PathVariable("dtxcid") String dtxcid,
-                                         @RequestParam(value = "format", required = false) ImageFormat format) {
+    ResponseEntity<byte[]> imageByDtxcid(@Parameter(required = true, description = "DSSTox Compound Identifier", example = "DTXCID505") @PathVariable("dtxcid") String dtxcid,
+                                         @Parameter(name = "Image Format", description = "In case of absence, it will return png image") @RequestParam(value = "format", required = false) ImageFormat format) {
 
         log.debug("dtxcid = {}, format = {}", dtxcid, format);
 
@@ -145,7 +146,7 @@ public class ChemicalFileResource {
     @Operation(summary = "Get a Chemicals mol file by its dtxsid")
     @RequestMapping(value = "chemical/file/mol/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<String> molByDtxsid(@PathVariable("dtxsid") String dtxsid){
+    ResponseEntity<String> molByDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID7020182") @PathVariable("dtxsid") String dtxsid){
 
         log.debug("dtxsid = {}", dtxsid);
 
@@ -166,7 +167,7 @@ public class ChemicalFileResource {
 
     @RequestMapping(value = "chemical/file/mol/search/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<String> molByDtxcid(@PathVariable("dtxcid") String dtxcid){
+    ResponseEntity<String> molByDtxcid(@Parameter(required = true, description = "DSSTox Compound Identifier", example = "DTXCID505") @PathVariable("dtxcid") String dtxcid){
         log.debug("dtxsid = {}", dtxcid);
 
         String mol = detailRepository.getMolFileForDtxcid(dtxcid)
@@ -185,7 +186,7 @@ public class ChemicalFileResource {
     @Operation(summary = "Get a Chemicals mrv file by its dtxsid")
     @RequestMapping(value = "chemical/file/mrv/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<String> mrvByDtxsid(@PathVariable("dtxsid") String dtxsid){
+    ResponseEntity<String> mrvByDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID7020182") @PathVariable("dtxsid") String dtxsid){
 
         log.debug("dtxsid = {}", dtxsid);
 
@@ -205,7 +206,7 @@ public class ChemicalFileResource {
     @Operation(summary = "Get a Chemicals mrv file by its dtxcid")
     @RequestMapping(value = "chemical/file/mrv/search/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseEntity<String> mrvByDtxcid(@PathVariable("dtxcid") String dtxcid){
+    ResponseEntity<String> mrvByDtxcid(@Parameter(required = true, description = "DSSTox Compound Identifier", example = "DTXCID505") @PathVariable("dtxcid") String dtxcid){
         log.debug("dtxsid = {}", dtxcid);
 
         String mol = detailRepository.getMrvFileForDtxcid(dtxcid)

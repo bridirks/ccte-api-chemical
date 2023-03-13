@@ -55,7 +55,7 @@ springdoc:
     enabled: true
   swagger-ui:
     enabled: true
-
+  remove-broken-reference-definitions: false
 server:
   servlet:
     session:

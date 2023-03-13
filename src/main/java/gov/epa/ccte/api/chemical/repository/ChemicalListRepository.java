@@ -1,6 +1,7 @@
 package gov.epa.ccte.api.chemical.repository;
 
 import gov.epa.ccte.api.chemical.domain.ChemicalList;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
@@ -26,4 +27,9 @@ public interface ChemicalListRepository extends JpaRepository<ChemicalList, Inte
     @Transactional(readOnly = true)
     @RestResource(rel = "findByListName", path = "by-listname", exported = false)
     Optional<ChemicalList> findByName(String listName);
+
+    @Transactional(readOnly = true)
+    @Cacheable("listTypeNames")
+    @Query("SELECT distinct type from ChemicalList order by type")
+    List<String> getAllTypes();
 }

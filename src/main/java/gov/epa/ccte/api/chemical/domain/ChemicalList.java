@@ -8,9 +8,7 @@ import javax.validation.constraints.Size;
 import java.time.Instant;
 
 @Entity
-@Table(name = "chemical_lists", schema = "ms", indexes = {
-        @Index(name = "chemical_lists_nm", columnList = "name")
-})
+@Table(name = "chemical_lists", schema = "ms")
 public class ChemicalList {
     @Id
     @NotNull

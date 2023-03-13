@@ -4,6 +4,7 @@ import gov.epa.ccte.api.chemical.domain.Fate;
 import gov.epa.ccte.api.chemical.dto.FateDto;
 import gov.epa.ccte.api.chemical.dto.mapper.FateMapper;
 import gov.epa.ccte.api.chemical.repository.FateRepository;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,8 @@ public class FateResource {
      */
     @RequestMapping(value = "chemical/fate/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
-    List<FateDto> fateByDtxsid(@PathVariable("dtxsid") String dtxsid) throws IOException {
+    List<FateDto> fateByDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID7020182")
+                               @PathVariable("dtxsid") String dtxsid) throws IOException {
 
         log.debug("dtxsid = {}", dtxsid);
 

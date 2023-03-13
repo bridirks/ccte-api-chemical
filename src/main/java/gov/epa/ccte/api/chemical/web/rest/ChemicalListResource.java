@@ -10,6 +10,7 @@ import gov.epa.ccte.api.chemical.repository.ChemicalListDetailRepository;
 import gov.epa.ccte.api.chemical.repository.ChemicalListRepository;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundProblem;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -61,6 +62,19 @@ public class ChemicalListResource {
     }
 
     /**
+     * {@code GET  /chemical/list/type : get all types.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical list types}.
+     */
+    @Operation(summary = "Get all types")
+    @RequestMapping(value = "chemical/list/type", method = RequestMethod.GET)
+    public @ResponseBody
+    List<String> getAllType() throws IOException {
+
+        return listRepository.getAllTypes();
+    }
+
+    /**
      * {@code GET  /chemical/list/search : get list of chemical lists.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical lists}.
@@ -68,7 +82,8 @@ public class ChemicalListResource {
     @Operation(summary = "Get public Chemicals lists matching given type")
     @RequestMapping(value = "chemical/list/search/by-type/{type}", method = RequestMethod.GET)
     public @ResponseBody
-    List<ChemicalListDto> listByType(@PathVariable String type) throws IOException {
+    List<ChemicalListDto> listByType( @Parameter(required = true, description = "Chemical List Type (for full list of types access /chemical/list/type)", example = "other")
+            @PathVariable String type) throws IOException {
 
         //return listRepository.findAll();
         List<ChemicalList> lists =  listRepository.findByType(type);
@@ -88,7 +103,8 @@ public class ChemicalListResource {
     @Operation(summary = "Get public Chemicals lists names which has given chemical's dtxsid")
     @RequestMapping(value = "chemical/list/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
-    List<String> listByDtxsid( @PathVariable String dtxsid) throws IOException {
+    List<String> listByDtxsid( @Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID1020560")
+            @PathVariable String dtxsid) throws IOException {
 
         log.debug("dtxsid={}", dtxsid);
 
@@ -103,7 +119,8 @@ public class ChemicalListResource {
     @Operation(summary = "Get a public Chemicals list matching given list's name")
     @RequestMapping(value = "chemical/list/search/by-name/{listName}", method = RequestMethod.GET)
     public @ResponseBody
-    ChemicalListDto listByName( @PathVariable String listName) throws IOException {
+    ChemicalListDto listByName( @Parameter(required = true, description = "Chemical List Name", example = "40CFR1164")
+            @PathVariable String listName) throws IOException {
 
         log.debug("list name={}", listName);
 
@@ -121,7 +138,8 @@ public class ChemicalListResource {
     @Operation(summary = "Get chemicals present in given Chemicals list's name")
     @RequestMapping(value = "chemical/list/chemicals/search/by-listname/{listName}", method = RequestMethod.GET)
     public @ResponseBody
-    List<ChemicalListDetailDto> chemicalInList(@PathVariable String listName) throws IOException {
+    List<ChemicalListDetailDto> chemicalInList( @Parameter(required = true, description = "Chemical List Name", example = "40CFR1164")
+            @PathVariable String listName) throws IOException {
 
         log.debug("list name={}", listName);
 

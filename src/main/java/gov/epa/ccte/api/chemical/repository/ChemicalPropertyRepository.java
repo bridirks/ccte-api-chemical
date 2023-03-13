@@ -25,10 +25,12 @@ public interface ChemicalPropertyRepository extends JpaRepository<ChemicalProper
     @RestResource(rel = "findByPropertyValueRange", path = "by-range", exported = false)
     List<ChemicalProperty> findByNameAndValueBetweenAllIgnoreCaseOrderByDtxsid(String name, Double start, Double end);
 
+    @Transactional(readOnly = true)
     @Cacheable("expPropetyNames")
     @Query("SELECT distinct name from ChemicalProperty where propType = 'experimental' order by name")
     List<String> getExperimentalPropertiesList();
 
+    @Transactional(readOnly = true)
     @Cacheable("prdPropetyNames")
     @Query("SELECT distinct name from ChemicalProperty where propType = 'predicted' order by name")
     List<String> getPredictedPropertiesList();
