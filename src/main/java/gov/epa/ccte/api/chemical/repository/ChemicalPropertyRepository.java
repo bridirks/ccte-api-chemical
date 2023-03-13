@@ -1,6 +1,7 @@
 package gov.epa.ccte.api.chemical.repository;
 
 import gov.epa.ccte.api.chemical.domain.ChemicalProperty;
+import gov.epa.ccte.api.chemical.projection.ChemicalPropertyIds;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -27,13 +28,11 @@ public interface ChemicalPropertyRepository extends JpaRepository<ChemicalProper
 
     @Transactional(readOnly = true)
     @Cacheable("expPropetyNames")
-    @Query("SELECT distinct name from ChemicalProperty where propType = 'experimental' order by name")
-    List<String> getExperimentalPropertiesList();
+    @Query("SELECT c.propType as propType, c.name as name, c.propertyId as propertyId from ChemicalProperty c where c.propType = 'experimental' group by c.propType, c.name, c.propertyId ")
+    List<ChemicalPropertyIds> getExperimentalPropertiesList();
 
     @Transactional(readOnly = true)
     @Cacheable("prdPropetyNames")
-    @Query("SELECT distinct name from ChemicalProperty where propType = 'predicted' order by name")
-    List<String> getPredictedPropertiesList();
-
-
+    @Query("SELECT c.propType as propType, c.name as name, c.propertyId as propertyId from ChemicalProperty c where c.propType = 'predicted' group by c.propType, c.name, c.propertyId ")
+    List<ChemicalPropertyIds> getPredictedPropertiesList();
 }

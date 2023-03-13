@@ -53,6 +53,10 @@ public class ChemicalProperty {
     @Column(name = "created_at")
     private Instant createdAt;
 
+    @Size(max = 300)
+    @Column(name = "property_id", length = 300)
+    private String propertyId;
+
     public Integer getId() {
         return id;
     }
@@ -141,4 +145,11 @@ public class ChemicalProperty {
         this.createdAt = createdAt;
     }
 
+    public String getPropertyId() {
+        return propertyId;
+    }
+
+    public void setPropertyId(String propertyId) {
+        this.propertyId = propertyId;
+    }
 }

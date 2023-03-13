@@ -4,6 +4,7 @@ import gov.epa.ccte.api.chemical.domain.ChemicalProperty;
 import gov.epa.ccte.api.chemical.domain.PropertyType;
 import gov.epa.ccte.api.chemical.dto.ChemicalPropertyDto;
 import gov.epa.ccte.api.chemical.dto.mapper.ChemicalPropertyMapper;
+import gov.epa.ccte.api.chemical.projection.ChemicalPropertyIds;
 import gov.epa.ccte.api.chemical.repository.ChemicalPropertyRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -91,7 +92,7 @@ public class ChemicalPropertyResource {
     @Operation(summary = "Get list of Chemical Property names in experimental type")
     @RequestMapping(value = "chemical/property/experimental/name", method = RequestMethod.GET)
     public @ResponseBody
-    List<String> experimentalPropertyNames() {
+    List<ChemicalPropertyIds> experimentalPropertyNames() {
 
         log.debug("experimental property names");
 
@@ -106,7 +107,7 @@ public class ChemicalPropertyResource {
     @Operation(summary = "Get list of Chemical Property names in experimental type")
     @RequestMapping(value = "chemical/property/predicted/name", method = RequestMethod.GET)
     public @ResponseBody
-    List<String> predictedPropertyNames() {
+    List<ChemicalPropertyIds> predictedPropertyNames() {
 
         log.debug("predicted property names");
 
