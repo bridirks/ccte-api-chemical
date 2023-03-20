@@ -5,6 +5,7 @@ import gov.epa.ccte.api.chemical.projection.ChemicalPropertyIds;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,10 @@ public interface ChemicalPropertyRepository extends JpaRepository<ChemicalProper
 
     @Transactional(readOnly = true)
     @RestResource(rel = "findByPropertyValueRange", path = "by-range", exported = false)
-    List<ChemicalProperty> findByNameAndValueBetweenAllIgnoreCaseOrderByDtxsid(String name, Double start, Double end);
+    @Query("from ChemicalProperty c where c.propertyId = :propertyid and c.value > :start and c.value < :end")
+    List<ChemicalProperty> getPropertiesForRange(@Param("propertyid") String propertyid,
+                                                 @Param("start") Double start,
+                                                 @Param("end") Double end);
 
     @Transactional(readOnly = true)
     @Cacheable("expPropetyNames")

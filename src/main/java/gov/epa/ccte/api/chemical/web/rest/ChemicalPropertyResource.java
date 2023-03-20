@@ -69,15 +69,15 @@ public class ChemicalPropertyResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of Chemical Property data}.
      */
     @Operation(summary = "Get chemicals for given property and it's value range")
-    @RequestMapping(value = "chemical/property/search/by-range/{property}/{start}/{end}", method = RequestMethod.GET)
+    @RequestMapping(value = "chemical/property/search/by-range/{propertyId}/{start}/{end}", method = RequestMethod.GET)
     public @ResponseBody
-    List<ChemicalPropertyDto> propertyByRange(@PathVariable("property_id") String property,
-                                           @PathVariable("start") Double start,
-                                           @PathVariable("end") Double end ) {
+    List<ChemicalPropertyDto> propertyByRange(@Parameter(required = true, description = "chemical property id", example = "density") @PathVariable("propertyId") String propertyId,
+                                              @Parameter(required = true, description = "numeric value", example = "1.311") @PathVariable("start") Double start,
+                                              @Parameter(required = true, description = "numeric value", example = "1.313") @PathVariable("end") Double end ) {
 
-        log.debug("property = {}, start = {}, end = {}", property, start, end);
+        log.debug("property = {}, start = {}, end = {}", propertyId, start, end);
 
-        List<ChemicalProperty> properties = repository.findByNameAndValueBetweenAllIgnoreCaseOrderByDtxsid(property, start, end);
+        List<ChemicalProperty> properties = repository.getPropertiesForRange(propertyId, start, end);
 
         return properties.stream()
                 .map(chemicalPropertyMapper::toDto)
