@@ -1,25 +1,27 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
 import gov.epa.ccte.api.chemical.domain.ChemicalList;
-import gov.epa.ccte.api.chemical.domain.ChemicalListDetail;
-import gov.epa.ccte.api.chemical.dto.ChemicalListDetailDto;
-import gov.epa.ccte.api.chemical.dto.ChemicalListDto;
 import gov.epa.ccte.api.chemical.dto.mapper.ChemicalListDetailMapper;
 import gov.epa.ccte.api.chemical.dto.mapper.ChemicalListMapper;
+import gov.epa.ccte.api.chemical.projection.chemicallist.*;
 import gov.epa.ccte.api.chemical.repository.ChemicalListDetailRepository;
 import gov.epa.ccte.api.chemical.repository.ChemicalListRepository;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundProblem;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for getting the {@link ChemicalList}s.
@@ -29,7 +31,7 @@ import java.util.stream.Collectors;
 @SecurityRequirement(name = "api_key")
 @Slf4j
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class ChemicalListResource {
 
     final private ChemicalListRepository listRepository;
@@ -50,15 +52,20 @@ public class ChemicalListResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical lists}.
      */
     @Operation(summary = "Get all public Chemicals lists")
-    @RequestMapping(value = "chemical/list/", method = RequestMethod.GET)
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
+                    schema=@Schema(oneOf = {ChemicalListName.class, ChemicalListAll.class})))
+    })
+    @RequestMapping(value = "chemical/list/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    List<ChemicalListDto> listAll() throws IOException {
+    List listAll(@RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection) throws IOException {
         //return listRepository.findAll();
-       List<ChemicalList> lists =  listRepository.getAllList();
-
-       return lists.stream()
-               .map(chemicalListMapper::toDto)
-               .collect(Collectors.toList());
+        switch (projection){
+            case chemicallistall: return listRepository.getAllList(ChemicalListAll.class);
+            case chemicallistname: return listRepository.getAllList(ChemicalListName.class);
+            default:
+                return null;
+        }
     }
 
     /**
@@ -66,8 +73,8 @@ public class ChemicalListResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical list types}.
      */
-    @Operation(summary = "Get all types")
-    @RequestMapping(value = "chemical/list/type", method = RequestMethod.GET)
+    @Operation(summary = "Get all list types")
+    @RequestMapping(value = "chemical/list/type", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<String> getAllType() throws IOException {
 
@@ -80,28 +87,58 @@ public class ChemicalListResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical lists}.
      */
     @Operation(summary = "Get public Chemicals lists matching given type")
-    @RequestMapping(value = "chemical/list/search/by-type/{type}", method = RequestMethod.GET)
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
+                    schema=@Schema(oneOf = {ChemicalListName.class, ChemicalListAll.class})))
+    })
+    @RequestMapping(value = "chemical/list/search/by-type/{type}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    List<ChemicalListDto> listByType( @Parameter(required = true, description = "Chemical List Type (for full list of types access /chemical/list/type)", example = "other")
-            @PathVariable String type) throws IOException {
-
-        //return listRepository.findAll();
-        List<ChemicalList> lists =  listRepository.findByType(type);
-
-        return lists.stream()
-                .map(chemicalListMapper::toDto)
-                .collect(Collectors.toList());
+    List listByType( @Parameter(required = true, description = "Chemical List Type", example = "other") @PathVariable String type,
+                                      @RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection
+                                      ) throws IOException {
+        switch (projection){
+            case chemicallistall: return listRepository.findByType(type, ChemicalListAll.class);
+            case chemicallistname: return listRepository.findByType(type, ChemicalListName.class);
+            default:
+                return null;
+        }
     }
 
+    /**
+     * {@code GET  /chemical/list/by-dtxsid/{dtxsid} : get list of chemical lists names.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical lists name}.
+     */
+    @Operation(summary = "Get a public Chemicals list matching given list's name")
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
+                    schema=@Schema(oneOf = {ChemicalListName.class, ChemicalListAll.class})))
+    })
+    @RequestMapping(value = "chemical/list/search/by-name/{listName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ChemicalListBase listByName(@Parameter(required = true, description = "Chemical List Name", example = "40CFR1164") @PathVariable String listName,
+                                @RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection) throws IOException {
+
+        log.debug("list name={}", listName);
+
+        switch (projection){
+            case chemicallistall: return listRepository.findByName(listName, ChemicalListAll.class)
+                    .orElseThrow(()->new IdentifierNotFoundProblem("List name", listName));
+            case chemicallistname: return listRepository.findByName(listName, ChemicalListName.class)
+                    .orElseThrow(()->new IdentifierNotFoundProblem("List name", listName));
+            default:
+                return null;
+        }
+    }
 
     /**
-     * {@code GET  /chemical/list/{listName}/chemicals : get chemical lists names.
+     * {@code GET  chemical/list/search/by-dtxsid/ : get chemical lists names.
      *
      * @param dtxsid return chemical list name where this chemical is present.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical list names}.
      */
     @Operation(summary = "Get public Chemicals lists names which has given chemical's dtxsid")
-    @RequestMapping(value = "chemical/list/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
+    @RequestMapping(value = "chemical/list/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<String> listByDtxsid( @Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID1020560")
             @PathVariable String dtxsid) throws IOException {
@@ -111,24 +148,6 @@ public class ChemicalListResource {
         return detailRepository.findByDtxsid(dtxsid);
     }
 
-    /**
-     * {@code GET  /chemical/list/by-dtxsid/{dtxsid} : get list of chemical lists names.
-     *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical lists name}.
-     */
-    @Operation(summary = "Get a public Chemicals list matching given list's name")
-    @RequestMapping(value = "chemical/list/search/by-name/{listName}", method = RequestMethod.GET)
-    public @ResponseBody
-    ChemicalListDto listByName( @Parameter(required = true, description = "Chemical List Name", example = "40CFR1164")
-            @PathVariable String listName) throws IOException {
-
-        log.debug("list name={}", listName);
-
-        ChemicalList list = listRepository.findByName(listName)
-                .orElseThrow(()->new IdentifierNotFoundProblem("List name", listName));
-
-        return chemicalListMapper.toDto(list);
-    }
 
     /**
      * {@code GET  /chemical/list/{listName}/chemicals : get list of chemical lists.
@@ -136,17 +155,15 @@ public class ChemicalListResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical lists}.
      */
     @Operation(summary = "Get chemicals present in given Chemicals list's name")
-    @RequestMapping(value = "chemical/list/chemicals/search/by-listname/{listName}", method = RequestMethod.GET)
+    @RequestMapping(value = "chemical/list/chemicals/search/by-listname/{listName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    List<ChemicalListDetailDto> chemicalInList( @Parameter(required = true, description = "Chemical List Name", example = "40CFR1164")
+    List<ChemicalListDetailAll> chemicalInList(@Parameter(required = true, description = "Chemical List Name", example = "40CFR1164")
             @PathVariable String listName) throws IOException {
 
         log.debug("list name={}", listName);
 
-        List<ChemicalListDetail> details = detailRepository.findByListNameOrderByDtxsid(listName).get();
+        List<ChemicalListDetailAll> details = detailRepository.findByListNameOrderByDtxsid(listName, ChemicalListDetailAll.class);
 
-        return details.stream()
-                .map(chemicalListDetailMapper::toDto)
-                .collect(Collectors.toList());
+        return details;
     }
 }

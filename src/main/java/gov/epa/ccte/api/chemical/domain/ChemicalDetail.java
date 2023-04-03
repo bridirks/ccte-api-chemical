@@ -13,10 +13,6 @@ import java.time.Instant;
 })
 public class ChemicalDetail {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Long id;
-
     @Size(max = 64)
     @Column(name = "h_chem_hash_key", length = 64)
     private String hChemHashKey;
@@ -153,9 +149,6 @@ public class ChemicalDetail {
     @Column(name = "is_markush")
     private Integer isMarkush;
 
-    @NotNull
-    @Column(name = "date_loaded", nullable = false)
-    private Instant dateLoaded;
 
     @Size(max = 100)
     @Column(name = "dtxsid", length = 100)
@@ -168,14 +161,384 @@ public class ChemicalDetail {
     @Size(max = 10)
     @Column(name = "toxcast_select", length = 10)
     private String toxcastSelect;
+    @Size(max = 50)
+    @Column(name = "expocat_median_prediction", length = 50)
+    private String expocatMedianPrediction;
 
-    public Long getId() {
-        return id;
+    @Size(max = 5)
+    @Column(name = "expocat", length = 5)
+    private String expocat;
+
+    @Size(max = 5)
+    @Column(name = "nhanes", length = 5)
+    private String nhanes;
+
+    @Size(max = 5)
+    @Column(name = "toxval_data", length = 5)
+    private String toxvalData;
+
+    @Column(name = "water_solubility_test")
+    private Double waterSolubilityTest;
+
+    @Column(name = "water_solubility_opera")
+    private Double waterSolubilityOpera;
+
+    @Column(name = "viscosity_cp_cp_test_pred")
+    private Double viscosityCpCpTestPred;
+
+    @Column(name = "vapor_pressure_mmhg_test_pred")
+    private Double vaporPressureMmhgTestPred;
+
+    @Column(name = "vapor_pressure_mmhg_opera_pred")
+    private Double vaporPressureMmhgOperaPred;
+
+    @Column(name = "thermal_conductivity")
+    private Double thermalConductivity;
+
+    @Column(name = "tetrahymena_pyriformis")
+    private Double tetrahymenaPyriformis;
+
+    @Column(name = "surface_tension")
+    private Double surfaceTension;
+
+    @Column(name = "soil_adsorption_coefficient")
+    private Double soilAdsorptionCoefficient;
+
+    @Column(name = "oral_rat_ld50_mol")
+    private Double oralRatLd50Mol;
+
+    @Column(name = "opera_km_days_opera_pred")
+    private Double operaKmDaysOperaPred;
+
+    @Column(name = "octanol_water_partition")
+    private Double octanolWaterPartition;
+
+    @Column(name = "octanol_air_partition_coeff")
+    private Double octanolAirPartitionCoeff;
+
+    @Column(name = "melting_point_degc_test_pred")
+    private Double meltingPointDegcTestPred;
+
+    @Column(name = "melting_point_degc_opera_pred")
+    private Double meltingPointDegcOperaPred;
+
+    @Column(name = "hr_fathead_minnow")
+    private Double hrFatheadMinnow;
+
+    @Column(name = "hr_diphnia_lc50")
+    private Double hrDiphniaLc50;
+
+    @Column(name = "henrys_law_atm")
+    private Double henrysLawAtm;
+
+    @Column(name = "flash_point_degc_test_pred")
+    private Double flashPointDegcTestPred;
+
+    @Column(name = "devtox_test_pred")
+    private Double devtoxTestPred;
+
+    @Column(name = "density")
+    private Double density;
+
+    @Column(name = "boiling_point_degc_test_pred")
+    private Double boilingPointDegcTestPred;
+
+    @Column(name = "boiling_point_degc_opera_pred")
+    private Double boilingPointDegcOperaPred;
+
+    @Column(name = "biodegradation_half_life_days")
+    private Double biodegradationHalfLifeDays;
+
+    @Column(name = "bioconcentration_factor_test_pred")
+    private Double bioconcentrationFactorTestPred;
+
+    @Column(name = "bioconcentration_factor_opera_pred")
+    private Double bioconcentrationFactorOperaPred;
+
+    @Column(name = "atmospheric_hydroxylation_rate")
+    private Double atmosphericHydroxylationRate;
+
+    @Column(name = "ames_mutagenicity_test_pred")
+    private Double amesMutagenicityTestPred;
+
+    @Column(name = "pkaa_opera_pred")
+    private Double pkaaOperaPred;
+
+    @Column(name = "pkab_opera_pred")
+    private Double pkabOperaPred;
+
+    public String getExpocatMedianPrediction() {
+        return expocatMedianPrediction;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setExpocatMedianPrediction(String expocatMedianPrediction) {
+        this.expocatMedianPrediction = expocatMedianPrediction;
     }
+
+    public String getExpocat() {
+        return expocat;
+    }
+
+    public void setExpocat(String expocat) {
+        this.expocat = expocat;
+    }
+
+    public String getNhanes() {
+        return nhanes;
+    }
+
+    public void setNhanes(String nhanes) {
+        this.nhanes = nhanes;
+    }
+
+    public String getToxvalData() {
+        return toxvalData;
+    }
+
+    public void setToxvalData(String toxvalData) {
+        this.toxvalData = toxvalData;
+    }
+
+    public Double getWaterSolubilityTest() {
+        return waterSolubilityTest;
+    }
+
+    public void setWaterSolubilityTest(Double waterSolubilityTest) {
+        this.waterSolubilityTest = waterSolubilityTest;
+    }
+
+    public Double getWaterSolubilityOpera() {
+        return waterSolubilityOpera;
+    }
+
+    public void setWaterSolubilityOpera(Double waterSolubilityOpera) {
+        this.waterSolubilityOpera = waterSolubilityOpera;
+    }
+
+    public Double getViscosityCpCpTestPred() {
+        return viscosityCpCpTestPred;
+    }
+
+    public void setViscosityCpCpTestPred(Double viscosityCpCpTestPred) {
+        this.viscosityCpCpTestPred = viscosityCpCpTestPred;
+    }
+
+    public Double getVaporPressureMmhgTestPred() {
+        return vaporPressureMmhgTestPred;
+    }
+
+    public void setVaporPressureMmhgTestPred(Double vaporPressureMmhgTestPred) {
+        this.vaporPressureMmhgTestPred = vaporPressureMmhgTestPred;
+    }
+
+    public Double getVaporPressureMmhgOperaPred() {
+        return vaporPressureMmhgOperaPred;
+    }
+
+    public void setVaporPressureMmhgOperaPred(Double vaporPressureMmhgOperaPred) {
+        this.vaporPressureMmhgOperaPred = vaporPressureMmhgOperaPred;
+    }
+
+    public Double getThermalConductivity() {
+        return thermalConductivity;
+    }
+
+    public void setThermalConductivity(Double thermalConductivity) {
+        this.thermalConductivity = thermalConductivity;
+    }
+
+    public Double getTetrahymenaPyriformis() {
+        return tetrahymenaPyriformis;
+    }
+
+    public void setTetrahymenaPyriformis(Double tetrahymenaPyriformis) {
+        this.tetrahymenaPyriformis = tetrahymenaPyriformis;
+    }
+
+    public Double getSurfaceTension() {
+        return surfaceTension;
+    }
+
+    public void setSurfaceTension(Double surfaceTension) {
+        this.surfaceTension = surfaceTension;
+    }
+
+    public Double getSoilAdsorptionCoefficient() {
+        return soilAdsorptionCoefficient;
+    }
+
+    public void setSoilAdsorptionCoefficient(Double soilAdsorptionCoefficient) {
+        this.soilAdsorptionCoefficient = soilAdsorptionCoefficient;
+    }
+
+    public Double getOralRatLd50Mol() {
+        return oralRatLd50Mol;
+    }
+
+    public void setOralRatLd50Mol(Double oralRatLd50Mol) {
+        this.oralRatLd50Mol = oralRatLd50Mol;
+    }
+
+    public Double getOperaKmDaysOperaPred() {
+        return operaKmDaysOperaPred;
+    }
+
+    public void setOperaKmDaysOperaPred(Double operaKmDaysOperaPred) {
+        this.operaKmDaysOperaPred = operaKmDaysOperaPred;
+    }
+
+    public Double getOctanolWaterPartition() {
+        return octanolWaterPartition;
+    }
+
+    public void setOctanolWaterPartition(Double octanolWaterPartition) {
+        this.octanolWaterPartition = octanolWaterPartition;
+    }
+
+    public Double getOctanolAirPartitionCoeff() {
+        return octanolAirPartitionCoeff;
+    }
+
+    public void setOctanolAirPartitionCoeff(Double octanolAirPartitionCoeff) {
+        this.octanolAirPartitionCoeff = octanolAirPartitionCoeff;
+    }
+
+    public Double getMeltingPointDegcTestPred() {
+        return meltingPointDegcTestPred;
+    }
+
+    public void setMeltingPointDegcTestPred(Double meltingPointDegcTestPred) {
+        this.meltingPointDegcTestPred = meltingPointDegcTestPred;
+    }
+
+    public Double getMeltingPointDegcOperaPred() {
+        return meltingPointDegcOperaPred;
+    }
+
+    public void setMeltingPointDegcOperaPred(Double meltingPointDegcOperaPred) {
+        this.meltingPointDegcOperaPred = meltingPointDegcOperaPred;
+    }
+
+    public Double getHrFatheadMinnow() {
+        return hrFatheadMinnow;
+    }
+
+    public void setHrFatheadMinnow(Double hrFatheadMinnow) {
+        this.hrFatheadMinnow = hrFatheadMinnow;
+    }
+
+    public Double getHrDiphniaLc50() {
+        return hrDiphniaLc50;
+    }
+
+    public void setHrDiphniaLc50(Double hrDiphniaLc50) {
+        this.hrDiphniaLc50 = hrDiphniaLc50;
+    }
+
+    public Double getHenrysLawAtm() {
+        return henrysLawAtm;
+    }
+
+    public void setHenrysLawAtm(Double henrysLawAtm) {
+        this.henrysLawAtm = henrysLawAtm;
+    }
+
+    public Double getFlashPointDegcTestPred() {
+        return flashPointDegcTestPred;
+    }
+
+    public void setFlashPointDegcTestPred(Double flashPointDegcTestPred) {
+        this.flashPointDegcTestPred = flashPointDegcTestPred;
+    }
+
+    public Double getDevtoxTestPred() {
+        return devtoxTestPred;
+    }
+
+    public void setDevtoxTestPred(Double devtoxTestPred) {
+        this.devtoxTestPred = devtoxTestPred;
+    }
+
+    public Double getDensity() {
+        return density;
+    }
+
+    public void setDensity(Double density) {
+        this.density = density;
+    }
+
+    public Double getBoilingPointDegcTestPred() {
+        return boilingPointDegcTestPred;
+    }
+
+    public void setBoilingPointDegcTestPred(Double boilingPointDegcTestPred) {
+        this.boilingPointDegcTestPred = boilingPointDegcTestPred;
+    }
+
+    public Double getBoilingPointDegcOperaPred() {
+        return boilingPointDegcOperaPred;
+    }
+
+    public void setBoilingPointDegcOperaPred(Double boilingPointDegcOperaPred) {
+        this.boilingPointDegcOperaPred = boilingPointDegcOperaPred;
+    }
+
+    public Double getBiodegradationHalfLifeDays() {
+        return biodegradationHalfLifeDays;
+    }
+
+    public void setBiodegradationHalfLifeDays(Double biodegradationHalfLifeDays) {
+        this.biodegradationHalfLifeDays = biodegradationHalfLifeDays;
+    }
+
+    public Double getBioconcentrationFactorTestPred() {
+        return bioconcentrationFactorTestPred;
+    }
+
+    public void setBioconcentrationFactorTestPred(Double bioconcentrationFactorTestPred) {
+        this.bioconcentrationFactorTestPred = bioconcentrationFactorTestPred;
+    }
+
+    public Double getBioconcentrationFactorOperaPred() {
+        return bioconcentrationFactorOperaPred;
+    }
+
+    public void setBioconcentrationFactorOperaPred(Double bioconcentrationFactorOperaPred) {
+        this.bioconcentrationFactorOperaPred = bioconcentrationFactorOperaPred;
+    }
+
+    public Double getAtmosphericHydroxylationRate() {
+        return atmosphericHydroxylationRate;
+    }
+
+    public void setAtmosphericHydroxylationRate(Double atmosphericHydroxylationRate) {
+        this.atmosphericHydroxylationRate = atmosphericHydroxylationRate;
+    }
+
+    public Double getAmesMutagenicityTestPred() {
+        return amesMutagenicityTestPred;
+    }
+
+    public void setAmesMutagenicityTestPred(Double amesMutagenicityTestPred) {
+        this.amesMutagenicityTestPred = amesMutagenicityTestPred;
+    }
+
+    public Double getPkaaOperaPred() {
+        return pkaaOperaPred;
+    }
+
+    public void setPkaaOperaPred(Double pkaaOperaPred) {
+        this.pkaaOperaPred = pkaaOperaPred;
+    }
+
+    public Double getPkabOperaPred() {
+        return pkabOperaPred;
+    }
+
+    public void setPkabOperaPred(Double pkabOperaPred) {
+        this.pkabOperaPred = pkabOperaPred;
+    }
+
 
     public String getHChemHashKey() {
         return hChemHashKey;
@@ -487,14 +850,6 @@ public class ChemicalDetail {
 
     public void setIsMarkush(Integer isMarkush) {
         this.isMarkush = isMarkush;
-    }
-
-    public Instant getDateLoaded() {
-        return dateLoaded;
-    }
-
-    public void setDateLoaded(Instant dateLoaded) {
-        this.dateLoaded = dateLoaded;
     }
 
     public String getDtxsid() {

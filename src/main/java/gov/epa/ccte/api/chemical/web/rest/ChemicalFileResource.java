@@ -28,7 +28,7 @@ import static org.springframework.http.MediaType.TEXT_PLAIN;
 @SecurityRequirement(name = "api_key")
 @Slf4j
 @RestController
-@CrossOrigin
+@CrossOrigin(origins = "*")
 public class ChemicalFileResource {
 
     //image size constants

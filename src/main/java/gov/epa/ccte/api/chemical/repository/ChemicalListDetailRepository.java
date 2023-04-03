@@ -15,7 +15,8 @@ public interface ChemicalListDetailRepository extends JpaRepository<ChemicalList
 
     @Transactional(readOnly = true)
     @RestResource(rel = "findByListName", path = "by-listname", exported = false)
-    Optional<List<ChemicalListDetail>> findByListNameOrderByDtxsid(String name);
+    <T>
+    List<T> findByListNameOrderByDtxsid(String name, Class<T> type);
 
     @Transactional(readOnly = true)
     @RestResource(rel = "findByDtxsid", path = "by-dtxsid", exported = false)

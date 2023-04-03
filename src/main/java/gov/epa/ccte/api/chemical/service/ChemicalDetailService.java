@@ -1,13 +1,10 @@
 package gov.epa.ccte.api.chemical.service;
 
-import gov.epa.ccte.api.chemical.dto.BatchRequest;
-import gov.epa.ccte.api.chemical.projection.*;
 import gov.epa.ccte.api.chemical.repository.ChemicalDetailRepository;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundProblem;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -30,13 +27,14 @@ public class ChemicalDetailService {
         }
     }
 
-    public  <T> List<T> getChemicalDetailsForBatch(BatchRequest request, Class<T> tClass) {
-        if(request.getDtxcid() != null && request.getDtxcid().length > 0){
-            return detailRepository.findByDtxcidInOrderByDtxcidAsc(request.getDtxcid(),tClass);
-        } if(request.getDtxsid() != null && request.getDtxsid().length > 0) {
-            return detailRepository.findByDtxsidInOrderByDtxsidAsc(request.getDtxsid(), tClass);
-        }else{
-            return Collections.emptyList();
-        }
+    public  <T> List<T> getChemicalDetailsForBatch(String[] dtxsids, Class<T> tClass) {
+
+        return detailRepository.findByDtxsidInOrderByDtxsidAsc(dtxsids, tClass);
+
+//        switch (request.getSearchTerm()){
+//            case DTXSID: return detailRepository.findByDtxsidInOrderByDtxsidAsc(request.getValues(), tClass);
+//            //case DTXCID: return detailRepository.findByDtxcidInOrderByDtxcidAsc(request.getValues(),tClass);
+//            default: return Collections.emptyList();
+//        }
     }
 }

@@ -2,6 +2,7 @@ package gov.epa.ccte.api.chemical.service;
 
 
 import gov.epa.ccte.api.chemical.domain.ChemicalSearch;
+import gov.epa.ccte.api.chemical.projection.ChemicalSearchAll;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -110,13 +111,13 @@ public class SearchChemicalService {
     }
 
     // This will remove duplicates(same dtxsid number) from search result
-    public List<ChemicalSearch> removeDuplicates(List<ChemicalSearch> chemicals) {
+    public List<ChemicalSearchAll> removeDuplicates(List<ChemicalSearchAll> chemicals) {
 
-        List<ChemicalSearch> returnList = new ArrayList<ChemicalSearch>();
+        List<ChemicalSearchAll> returnList = new ArrayList<ChemicalSearchAll>();
         List<String> dtxsidList = new ArrayList<String>();
         //List<String> dtxcidList = new ArrayList<String>();
 
-        for(ChemicalSearch chemical : chemicals){
+        for(ChemicalSearchAll chemical : chemicals){
             //if(chemical.getDtxsid() != null ){}
             if(dtxsidList.contains(chemical.getDtxsid()) == false){
                 dtxsidList.add(chemical.getDtxsid());

@@ -24,8 +24,28 @@ public class ChemicalSynonym {
     @Type(type = "org.hibernate.type.TextType")
     private String pcCode;
 
-    @Column(name = "synonyms")
+    @Column(name = "valid_synonym")
     @Type(type = "org.hibernate.type.TextType")
-    private String synonyms;
+    private String validSynonym;
+
+    @Column(name = "good_synonyms")
+    @Type(type = "org.hibernate.type.TextType")
+    private String goodSynonyms;
+
+    @Column(name = "delete_synonyms")
+    @Type(type = "org.hibernate.type.TextType")
+    private String deleteSynonyms;
+
+    @Column(name = "other_synonyms")
+    @Type(type = "org.hibernate.type.TextType")
+    private String otherSynonyms;
+
+    @Column(name = "beilstein_synonyms")
+    @Type(type = "org.hibernate.type.TextType")
+    private String beilsteinSynonyms;
+
+    @Column(name = "alternate_synonyms")
+    @Type(type = "org.hibernate.type.TextType")
+    private String alternateSynonyms;
 
 }

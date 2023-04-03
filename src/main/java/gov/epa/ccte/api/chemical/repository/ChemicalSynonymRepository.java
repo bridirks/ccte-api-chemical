@@ -12,6 +12,7 @@ import java.util.Optional;
 public interface ChemicalSynonymRepository extends JpaRepository<ChemicalSynonym, String> {
     @Transactional(readOnly = true)
     @RestResource(rel = "findByDtxsid", path = "by-dtxsid", exported = false)
-    Optional<ChemicalSynonym> findByDtxsid(String dtxsid);
+    <T>
+    Optional<T> findByDtxsid(String dtxsid, Class<T> type);
 
 }

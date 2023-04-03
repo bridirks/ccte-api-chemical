@@ -1,9 +1,12 @@
-package gov.epa.ccte.api.chemical.projection;
+package gov.epa.ccte.api.chemical.projection.chemicaldetail;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * A Projection for the {@link gov.epa.ccte.api.chemical.domain.ChemicalDetail} entity
  */
-public interface ChemicalDetailAll extends ChemicalDetailBase{
+@Schema(name = "ChemicalDetailStandard", description = "Standard attributes available for chemical details APIs")
+public interface ChemicalDetailStandard extends ChemicalDetailBase {
     Long getId();
 
     String getCasrn();
@@ -77,4 +80,5 @@ public interface ChemicalDetailAll extends ChemicalDetailBase{
     String getDtxcid();
 
     String getToxcastSelect();
+
 }

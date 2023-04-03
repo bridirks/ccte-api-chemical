@@ -14,21 +14,25 @@ import java.util.List;
 
 @RepositoryRestResource(collectionResourceRel = "chemicalProperties", path = "chemical-properties", itemResourceRel = "chemicalProperty", exported = false)
 public interface ChemicalPropertyRepository extends JpaRepository<ChemicalProperty, Integer> {
+    <T> List<T> findByDtxsidInOrderByDtxsidAscPropTypeAscNameAsc(String[] dtxsids, Class<T> type);
 
     @Transactional(readOnly = true)
     @RestResource(rel = "findByDtxsid", path = "by-dtxsid", exported = false)
-    List<ChemicalProperty> findByDtxsid(String dtxsid);
+    <T>
+    List<T> findByDtxsid(String dtxsid, Class<T> type);
 
     @Transactional(readOnly = true)
     @RestResource(rel = "findByDtxsid", path = "by-dtxsid", exported = false)
-    List<ChemicalProperty> findByDtxsidAndPropTypeOrderByName(String dtxsid, String type);
+    <T>
+    List<T> findByDtxsidAndPropTypeOrderByName(String dtxsid, String propertyType, Class<T> type);
 
     @Transactional(readOnly = true)
     @RestResource(rel = "findByPropertyValueRange", path = "by-range", exported = false)
     @Query("from ChemicalProperty c where c.propertyId = :propertyid and c.value > :start and c.value < :end")
-    List<ChemicalProperty> getPropertiesForRange(@Param("propertyid") String propertyid,
-                                                 @Param("start") Double start,
-                                                 @Param("end") Double end);
+    <T>
+    List<T> getPropertiesForRange(@Param("propertyid") String propertyid,
+                                  @Param("start") Double start,
+                                  @Param("end") Double end, Class<T> type);
 
     @Transactional(readOnly = true)
     @Cacheable("expPropetyNames")

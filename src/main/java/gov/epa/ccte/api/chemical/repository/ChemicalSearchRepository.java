@@ -11,11 +11,11 @@ import java.util.List;
 @RepositoryRestResource(exported = false)
 public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, Long> {
 
-    List<ChemicalSearch> findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(String word, List<String> searchWords);
+    <T> List<T> findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(String word, List<String> searchWords, Class<T> type);
 
-    List<ChemicalSearch> findByModifiedValue(String word);
+    <T> List<T> findByModifiedValue(String word, Class<T> type);
 
-    List<ChemicalSearch> findByModifiedValueContains(String word);
+    <T> List<T> findByModifiedValueContains(String word, Class<T> type);
 
     @Query(value = "select distinct dtxsid from ms.search_msready where mol_formula = :formula", nativeQuery = true)
     List<String> searchMsReadyFormula(String formula);

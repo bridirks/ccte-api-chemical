@@ -1,9 +1,12 @@
-package gov.epa.ccte.api.chemical.projection;
+package gov.epa.ccte.api.chemical.projection.chemicaldetail;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 /**
  * A Projection for the {@link gov.epa.ccte.api.chemical.domain.ChemicalDetail} entity
  */
-public interface ChemicalStructure extends ChemicalDetailBase{
+@Schema(name = "ChemicalStructure", description = "Attributes related to chemical structure for chemical details APIs")
+public interface ChemicalStructure extends ChemicalDetailBase {
     Long getId();
 
     String getCasrn();
