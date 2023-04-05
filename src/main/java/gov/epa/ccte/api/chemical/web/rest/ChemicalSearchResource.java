@@ -1,8 +1,5 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
-import gov.epa.ccte.api.chemical.domain.ChemicalSearch;
-import gov.epa.ccte.api.chemical.dto.ChemicalSearchDto;
-import gov.epa.ccte.api.chemical.dto.mapper.ChemicalSearchMapper;
 import gov.epa.ccte.api.chemical.projection.ChemicalSearchAll;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
@@ -18,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 /**
  * REST controller for getting the {@link gov.epa.ccte.api.chemical.domain.ChemicalSearch}s.
@@ -33,14 +30,12 @@ public class ChemicalSearchResource {
 
     final private ChemicalSearchRepository searchRepository;
     final private SearchChemicalService chemicalService;
-    final private ChemicalSearchMapper mapper;
     private final List<String> searchMatchWithoutInchikey;
     private final List<String> searchMatchAll;
 
-    public ChemicalSearchResource(ChemicalSearchRepository searchRepository, SearchChemicalService chemicalService, ChemicalSearchMapper mapper) {
+    public ChemicalSearchResource(ChemicalSearchRepository searchRepository, SearchChemicalService chemicalService) {
         this.searchRepository = searchRepository;
         this.chemicalService = chemicalService;
-        this.mapper = mapper;
 
         searchMatchWithoutInchikey = Arrays.asList("Deleted CAS-RN","PC-Code","Substance_id","Approved Name","Alternate CAS-RN",
                 "CAS-RN","Synonym","Integrated Source CAS-RN","DSSTox_Compound_Id","Systematic Name","Integrated Source Name",
@@ -57,17 +52,17 @@ public class ChemicalSearchResource {
      * @param word the starting word of the chemicalSearch to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalSearch}.
      */
-    @Operation(summary = "Search using starting value")
+    @Operation(summary = "Search using starting value. NOTE: This value need to be URLencoded for chemical names. ")
     @RequestMapping(value = "chemical/search/start-with/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<ChemicalSearchAll> chemicalStartWith(@Parameter(required = true, description = "Starting characters for search word",
                                                 examples = {@ExampleObject(name="DSSTox Substance Identifier", value = "DTXSID7020182", description = "Starting part of DTXSID"),
                                                         @ExampleObject(name="DSSTox Compound Identifier", value = "DTXCID505", description = "Starting part of DTXCID"),
-                                                        @ExampleObject(name="Synonym Starting characters", value = "atraz", description = "Starting characters of chemical name"),
+                                                        @ExampleObject(name="Synonym Starting characters", value = "atraz", description = "Urlencoder starting characters of chemical name"),
                                                         @ExampleObject(name="CASRN", value = "1912-24", description = "Starting part of CASRN"),
                                                         @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU", description = "For InChIKey starting 13 characters are needed")
                                                             })
-                                              @PathVariable("word") String word ) throws Exception {
+                                              @PathVariable("word") String word ) {
 
         String searchWord = chemicalService.preprocessingSearchWord(word);
 
@@ -103,7 +98,7 @@ public class ChemicalSearchResource {
                     @ExampleObject(name="Synonym Starting characters", value = "atrazine", description = "Exact match of chemical name(including synonyms)"),
                     @ExampleObject(name="CASRN", value = "1912-24-9", description = "Exact match of CASRN"),
                     @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU-UHFFFAOYSA-N", description = "Exact match of InChIKey")})
-                                           @PathVariable("word") String word) throws Exception{
+                                           @PathVariable("word") String word) {
 
         String searchWord = chemicalService.preprocessingSearchWord(word);
 
@@ -128,7 +123,7 @@ public class ChemicalSearchResource {
                     @ExampleObject(name="Synonym Starting characters", value = "razine", description = "Substring match of chemical name(including synonyms)"),
                     @ExampleObject(name="CASRN", value = "1912-24", description = "Substring match of CASRN"),
                     @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU", description = "Substring match of InChIKey")})
-            @PathVariable("word") String word) throws Exception{
+            @PathVariable("word") String word) {
         String searchWord = chemicalService.preprocessingSearchWord(word);
 
         log.debug("input search word = {} and process search word = {}. ", word, searchWord);
@@ -139,14 +134,13 @@ public class ChemicalSearchResource {
 
     /**
      * {@code GET  chemical/search/msready/formula/{formula} : get list of chemicalSearch containing the "formula".
-     *
      * @param formula the containing formula of the MS Ready chemicals.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalSearch}.
      */
     @Operation(summary = "Search ms ready chemical using chemical formula")
     @RequestMapping(value = "chemical/msready/search/by-formula/{formula}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     List<String> msReadyByFormula(@Parameter(required = true, description = "formula", example = "C16H24N2O5S")
-                                  @PathVariable("formula") String formula) throws Exception{
+                                  @PathVariable("formula") String formula){
 
         log.debug("input formula = {} ", formula);
 
@@ -156,7 +150,7 @@ public class ChemicalSearchResource {
     @Operation(summary = "Search ms ready chemical using chemical DTXCID")
     @RequestMapping(value = "chemical/msready/search/by-dtxcid/{dtxcid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     List<String> msReadyByDtxcid(@Parameter(required = true, description = "DSSTox Compound Identifier", example = "DTXCID30182")
-                                 @PathVariable("dtxcid") String dtxcid) throws Exception{
+                                 @PathVariable("dtxcid") String dtxcid) {
 
         log.debug("input dtxcid = {} ", dtxcid);
 
@@ -166,7 +160,7 @@ public class ChemicalSearchResource {
     @Operation(summary = "Search ms ready chemical using mass range")
     @RequestMapping(value = "chemical/msready/search/by-mass/{start}/{end}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     List<String> msReadyByMass(@Parameter(required = true, description = "Starting mass value", example = "200.90") @PathVariable("start") Double start,
-                               @Parameter(required = true, description = "Ending mass value", example = "200.95") @PathVariable("end") Double end) throws Exception{
+                               @Parameter(required = true, description = "Ending mass value", example = "200.95") @PathVariable("end") Double end){
 
         log.debug("input mass = {} - {} ", start, end);
 
