@@ -2,7 +2,6 @@ package gov.epa.ccte.api.chemical.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -15,9 +14,8 @@ import java.time.Instant;
 @Data
 @Schema
 public class ChemicalDetailDto implements Serializable {
-    private final Long id;
     @Size(max = 64)
-    private final String hChemHashKey;
+    private final String id;
     private final String dtxsid;
     private final String dtxcid;
     @Size(max = 255)

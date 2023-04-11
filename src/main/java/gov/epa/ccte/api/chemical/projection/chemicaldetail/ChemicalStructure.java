@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
  */
 @Schema(name = "ChemicalStructure", description = "Attributes related to chemical structure for chemical details APIs")
 public interface ChemicalStructure extends ChemicalDetailBase {
-    Long getId();
+    String getId();
 
     String getCasrn();
 

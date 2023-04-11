@@ -3,9 +3,7 @@ package gov.epa.ccte.api.chemical.domain;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.Instant;
 
 @Entity
 @Table(name = "chemical_details", schema = "ms", indexes = {
@@ -15,7 +13,7 @@ public class ChemicalDetail {
     @Id
     @Size(max = 64)
     @Column(name = "h_chem_hash_key", length = 64)
-    private String hChemHashKey;
+    private String id;
 
     @Size(max = 255)
     @Column(name = "casrn")
@@ -540,12 +538,12 @@ public class ChemicalDetail {
     }
 
 
-    public String getHChemHashKey() {
-        return hChemHashKey;
+    public String getId() {
+        return id;
     }
 
-    public void setHChemHashKey(String hChemHashKey) {
-        this.hChemHashKey = hChemHashKey;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getCasrn() {

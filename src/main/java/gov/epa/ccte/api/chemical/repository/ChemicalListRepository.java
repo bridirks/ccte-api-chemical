@@ -15,10 +15,15 @@ import java.util.Optional;
 public interface ChemicalListRepository extends JpaRepository<ChemicalList, Integer> {
 
     @Transactional(readOnly = true)
-    @RestResource(rel = "findAll", path = "all", exported = false)
     @Query("from ChemicalList order by type, name")
     <T>
     List<T> getAllList(Class<T> type);
+
+    @Transactional(readOnly = true)
+    <T>
+    List<T> findByVisibilityOrderByTypeAscNameAsc(String visibility, Class<T> type);
+
+
 
     @Transactional(readOnly = true)
     @RestResource(rel = "findByType", path = "by-type", exported = false)

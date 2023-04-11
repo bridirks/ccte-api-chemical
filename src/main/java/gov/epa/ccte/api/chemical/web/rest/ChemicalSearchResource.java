@@ -104,7 +104,7 @@ public class ChemicalSearchResource {
 
         log.debug("input search word = {} and process search word = {}. ", word, searchWord);
 
-        List<ChemicalSearchAll> searchResult =  searchRepository.findByModifiedValue(searchWord, ChemicalSearchAll.class);
+        List<ChemicalSearchAll> searchResult =  searchRepository.findByModifiedValueOrderByRankAsc(searchWord, ChemicalSearchAll.class);
 
         return chemicalService.removeDuplicates(searchResult);
     }
@@ -124,12 +124,14 @@ public class ChemicalSearchResource {
                     @ExampleObject(name="CASRN", value = "1912-24", description = "Substring match of CASRN"),
                     @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU", description = "Substring match of InChIKey")})
             @PathVariable("word") String word) {
+
         String searchWord = chemicalService.preprocessingSearchWord(word);
 
         log.debug("input search word = {} and process search word = {}. ", word, searchWord);
 
-       return searchRepository.findByModifiedValueContains(searchWord, ChemicalSearchAll.class);
+        List<ChemicalSearchAll> searchResult = searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord, ChemicalSearchAll.class);
 
+        return chemicalService.removeDuplicates(searchResult);
     }
 
     /**

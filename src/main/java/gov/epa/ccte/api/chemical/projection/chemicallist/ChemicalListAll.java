@@ -10,10 +10,6 @@ public interface ChemicalListAll extends ChemicalListBase {
 
     String getName();
 
-    String getVisibility();
-
-    Boolean isIsVisible();
-
     String getShortDescription();
 
     String getLongDescription();

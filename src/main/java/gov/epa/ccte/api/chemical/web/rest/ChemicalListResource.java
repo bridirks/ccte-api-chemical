@@ -31,7 +31,7 @@ import java.util.List;
 @SecurityRequirement(name = "api_key")
 @Slf4j
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = {"*"})
 public class ChemicalListResource {
 
     final private ChemicalListRepository listRepository;
@@ -61,8 +61,8 @@ public class ChemicalListResource {
     List listAll(@RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection) throws IOException {
         //return listRepository.findAll();
         switch (projection){
-            case chemicallistall: return listRepository.getAllList(ChemicalListAll.class);
-            case chemicallistname: return listRepository.getAllList(ChemicalListName.class);
+            case chemicallistall: return listRepository.findByVisibilityOrderByTypeAscNameAsc("PUBLIC",ChemicalListAll.class);
+            case chemicallistname: return listRepository.findByVisibilityOrderByTypeAscNameAsc("PUBLIC",ChemicalListName.class);
             default:
                 return null;
         }

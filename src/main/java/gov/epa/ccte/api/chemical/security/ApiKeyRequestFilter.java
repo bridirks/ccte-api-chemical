@@ -52,6 +52,9 @@ public class ApiKeyRequestFilter extends GenericFilterBean {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+
+        log.info("*** checking the API key ***");
+
         HttpServletRequest req = (HttpServletRequest) servletRequest;
         String path = req.getRequestURI();
 

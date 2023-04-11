@@ -13,9 +13,9 @@ public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, 
 
     <T> List<T> findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(String word, List<String> searchWords, Class<T> type);
 
-    <T> List<T> findByModifiedValue(String word, Class<T> type);
+    <T> List<T> findByModifiedValueOrderByRankAsc(String word, Class<T> type);
 
-    <T> List<T> findByModifiedValueContains(String word, Class<T> type);
+    <T> List<T> findByModifiedValueContainsOrderByRankAscDtxsid(String word, Class<T> type);
 
     @Query(value = "select distinct dtxsid from ms.search_msready where mol_formula = :formula", nativeQuery = true)
     List<String> searchMsReadyFormula(String formula);

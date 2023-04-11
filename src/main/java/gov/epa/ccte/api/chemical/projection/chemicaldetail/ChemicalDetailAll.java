@@ -2,14 +2,12 @@ package gov.epa.ccte.api.chemical.projection.chemicaldetail;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.time.Instant;
-
 /**
  * A Projection for the {@link gov.epa.ccte.api.chemical.domain.ChemicalDetail} entity
  */
 @Schema(name = "ChemicalDetailAll", description = "All attributes available for chemical details APIs")
 public interface ChemicalDetailAll extends ChemicalDetailBase {
-    Long getId();
+    String getId();
 
     String getCasrn();
 
@@ -80,8 +78,6 @@ public interface ChemicalDetailAll extends ChemicalDetailBase {
     String getDescriptorStringTsv();
 
     Integer getIsMarkush();
-
-    Instant getDateLoaded();
 
     String getDtxsid();
 

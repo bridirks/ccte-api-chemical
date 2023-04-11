@@ -28,11 +28,15 @@ public interface ChemicalPropertyRepository extends JpaRepository<ChemicalProper
 
     @Transactional(readOnly = true)
     @RestResource(rel = "findByPropertyValueRange", path = "by-range", exported = false)
-    @Query("from ChemicalProperty c where c.propertyId = :propertyid and c.value > :start and c.value < :end")
+    @Query("select c.dtxsid, c.dtxcid, c.propType, c.unit, c.name, c.value, c.source, c.description, c.propertyId from ChemicalProperty c where c.propertyId = :propertyid and c.value > :start and c.value < :end")
     <T>
     List<T> getPropertiesForRange(@Param("propertyid") String propertyid,
                                   @Param("start") Double start,
                                   @Param("end") Double end, Class<T> type);
+
+    @Transactional(readOnly = true)
+    <T> List<T> findByPropertyIdAndValueBetweenOrderByDtxsidAsc(String propertyId, Double valueStart, Double valueEnd, Class<T> type);
+
 
     @Transactional(readOnly = true)
     @Cacheable("expPropetyNames")

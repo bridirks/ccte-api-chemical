@@ -2,9 +2,9 @@ package gov.epa.ccte.api.chemical.web.rest;
 
 import gov.epa.ccte.api.chemical.domain.ChemicalProperty;
 import gov.epa.ccte.api.chemical.domain.PropertyType;
-import gov.epa.ccte.api.chemical.dto.ChemicalPropertyDto;
 import gov.epa.ccte.api.chemical.dto.mapper.ChemicalPropertyMapper;
-import gov.epa.ccte.api.chemical.projection.*;
+import gov.epa.ccte.api.chemical.projection.ChemicalPropertyAll;
+import gov.epa.ccte.api.chemical.projection.ChemicalPropertyIds;
 import gov.epa.ccte.api.chemical.repository.ChemicalPropertyRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for getting the {@link ChemicalProperty}s.
@@ -77,7 +76,7 @@ public class ChemicalPropertyResource {
 
         log.debug("property = {}, start = {}, end = {}", propertyId, start, end);
 
-        return repository.getPropertiesForRange(propertyId, start, end, ChemicalPropertyAll.class);
+        return repository.findByPropertyIdAndValueBetweenOrderByDtxsidAsc(propertyId, start, end, ChemicalPropertyAll.class);
     }
 
     /**

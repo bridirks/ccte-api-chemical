@@ -28,7 +28,7 @@ import java.util.List;
 @SecurityRequirement(name = "api_key")
 @Slf4j
 @RestController
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class ChemicalDetailResource {
     final private ChemicalDetailService detailService;
     public ChemicalDetailResource(ChemicalDetailService detailService) {
@@ -50,7 +50,7 @@ public class ChemicalDetailResource {
     @RequestMapping(value = "chemical/detail/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     ChemicalDetailBase detailByDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID7020182") @PathVariable("dtxsid") String dtxsid,
-                                      @RequestParam(value = "projection", required = false, defaultValue = "chemicaldetail") ChemicalDetailProjection projection) {
+                                      @RequestParam(value = "projection", required = false, defaultValue = "chemicaldetailall") ChemicalDetailProjection projection) {
 
         log.debug("dtxsid = {}", dtxsid);
 
@@ -71,7 +71,7 @@ public class ChemicalDetailResource {
     @RequestMapping(value = "chemical/detail/search/by-dtxcid/{dtxcid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     ChemicalDetailBase detailsByDtxcid(@Parameter(required = true, description = "DSSTox Compound Identifier", example = "DTXCID505")  @PathVariable("dtxcid") String dtxcid,
-                           @RequestParam(value = "projection", required = false, defaultValue = "chemicaldetail") ChemicalDetailProjection projection) {
+                           @RequestParam(value = "projection", required = false, defaultValue = "chemicaldetailall") ChemicalDetailProjection projection) {
 
         log.debug("dtxcid = {}", dtxcid);
 
@@ -107,7 +107,7 @@ public class ChemicalDetailResource {
             content = {@Content (array = @ArraySchema(schema = @Schema(implementation = String.class)),
                         examples = {@ExampleObject("\"[\\\"DTXSID7020182\\\",\\\"DTXSID9020112\\\"]\"")})})
                       @RequestBody String[] dtxsid,
-                      @RequestParam(value = "projection", required = false, defaultValue = "chemicaldetail")
+                      @RequestParam(value = "projection", required = false, defaultValue = "chemicaldetailall")
                       ChemicalDetailProjection projection) {
 
         log.debug("dtxsids = {}", dtxsid);
