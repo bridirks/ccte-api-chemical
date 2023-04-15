@@ -28,7 +28,6 @@ import java.util.List;
 @SecurityRequirement(name = "api_key")
 @Slf4j
 @RestController
-//@CrossOrigin(origins = "*")
 public class ChemicalDetailResource {
     final private ChemicalDetailService detailService;
     public ChemicalDetailResource(ChemicalDetailService detailService) {

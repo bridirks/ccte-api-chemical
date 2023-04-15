@@ -16,6 +16,8 @@ import org.springframework.web.cors.CorsConfiguration;
 public class ApplicationProperties {
 
     private String apiKeyName;
+    private String apiEnv;
+    private String apiUrl;
 //    private String docHostReplacement;
 //    private int docHostPort;
 //    private String docHostHttpProtocol;

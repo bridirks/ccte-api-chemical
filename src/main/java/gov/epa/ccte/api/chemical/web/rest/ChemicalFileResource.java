@@ -15,8 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 import static org.springframework.http.MediaType.IMAGE_PNG;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
 
@@ -28,7 +26,6 @@ import static org.springframework.http.MediaType.TEXT_PLAIN;
 @SecurityRequirement(name = "api_key")
 @Slf4j
 @RestController
-@CrossOrigin(origins = "*")
 public class ChemicalFileResource {
 
     //image size constants

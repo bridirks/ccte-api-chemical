@@ -29,7 +29,6 @@ import java.util.List;
 @SecurityRequirement(name = "api_key")
 @Slf4j
 @RestController
-@CrossOrigin(origins = "*")
 public class ChemicalPropertyResource {
 
     final private ChemicalPropertyRepository repository;

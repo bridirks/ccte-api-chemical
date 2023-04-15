@@ -7,14 +7,7 @@ import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
-import io.swagger.v3.oas.models.examples.Example;
-import org.springdoc.core.customizers.OpenApiCustomiser;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 
 @Configuration
@@ -28,9 +21,7 @@ import java.util.Map;
                         email = ""),
                 version = "1.0.0"
                 ),
-        servers = { @Server(url = "https://api-ccte.epa.gov", description = "Production Environment"),
-                    @Server(url = "https://api-ccte-stg.epa.gov", description = "Staging Environment")
-                  }
+        servers = { @Server(url = "${application.api-url}", description = "${application.api-env}")}
 )
 @SecurityScheme(
         type = SecuritySchemeType.APIKEY,

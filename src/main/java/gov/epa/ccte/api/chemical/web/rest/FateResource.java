@@ -1,7 +1,6 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
 import gov.epa.ccte.api.chemical.domain.Fate;
-import gov.epa.ccte.api.chemical.dto.FateDto;
 import gov.epa.ccte.api.chemical.dto.mapper.FateMapper;
 import gov.epa.ccte.api.chemical.projection.FateAll;
 import gov.epa.ccte.api.chemical.repository.FateRepository;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * REST controller for getting the {@link Fate}s.
@@ -30,7 +28,6 @@ import java.util.stream.Collectors;
 @SecurityRequirement(name = "api_key")
 @Slf4j
 @RestController
-@CrossOrigin(origins = "*")
 public class FateResource {
 
     final private FateRepository repository;
