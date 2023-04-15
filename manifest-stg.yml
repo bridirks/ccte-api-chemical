@@ -12,4 +12,4 @@ applications:
     buildpacks:
     - https://github.com/cloudfoundry/java-buildpack
     env:
-      SPRING_PROFILES_ACTIVE: cloud,stg
+      SPRING_PROFILES_ACTIVE: cloud,stg,apikey
