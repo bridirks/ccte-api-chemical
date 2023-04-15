@@ -73,6 +73,8 @@ server:
 
 application:
   api-key-name: "x-api-key"
+  api-env: "Production Environment"
+  api-url: "https://api-ccte.epa.gov"
 # CORS is disabled by default on microservices, as you should access them through a gateway.
 # If you want to enable it, please uncomment the configuration below.
 # cors:

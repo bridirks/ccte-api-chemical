@@ -1,0 +1,3 @@
+application:
+  api-env: "Staging Environment"
+  api-url: "https://api-ccte-stg.epa.gov"
