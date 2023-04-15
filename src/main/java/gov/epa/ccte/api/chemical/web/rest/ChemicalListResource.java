@@ -50,7 +50,7 @@ public class ChemicalListResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical lists}.
      */
-    @Operation(summary = "Get all public Chemicals lists")
+    @Operation(summary = "Get all public lists")
     @ApiResponses(value= {
             @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
                     schema=@Schema(oneOf = {ChemicalListName.class, ChemicalListAll.class})))
@@ -85,7 +85,7 @@ public class ChemicalListResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical lists}.
      */
-    @Operation(summary = "Get public Chemicals lists matching given type")
+    @Operation(summary = "Get public lists by type")
     @ApiResponses(value= {
             @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
                     schema=@Schema(oneOf = {ChemicalListName.class, ChemicalListAll.class})))
@@ -108,7 +108,7 @@ public class ChemicalListResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical lists name}.
      */
-    @Operation(summary = "Get a public Chemicals list matching given list's name")
+    @Operation(summary = "Get public list by name")
     @ApiResponses(value= {
             @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
                     schema=@Schema(oneOf = {ChemicalListName.class, ChemicalListAll.class})))
@@ -136,7 +136,7 @@ public class ChemicalListResource {
      * @param dtxsid return chemical list name where this chemical is present.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical list names}.
      */
-    @Operation(summary = "Get public Chemicals lists names which has given chemical's dtxsid")
+    @Operation(summary = "Get lists names by dtxsid")
     @RequestMapping(value = "chemical/list/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<String> listByDtxsid( @Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID1020560")
@@ -153,7 +153,7 @@ public class ChemicalListResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical lists}.
      */
-    @Operation(summary = "Get chemicals present in given Chemicals list's name")
+    @Operation(summary = "Get list chemicals by list name")
     @RequestMapping(value = "chemical/list/chemicals/search/by-listname/{listName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<ChemicalListDetailAll> chemicalInList(@Parameter(required = true, description = "Chemical List Name", example = "40CFR1164")

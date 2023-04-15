@@ -3,6 +3,7 @@ package gov.epa.ccte.api.chemical.web.rest;
 import gov.epa.ccte.api.chemical.domain.ChemicalDetail;
 import gov.epa.ccte.api.chemical.projection.chemicaldetail.*;
 import gov.epa.ccte.api.chemical.service.ChemicalDetailService;
+import gov.epa.ccte.api.chemical.web.rest.errors.RequestWithHigherNumberOfDtxsidProblem;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -40,7 +41,7 @@ public class ChemicalDetailResource {
      * @param dtxsid the matching dtxsid of the chemicalDetail to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalDetail}.
      */
-    @Operation(summary = "Get a Chemicals Details by its dtxsid",
+    @Operation(summary = "Get data by dtxsid",
             description = "Specify the dtxsid as part of the path, and optionally user can also define projection (set of attributes to return).")
     @ApiResponses(value= {
             @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
@@ -61,7 +62,7 @@ public class ChemicalDetailResource {
      * @param dtxcid the matching dtxcid of the chemicalDetail to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalDetail}.
      */
-    @Operation(summary = "Get a Chemicals Details by its dtxcid",
+    @Operation(summary = "Get data by dtxcid",
             description = "Specify the dtxcid as part of the path, and optionally user can also define projection (set of attributes to return).")
     @ApiResponses(value= {
             @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
@@ -94,7 +95,7 @@ public class ChemicalDetailResource {
      * @param BatchRequest the matching dtxcid of the chemicalDetail to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalDetail}.
      */
-    @Operation(summary = "Get Chemicals Details by the batch of dtxsids.",
+    @Operation(summary = "Get data by the batch of dtxsids",
             description = "Besides batch of the values, the user can also define projection (set of attributes to return)")
     @ApiResponses(value= {
             @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
@@ -105,17 +106,20 @@ public class ChemicalDetailResource {
     List batchSearch( @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "JSON array of DSSTox Substance Identifier",
             content = {@Content (array = @ArraySchema(schema = @Schema(implementation = String.class)),
                         examples = {@ExampleObject("\"[\\\"DTXSID7020182\\\",\\\"DTXSID9020112\\\"]\"")})})
-                      @RequestBody String[] dtxsid,
+                      @RequestBody String[] dtxsids,
                       @RequestParam(value = "projection", required = false, defaultValue = "chemicaldetailall")
                       ChemicalDetailProjection projection) {
 
-        log.debug("dtxsids = {}", dtxsid);
+        log.debug("dtxsids = {}", dtxsids);
+
+        if(dtxsids.length > 200)
+            throw new RequestWithHigherNumberOfDtxsidProblem(dtxsids.length);
 
         switch (projection){
-            case chemicaldetailall: return detailService.getChemicalDetailsForBatch(dtxsid, ChemicalDetailAll.class);
-            case chemicaldetailstandard: return detailService.getChemicalDetailsForBatch(dtxsid, ChemicalDetailStandard.class);
-            case chemicalidentifier: return detailService.getChemicalDetailsForBatch(dtxsid, ChemicalIdentifier.class);
-            case chemicalstructure: return detailService.getChemicalDetailsForBatch(dtxsid, ChemicalStructure.class);
+            case chemicaldetailall: return detailService.getChemicalDetailsForBatch(dtxsids, ChemicalDetailAll.class);
+            case chemicaldetailstandard: return detailService.getChemicalDetailsForBatch(dtxsids, ChemicalDetailStandard.class);
+            case chemicalidentifier: return detailService.getChemicalDetailsForBatch(dtxsids, ChemicalIdentifier.class);
+            case chemicalstructure: return detailService.getChemicalDetailsForBatch(dtxsids, ChemicalStructure.class);
             default:return null;
         }
     }

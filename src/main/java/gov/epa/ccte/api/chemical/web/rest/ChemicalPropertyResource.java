@@ -6,6 +6,7 @@ import gov.epa.ccte.api.chemical.dto.mapper.ChemicalPropertyMapper;
 import gov.epa.ccte.api.chemical.projection.ChemicalPropertyAll;
 import gov.epa.ccte.api.chemical.projection.ChemicalPropertyIds;
 import gov.epa.ccte.api.chemical.repository.ChemicalPropertyRepository;
+import gov.epa.ccte.api.chemical.web.rest.errors.RequestWithHigherNumberOfDtxsidProblem;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -44,7 +45,7 @@ public class ChemicalPropertyResource {
      * @param dtxsid the matching dtxsid of the Chemical Property data to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of Chemical Property data}.
      */
-    @Operation(summary = "Get chemical properties for given dtxsid")
+    @Operation(summary = "Get properties by dtxsid")
     @RequestMapping(value = "chemical/property/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<ChemicalPropertyAll> propertyByDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID7020182") @PathVariable("dtxsid") String dtxsid,
@@ -66,7 +67,7 @@ public class ChemicalPropertyResource {
      * @param dtxsid the matching dtxsid of the Chemical Property data to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of Chemical Property data}.
      */
-    @Operation(summary = "Get chemical properties for the given property id and its value range.")
+    @Operation(summary = "Get chemical properties by property id and range")
     @RequestMapping(value = "chemical/property/search/by-range/{propertyId}/{start}/{end}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<ChemicalPropertyAll> propertyByRange(@Parameter(required = true, description = "chemical property id", example = "density") @PathVariable("propertyId") String propertyId,
@@ -83,7 +84,7 @@ public class ChemicalPropertyResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of Chemical Property Names}.
      */
-    @Operation(summary = "Get a list of Chemical Property ids and names in experimental type.")
+    @Operation(summary = "Get property ids by type=experimental")
     @RequestMapping(value = "chemical/property/experimental/name", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<ChemicalPropertyIds> experimentalPropertyNames() {
@@ -98,7 +99,7 @@ public class ChemicalPropertyResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of Chemical Property Names}.
      */
-    @Operation(summary = "Get a list of Chemical Property ids and names in the predicted type. ")
+    @Operation(summary = "Get property ids by type=predicted")
     @RequestMapping(value = "chemical/property/predicted/name", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<ChemicalPropertyIds> predictedPropertyNames() {
@@ -114,7 +115,7 @@ public class ChemicalPropertyResource {
      * @param BatchRequest the matching dtxsid of the chemicalDetail to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalDetail}.
      */
-    @Operation(summary = "Get Chemicals properties by the batch of dtxsids.")
+    @Operation(summary = "Get properties by the batch of dtxsid(s)")
     @RequestMapping(value = "chemical/property/search/by-dtxsid/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<ChemicalPropertyAll> batchSearch(@io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "JSON array of DSSTox Substance Identifier",
@@ -123,6 +124,9 @@ public class ChemicalPropertyResource {
             @RequestBody String[] dtxsids) {
 
         log.debug("dtxsids = {}", dtxsids);
+
+        if(dtxsids.length > 200)
+            throw new RequestWithHigherNumberOfDtxsidProblem(dtxsids.length);
 
         return repository.findByDtxsidInOrderByDtxsidAscPropTypeAscNameAsc(dtxsids, ChemicalPropertyAll.class);
     }

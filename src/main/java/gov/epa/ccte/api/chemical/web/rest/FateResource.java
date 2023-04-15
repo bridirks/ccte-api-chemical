@@ -4,6 +4,7 @@ import gov.epa.ccte.api.chemical.domain.Fate;
 import gov.epa.ccte.api.chemical.dto.mapper.FateMapper;
 import gov.epa.ccte.api.chemical.projection.FateAll;
 import gov.epa.ccte.api.chemical.repository.FateRepository;
+import gov.epa.ccte.api.chemical.web.rest.errors.RequestWithHigherNumberOfDtxsidProblem;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -43,7 +44,7 @@ public class FateResource {
      * @param dtxsid the matching dtxsid of the fate data to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of fate}.
      */
-    @Operation(summary = "Get chemical Fate values for given dtxsid")
+    @Operation(summary = "Get data by dtxsid")
     @RequestMapping(value = "chemical/fate/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<FateAll> fateByDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID7020182")
@@ -60,7 +61,7 @@ public class FateResource {
      * @param BatchRequest the matching dtxsid of the chemical fate data to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalDetail}.
      */
-    @Operation(summary = "Get Chemicals fate values by the batch of dtxsids.")
+    @Operation(summary = "Get data by the batch of dtxsid(s)")
     @RequestMapping(value = "chemical/fate/search/by-dtxsid/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<FateAll> batchSearch(@io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "JSON array of DSSTox Substance Identifier",
@@ -69,6 +70,9 @@ public class FateResource {
                               @RequestBody String[] dtxsids) {
 
         log.debug("dtxsids = {}", dtxsids);
+
+        if(dtxsids.length > 200)
+            throw new RequestWithHigherNumberOfDtxsidProblem(dtxsids.length);
 
         return repository.findByDtxsidInOrderByDtxsidAscEndpointNameAsc(dtxsids, FateAll.class);
     }

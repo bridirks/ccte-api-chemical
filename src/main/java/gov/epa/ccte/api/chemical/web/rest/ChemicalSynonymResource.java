@@ -45,7 +45,7 @@ public class ChemicalSynonymResource {
      * @param dtxsid the matching dtxsid of the Chemical Property data to retrieve.
      * @return the {@link ResponseEntity } with status {@code 200 (OK)} and with body the list of Chemical Property data}.
      */
-    @Operation(summary = "Get chemicals synonym for given dtxsid")
+    @Operation(summary = "Get synonym by dtxsid")
     @RequestMapping(value = "chemical/synonym/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiResponses(value= {
             @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",

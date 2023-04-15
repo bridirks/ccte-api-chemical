@@ -51,13 +51,13 @@ public class ChemicalSearchResource {
      * @param word the starting word of the chemicalSearch to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalSearch}.
      */
-    @Operation(summary = "Search using starting value. NOTE: This value need to be URLencoded for chemical names. ")
+    @Operation(summary = "Search by starting value", description = "NOTE: Search value need to be URLencoded for synonyms")
     @RequestMapping(value = "chemical/search/start-with/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<ChemicalSearchAll> chemicalStartWith(@Parameter(required = true, description = "Starting characters for search word",
                                                 examples = {@ExampleObject(name="DSSTox Substance Identifier", value = "DTXSID7020182", description = "Starting part of DTXSID"),
                                                         @ExampleObject(name="DSSTox Compound Identifier", value = "DTXCID505", description = "Starting part of DTXCID"),
-                                                        @ExampleObject(name="Synonym Starting characters", value = "atraz", description = "Urlencoder starting characters of chemical name"),
+                                                        @ExampleObject(name="Synonym Starting characters", value = "atraz", description = "URLencoded starting characters of chemical name"),
                                                         @ExampleObject(name="CASRN", value = "1912-24", description = "Starting part of CASRN"),
                                                         @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU", description = "For InChIKey starting 13 characters are needed")
                                                             })
@@ -89,12 +89,12 @@ public class ChemicalSearchResource {
      * @param word the starting word of the chemicalSearch to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalSearch}.
      */
-    @Operation(summary = "Search using exact value")
+    @Operation(summary = "Search by exact value", description = "NOTE: Search value need to be URLencoded for synonyms")
     @RequestMapping(value = "chemical/search/equal/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     List<ChemicalSearchAll> chemicalEqual (@Parameter(required = true, description = "Exact match of search word",
             examples = {@ExampleObject(name="DSSTox Substance Identifier", value = "DTXSID7020182", description = "Exact match of DTXSID"),
                     @ExampleObject(name="DSSTox Compound Identifier", value = "DTXCID505", description = "Exact match of DTXCID"),
-                    @ExampleObject(name="Synonym Starting characters", value = "atrazine", description = "Exact match of chemical name(including synonyms)"),
+                    @ExampleObject(name="Synonym", value = "atrazine", description = "Exact match of URLencoded chemical name(including synonyms)"),
                     @ExampleObject(name="CASRN", value = "1912-24-9", description = "Exact match of CASRN"),
                     @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU-UHFFFAOYSA-N", description = "Exact match of InChIKey")})
                                            @PathVariable("word") String word) {
@@ -114,12 +114,12 @@ public class ChemicalSearchResource {
      * @param word the containing word of the chemicalSearch to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalSearch}.
      */
-    @Operation(summary = "Search using substring value")
+    @Operation(summary = "Search by substring value", description = "NOTE: Search value need to be URLencoded for synonyms")
     @RequestMapping(value = "chemical/search/contain/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     List<ChemicalSearchAll> chemicalContain(@Parameter(required = true, description = "Substring of search word",
             examples = {@ExampleObject(name="DSSTox Substance Identifier", value = "DTXSID7020182", description = "Exact match of DTXSID"),
                     @ExampleObject(name="DSSTox Compound Identifier", value = "DTXCID505", description = "Substring match of DTXCID"),
-                    @ExampleObject(name="Synonym Starting characters", value = "razine", description = "Substring match of chemical name(including synonyms)"),
+                    @ExampleObject(name="Synonym", value = "razine", description = "Substring match of URLencoded chemical name(including synonyms)"),
                     @ExampleObject(name="CASRN", value = "1912-24", description = "Substring match of CASRN"),
                     @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU", description = "Substring match of InChIKey")})
             @PathVariable("word") String word) {
@@ -138,7 +138,7 @@ public class ChemicalSearchResource {
      * @param formula the containing formula of the MS Ready chemicals.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalSearch}.
      */
-    @Operation(summary = "Search ms ready chemical using chemical formula")
+    @Operation(summary = "Search ms ready chemicals by formula")
     @RequestMapping(value = "chemical/msready/search/by-formula/{formula}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     List<String> msReadyByFormula(@Parameter(required = true, description = "formula", example = "C16H24N2O5S")
                                   @PathVariable("formula") String formula){
@@ -148,7 +148,7 @@ public class ChemicalSearchResource {
         return searchRepository.searchMsReadyFormula(formula);
     }
 
-    @Operation(summary = "Search ms ready chemical using chemical DTXCID")
+    @Operation(summary = "Search ms ready chemicals by DTXCID")
     @RequestMapping(value = "chemical/msready/search/by-dtxcid/{dtxcid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     List<String> msReadyByDtxcid(@Parameter(required = true, description = "DSSTox Compound Identifier", example = "DTXCID30182")
                                  @PathVariable("dtxcid") String dtxcid) {
