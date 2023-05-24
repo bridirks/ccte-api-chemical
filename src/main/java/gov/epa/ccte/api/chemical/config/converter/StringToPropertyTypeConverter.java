@@ -9,11 +9,14 @@ import org.springframework.stereotype.Component;
 public class StringToPropertyTypeConverter implements Converter<String, PropertyType> {
     @Override
     public PropertyType convert(String source) {
+//            return PropertyType.valueOf(source.toLowerCase());
+
         try{
-            return PropertyType.valueOf(source.toUpperCase());
+            return PropertyType.valueOf(source.toLowerCase());
 
         } catch (IllegalArgumentException e){
             throw new TypeValueNotFoundProblem("Property type", source);
+//            return null;
         }
     }
 }

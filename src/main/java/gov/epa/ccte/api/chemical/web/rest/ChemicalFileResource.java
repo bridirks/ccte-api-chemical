@@ -8,7 +8,6 @@ import gov.epa.ccte.api.chemical.repository.ChemicalDetailRepository;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundProblem;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
@@ -23,7 +22,7 @@ import static org.springframework.http.MediaType.TEXT_PLAIN;
  */
 @Tag(name = "Chemical File Resource",
         description = "API endpoints for getting chemical structure data in mol, mrv and image (png or svg format) for given Chemical Identifier (DTXSID or DTXCID).")
-@SecurityRequirement(name = "api_key")
+//@SecurityRequirement(name = "api_key") // no need for api_key for this endpoint
 @Slf4j
 @RestController
 public class ChemicalFileResource {
@@ -129,8 +128,7 @@ public class ChemicalFileResource {
         //ChemicalImageUtils.toSvg(molecule);
         molecule.dearomatize();
 
-        byte[] image = renderer.renderToBuffer(molecule);
-        return image;
+        return renderer.renderToBuffer(molecule);
     }
 
     /**
@@ -175,9 +173,7 @@ public class ChemicalFileResource {
 
     /**
      * {@code GET  chemical/file/mrv/search/by-dtxsid/{dtxsid}" : get the "dtxsid" chemical mrv file.
-     *
      * @param dtxsid the matching dtxcid of the chemical mrv file to retrieve.
-     *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical mrv file}.
      */
     @Operation(summary = "Get mrv file by dtxsid")
@@ -195,9 +191,7 @@ public class ChemicalFileResource {
 
     /**
      * {@code GET  chemical/file/mrv/search/by-dtxcid/{dtxcid} : get the "dtxcid" chemical mrv file.
-     *
      * @param dtxcid the matching dtxcid of the chemical mrv file to retrieve.
-     *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical mrv file}.
      */
     @Operation(summary = "Get mrv file by dtxcid")

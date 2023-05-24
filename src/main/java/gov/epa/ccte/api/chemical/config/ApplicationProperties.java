@@ -18,6 +18,8 @@ public class ApplicationProperties {
     private String apiKeyName;
     private String apiEnv;
     private String apiUrl;
+    private Integer batchSize;
+
 //    private String docHostReplacement;
 //    private int docHostPort;
 //    private String docHostHttpProtocol;

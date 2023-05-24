@@ -1,7 +1,6 @@
 package gov.epa.ccte.api.chemical.service;
 
 
-import gov.epa.ccte.api.chemical.domain.ChemicalSearch;
 import gov.epa.ccte.api.chemical.projection.ChemicalSearchAll;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -13,6 +12,13 @@ import java.util.List;
 @Slf4j
 @Service
 public class SearchChemicalService {
+
+    private final CaffeineFixConversionService caffeineFixService;
+
+    public SearchChemicalService(CaffeineFixConversionService caffeineFixService) {
+        this.caffeineFixService = caffeineFixService;
+    }
+
 
     public List<String> getErrorMsg(String notFoundWord){
         List<String> errors = new ArrayList<String>();
@@ -92,6 +98,14 @@ public class SearchChemicalService {
         return inchikeyskeleton.matches("[A-Z]{14}");
     }
 
+    public boolean isChemicalSynonym(String word){
+
+        if(!isCasrn(word) && !isDtxcid(word) && !isDtxsid(word) && !isECNumber(word) && !isInchiKey(word) && !isInchiKeySkeleton(word)){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     public boolean checkCasrnFormat(String casrn, boolean checkForDash) {
 // Check the string against the mask
@@ -127,6 +141,18 @@ public class SearchChemicalService {
             }
         }
         return returnList;
+    }
+
+
+
+    public List<String> getCaffeineFixSuggestions(String word) {
+
+        // we will get caffeinefix suggestion for synonyms,
+        if(isChemicalSynonym(word)){
+            return caffeineFixService.CaffeineFixName(word);
+        }else{
+            return null;
+        }
     }
 
     // This will remove duplicates(same dtxsid number) from search result

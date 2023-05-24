@@ -54,7 +54,7 @@ public interface ChemicalListDetailAll {
 
     String getListShortdesc();
 
-    Boolean isListIsVisible();
+    Boolean getListIsVisible();
 
     String getListVisibility();
 
@@ -64,7 +64,7 @@ public interface ChemicalListDetailAll {
 
     Integer getIsotope();
 
-    Boolean isHasStructureImage();
+    Boolean getHasStructureImage();
 
     Integer getRelatedSubstanceCount();
 
