@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
 public class SearchChemicalService {
 
     private final CaffeineFixConversionService caffeineFixService;
+    private static final Pattern ENCODED_PATTERN = Pattern.compile("(%[0-9A-Fa-f]{2}|\\+)");
 
     public SearchChemicalService(CaffeineFixConversionService caffeineFixService) {
         this.caffeineFixService = caffeineFixService;
@@ -56,7 +58,7 @@ public class SearchChemicalService {
         } else if (isInchiKey (searchWord)) {
             log.debug("{} is inchiKey ", searchWord);
             return searchWord;
-        } else if (isCasrn(searchWord.replaceAll("–","-"))){
+        } else if (isCasrn(searchWord.replaceAll("–","-"))){ 
             log.debug("{} is casrn with wrong dash", searchWord);
             return searchWord.replaceAll("–","-");
         }else if (isECNumber(searchWord)){
@@ -66,10 +68,23 @@ public class SearchChemicalService {
             // partial CASRN or EC Number
             return searchWord;
         }else{
+            // check for URLencoded value for Synonyms
+//            if(isUrlEncoded(searchWord)){
+//                try {
+//                    log.info("searchWord is URL encoded: {}", searchWord);
+//                    searchWord = URLDecoder.decode(searchWord, "UTF-8");
+//                } catch (UnsupportedEncodingException e) {
+//                    throw new RuntimeException(e);
+//                }
+//            }
             // For allowing search JW-001 and JW 001
             searchWord = searchWord.replaceAll("-"," ");
             return searchWord;
         }
+    }
+
+    private boolean isUrlEncoded(String input) {
+        return ENCODED_PATTERN.matcher(input).find();
     }
 
     public boolean isDtxcid(String dtxcid) {
