@@ -20,7 +20,7 @@ public class SearchChemicalService {
     }
 
 
-    public List<String> getErrorMsg(String notFoundWord){
+    public List<String> getErrorMsgs(String notFoundWord){
         List<String> errors = new ArrayList<String>();
 
         if(isCasrn(notFoundWord)){
@@ -56,6 +56,9 @@ public class SearchChemicalService {
         } else if (isInchiKey (searchWord)) {
             log.debug("{} is inchiKey ", searchWord);
             return searchWord;
+        } else if (isCasrn(searchWord.replaceAll("–","-"))){
+            log.debug("{} is casrn with wrong dash", searchWord);
+            return searchWord.replaceAll("–","-");
         }else if (isECNumber(searchWord)){
             log.debug("{} is EC number ", searchWord);
             return searchWord;

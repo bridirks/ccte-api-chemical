@@ -66,7 +66,7 @@ public class ChemicalSearchResource {
                     examples = {@ExampleObject(name="", value = "{\"title\":\"Not found \",\"status\":400,\"detail\":\"No search result found for caffiene.\",\"suggestions\":[\"caffine\"]}", description = "Here response is with suggestion for 'caffiene'")},
                     schema=@Schema(oneOf = {Problem.class})))
     })
-    @RequestMapping(value = "chemical/search/start-with/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "chemical/search/start-with/{word}",  method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<ChemicalSearchAll> chemicalStartWith(@Parameter(required = true, description = "Starting characters for search word",
                                                 examples = {@ExampleObject(name="DSSTox Substance Identifier", value = "DTXSID7020182", description = "Starting part of DTXSID"),
@@ -97,7 +97,7 @@ public class ChemicalSearchResource {
         if(searchResult.size() != 0)
             return searchResult;
         else {
-            throw new ChemicalSearchNotFoundProblem(word, chemicalService.getCaffeineFixSuggestions(word));
+            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getCaffeineFixSuggestions(word));
         }
     }
 
@@ -134,7 +134,7 @@ public class ChemicalSearchResource {
         if(searchResult.size() != 0)
             return chemicalService.removeDuplicates(searchResult);
         else
-            throw new ChemicalSearchNotFoundProblem(word, chemicalService.getCaffeineFixSuggestions(word));
+            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getCaffeineFixSuggestions(word));
     }
 
     /**
@@ -170,7 +170,7 @@ public class ChemicalSearchResource {
         if(searchResult.size() != 0)
             return chemicalService.removeDuplicates(searchResult);
         else
-            throw new ChemicalSearchNotFoundProblem(word, chemicalService.getCaffeineFixSuggestions(word));
+            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getCaffeineFixSuggestions(word));
     }
 
     /**
