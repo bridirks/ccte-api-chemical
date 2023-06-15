@@ -121,9 +121,9 @@ public class ChemicalListResource {
         log.debug("list name={}", listName);
 
         switch (projection){
-            case chemicallistall: return listRepository.findByName(listName, ChemicalListAll.class)
+            case chemicallistall: return listRepository.findByNameIgnoreCase(listName, ChemicalListAll.class)
                     .orElseThrow(()->new IdentifierNotFoundProblem("List name", listName));
-            case chemicallistname: return listRepository.findByName(listName, ChemicalListName.class)
+            case chemicallistname: return listRepository.findByNameIgnoreCase(listName, ChemicalListName.class)
                     .orElseThrow(()->new IdentifierNotFoundProblem("List name", listName));
             default:
                 return null;
@@ -161,7 +161,7 @@ public class ChemicalListResource {
 
         log.debug("list name={}", listName);
 
-        List<ChemicalListDetailAll> details = detailRepository.findByListNameOrderByDtxsid(listName, ChemicalListDetailAll.class);
+        List<ChemicalListDetailAll> details = detailRepository.findByListNameIgnoreCaseOrderByDtxsid(listName, ChemicalListDetailAll.class);
 
         return details;
     }

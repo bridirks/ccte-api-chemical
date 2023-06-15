@@ -33,7 +33,7 @@ public interface ChemicalListRepository extends JpaRepository<ChemicalList, Inte
     @Transactional(readOnly = true)
     @RestResource(rel = "findByListName", path = "by-listname", exported = false)
     <T>
-    Optional<T> findByName(String listName, Class<T> type);
+    Optional<T> findByNameIgnoreCase(String listName, Class<T> type);
 
     @Transactional(readOnly = true)
     @Cacheable("listTypeNames")
