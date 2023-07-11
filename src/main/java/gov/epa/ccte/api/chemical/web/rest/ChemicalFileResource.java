@@ -49,7 +49,9 @@ public class ChemicalFileResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical image}.
      */
-    @Operation(summary = "Get structure image by dtxsid")
+    @Operation(summary = "Get structure image by dtxsid",
+            deprecated = true,
+            description = "This endpoint is deprecated. Please use /chemical-file/image/search/by-dtxsid/{dtxsid} instead.")
     @RequestMapping(value = "chemical/file/image/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<byte[]> imageByDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID7020182") @PathVariable("dtxsid") String dtxsid,
@@ -81,7 +83,9 @@ public class ChemicalFileResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical image}.
      */
-    @Operation(summary = "Get structure image by dtxcid")
+    @Operation(summary = "Get structure image by dtxcid",
+            deprecated = true,
+            description = "This endpoint is deprecated. Please use /chemical-file/image/search/by-dtxcid/{dtxcid} instead.")
     @RequestMapping(value = "chemical/file/image/search/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<byte[]> imageByDtxcid(@Parameter(required = true, description = "DSSTox Compound Identifier", example = "DTXCID505") @PathVariable("dtxcid") String dtxcid,
@@ -138,7 +142,9 @@ public class ChemicalFileResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical mol file}.
      */
-    @Operation(summary = "Get mol file by dtxsid")
+    @Operation(summary = "Get mol file by dtxsid",
+            deprecated = true,
+            description = "This endpoint is deprecated. Please use /chemical-file/mol/search/by-dtxsid/{dtxsid} instead.")
     @RequestMapping(value = "chemical/file/mol/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<String> molByDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID7020182") @PathVariable("dtxsid") String dtxsid){
@@ -158,7 +164,9 @@ public class ChemicalFileResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical mol file}.
      */
-    @Operation(summary = "Get mol file by dtxcid")
+    @Operation(summary = "Get mol file by dtxcid",
+            deprecated = true,
+            description = "This endpoint is deprecated. Please use /chemical-file/mol/search/by-dtxcid/{dtxcid} instead.")
 
     @RequestMapping(value = "chemical/file/mol/search/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
     public @ResponseBody
@@ -176,7 +184,9 @@ public class ChemicalFileResource {
      * @param dtxsid the matching dtxcid of the chemical mrv file to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical mrv file}.
      */
-    @Operation(summary = "Get mrv file by dtxsid")
+    @Operation(summary = "Get mrv file by dtxsid",
+            deprecated = true,
+            description = "This endpoint is deprecated. Please use /chemical-file/mrv/search/by-dtxsid/{dtxsid} instead.")
     @RequestMapping(value = "chemical/file/mrv/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<String> mrvByDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID7020182") @PathVariable("dtxsid") String dtxsid){
@@ -194,7 +204,9 @@ public class ChemicalFileResource {
      * @param dtxcid the matching dtxcid of the chemical mrv file to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical mrv file}.
      */
-    @Operation(summary = "Get mrv file by dtxcid")
+    @Operation(summary = "Get mrv file by dtxcid",
+            deprecated = true,
+            description = "This endpoint is deprecated. Please use /chemical-file/mrv/search/by-dtxcid/{dtxcid} instead.")
     @RequestMapping(value = "chemical/file/mrv/search/by-dtxcid/{dtxcid}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<String> mrvByDtxcid(@Parameter(required = true, description = "DSSTox Compound Identifier", example = "DTXCID505") @PathVariable("dtxcid") String dtxcid){
