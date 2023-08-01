@@ -13,3 +13,4 @@ echo "*** Restaging the app to enable the server connection..."
 cf restage ccte-chemical-prod
 echo "*** Showing recent logs of the app..."
 cf logs ccte-chemical-prod --recent
+
