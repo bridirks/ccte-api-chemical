@@ -2,7 +2,7 @@ package gov.epa.ccte.api.chemical.web.rest;
 
 import gov.epa.ccte.api.chemical.projection.ChemicalSearchAll;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
-import gov.epa.ccte.api.chemical.service.CaffeineFixConversionService;
+import gov.epa.ccte.api.chemical.service.CaffeineFixSynonymService;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
 import gov.epa.ccte.api.chemical.web.rest.errors.ChemicalSearchNotFoundProblem;
 import io.swagger.v3.oas.annotations.Operation;
@@ -38,7 +38,7 @@ public class ChemicalSearchResource {
     private final List<String> searchMatchWithoutInchikey;
     private final List<String> searchMatchAll;
 
-    public ChemicalSearchResource(CaffeineFixConversionService caffeineFixService, ChemicalSearchRepository searchRepository, SearchChemicalService chemicalService) {
+    public ChemicalSearchResource(CaffeineFixSynonymService caffeineFixService, ChemicalSearchRepository searchRepository, SearchChemicalService chemicalService) {
         this.searchRepository = searchRepository;
         this.chemicalService = chemicalService;
 

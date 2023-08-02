@@ -14,10 +14,10 @@ import java.util.regex.Pattern;
 @Service
 public class SearchChemicalService {
 
-    private final CaffeineFixConversionService caffeineFixService;
+    private final CaffeineFixSynonymService caffeineFixService;
     private static final Pattern ENCODED_PATTERN = Pattern.compile("(%[0-9A-Fa-f]{2}|\\+)");
 
-    public SearchChemicalService(CaffeineFixConversionService caffeineFixService) {
+    public SearchChemicalService(CaffeineFixSynonymService caffeineFixService) {
         this.caffeineFixService = caffeineFixService;
     }
 
@@ -166,8 +166,10 @@ public class SearchChemicalService {
     public List<String> getCaffeineFixSuggestions(String word) {
 
         // we will get caffeinefix suggestion for synonyms,
+        // caffeinefix data dictionary is case-sensitive, this is why we are converting word to lower case.
+        word = word.toLowerCase();
         if(isChemicalSynonym(word)){
-            return caffeineFixService.CaffeineFixName(word);
+            return caffeineFixService.caffeineFix(word);
         }else{
             return null;
         }

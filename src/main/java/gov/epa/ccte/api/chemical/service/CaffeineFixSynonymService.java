@@ -12,9 +12,9 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class CaffeineFixConversionService {
+public class CaffeineFixSynonymService {
 
-    @Value(value = "classpath:CFDictPubChem.cfx")
+    @Value(value = "classpath:synonym.cfx")
     private Resource dictionaryResource;
 
     CaffeineFix caffeineFix;
@@ -24,7 +24,7 @@ public class CaffeineFixConversionService {
         caffeineFix = new CaffeineFix(dictionaryResource.getFile().getPath());
     }
 
-    public List<String> CaffeineFixName(String nameString){
+    public List<String> caffeineFix(String nameString){
 
         List<String> suggestions = caffeineFix.suggestions(nameString, 1);
 
