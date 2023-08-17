@@ -1,5 +1,6 @@
 package gov.epa.ccte.api.chemical;
 
+import gov.epa.ccte.api.chemical.projection.ChemicalPropertyAll;
 import gov.epa.ccte.api.chemical.repository.ChemicalPropertyRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,41 @@ public class ChemicalPropertyRepositoryTest {
         assertThat(entityManager).isNotNull();
         assertThat(repository).isNotNull();
     }
+    @Test
+    void testDataLoaded(){
+        assertThat(repository.findAll().size()).isEqualTo(18);
+    }
 
+    @Test
+    void testGetPredictedProperty(){
+        assertThat(repository.getPredictedPropertiesList().size()).isEqualTo(1);
+    }
+
+    @Test
+    void testGetExperimentalProperty(){
+        assertThat(repository.getExperimentalPropertiesList().size()).isEqualTo(1);
+    }
+
+    @Test
+    void testFindByDtxsid(){
+        assertThat(repository.findByDtxsid("DTXSID7020182", ChemicalPropertyAll.class).size()).isEqualTo(9);
+    }
+
+    @Test
+    void testFindByDtxsidAndPropTypeOrderByName(){
+        assertThat(repository.findByDtxsidAndPropTypeOrderByName("DTXSID7020182", "experimental", ChemicalPropertyAll.class).size()).isEqualTo(6);
+    }
+
+    @Test
+    void testFindByDtxsidInOrderByDtxsidAscPropTypeAscNameAsc(){
+        // this is use for batch search
+        assertThat(repository.findByDtxsidInOrderByDtxsidAscPropTypeAscNameAsc(new String[]{"DTXSID7020182", "DTXSID9020112"}, ChemicalPropertyAll.class).size()).isEqualTo(18);
+    }
+
+    @Test
+    void testFindByPropertyIdAndValueBetweenOrderByDtxsidAsc(){
+
+        assertThat(repository.findByPropertyIdAndValueBetweenOrderByDtxsidAsc("melting-point", 153.0, 157.0, ChemicalPropertyAll.class).size()).isEqualTo(7);
+    }
 
 }

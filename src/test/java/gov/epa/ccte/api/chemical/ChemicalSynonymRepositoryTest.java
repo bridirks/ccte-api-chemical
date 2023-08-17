@@ -1,7 +1,8 @@
 package gov.epa.ccte.api.chemical;
 
-import gov.epa.ccte.api.chemical.projection.chemicallist.ChemicalListDetailAll;
-import gov.epa.ccte.api.chemical.repository.ChemicalListDetailRepository;
+import gov.epa.ccte.api.chemical.projection.ChemicalSynonymAll;
+import gov.epa.ccte.api.chemical.repository.ChemicalSynonymRepository;
+import gov.epa.ccte.api.chemical.repository.FateRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -15,13 +16,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("test")
-public class ChemicalListDetailsRepositoryTest {
+public class ChemicalSynonymRepositoryTest {
 
     @Autowired
     private DataSource dataSource;
     @Autowired private JdbcTemplate jdbcTemplate;
     @Autowired private TestEntityManager entityManager;
-    @Autowired private ChemicalListDetailRepository repository;
+    @Autowired private ChemicalSynonymRepository repository;
 
     @Test
     void injectedComponentsAreNotNull(){
@@ -32,24 +33,11 @@ public class ChemicalListDetailsRepositoryTest {
     }
     @Test
     void testDataLoaded(){
-        assertThat(repository.findAll().size()).isEqualTo(10);
-    }
-
-    @Test
-    void testFindByDtxsidInOrderByDtxsidAsc(){
-        assertThat(repository.findByDtxsid("DTXSID00880086").size()).isEqualTo(1);
-    }
-
-    @Test
-    void testFindByListName(){
-        // checking the number of chemicals in the given list name
-        assertThat(repository.findByListNameIgnoreCaseOrderByDtxsid("MICROCYSTIN", ChemicalListDetailAll.class).size()).isEqualTo(7);
+        assertThat(repository.findAll().size()).isEqualTo(2);
     }
 
     @Test
     void testFindByDtxsid(){
-        // checking the number of lists in which the given chemical is present
-        assertThat(repository.findByDtxsid("DTXSID00880086").size()).isEqualTo(1);
+        assertThat(repository.findByDtxsid("DTXSID9020112", ChemicalSynonymAll.class).isPresent()).isTrue();
     }
-
 }

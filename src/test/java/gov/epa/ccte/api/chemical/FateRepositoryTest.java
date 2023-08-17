@@ -29,4 +29,8 @@ public class FateRepositoryTest {
         assertThat(entityManager).isNotNull();
         assertThat(repository).isNotNull();
     }
+    @Test
+    void testDataLoaded(){
+        assertThat(repository.findAll().size()).isEqualTo(4);
+    }
 }

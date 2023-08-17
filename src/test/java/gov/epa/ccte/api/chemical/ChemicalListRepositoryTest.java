@@ -1,5 +1,6 @@
 package gov.epa.ccte.api.chemical;
 
+import gov.epa.ccte.api.chemical.projection.chemicallist.ChemicalListAll;
 import gov.epa.ccte.api.chemical.repository.ChemicalListRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,5 +29,31 @@ public class ChemicalListRepositoryTest {
         assertThat(jdbcTemplate).isNotNull();
         assertThat(entityManager).isNotNull();
         assertThat(repository).isNotNull();
+    }
+
+    @Test
+    void testDataLoaded(){
+        assertThat(repository.findAll().size()).isEqualTo(2);
+    }
+
+    @Test
+    void testFindByVisibilityOrderByListNameAsc(){
+        assertThat(repository.findByVisibilityOrderByTypeAscNameAsc("PUBLIC", ChemicalListAll.class).size()).isEqualTo(2);
+    }
+
+    @Test
+    void testFindByType(){
+        assertThat(repository.findByType("federal", ChemicalListAll.class).size()).isEqualTo(1);
+    }
+
+    @Test
+    void testFindByListName(){
+        assertThat(repository.findByNameIgnoreCase("MICROCYSTIN", ChemicalListAll.class).isPresent()).isTrue();
+    }
+
+    @Test
+    void testGetAllTypes(){
+        // test data only has two types 'other' and 'federal'
+        assertThat(repository.getAllTypes().size()).isEqualTo(2);
     }
 }

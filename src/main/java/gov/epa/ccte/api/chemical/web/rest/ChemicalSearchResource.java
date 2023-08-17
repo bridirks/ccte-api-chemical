@@ -1,6 +1,7 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
 import gov.epa.ccte.api.chemical.projection.ChemicalSearchAll;
+import gov.epa.ccte.api.chemical.projection.search.CcdChemicalSearchResult;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import gov.epa.ccte.api.chemical.service.CaffeineFixSynonymService;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
@@ -206,5 +207,10 @@ public class ChemicalSearchResource {
         log.debug("input mass = {} - {} ", start, end);
 
         return searchRepository.searchMsReadyMass(start, end);
+    }
+
+    @RequestMapping(value = "chemical/test/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    List<CcdChemicalSearchResult> testSearch( @PathVariable("word") String searchWord){
+        return searchRepository.equalCcd(searchWord);
     }
 }

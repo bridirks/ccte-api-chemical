@@ -27,6 +27,7 @@ spring:
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: false
       hibernate.default_schema: ms
+      hibernate.hbm2ddl.auto: none
 springdoc:
   show-actuator: false
   api-docs:
