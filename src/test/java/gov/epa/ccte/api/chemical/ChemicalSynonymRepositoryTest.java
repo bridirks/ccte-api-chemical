@@ -2,7 +2,6 @@ package gov.epa.ccte.api.chemical;
 
 import gov.epa.ccte.api.chemical.projection.ChemicalSynonymAll;
 import gov.epa.ccte.api.chemical.repository.ChemicalSynonymRepository;
-import gov.epa.ccte.api.chemical.repository.FateRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
