@@ -1,7 +1,6 @@
 package gov.epa.ccte.api.chemical;
 
 import gov.epa.ccte.api.chemical.projection.ChemicalSearchAll;
-import gov.epa.ccte.api.chemical.repository.ChemicalDetailRepository;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,10 +26,10 @@ public class ChemicalSearchRepositoryTest {
     @Autowired private TestEntityManager entityManager;
     @Autowired private ChemicalSearchRepository repository;
 
-    private List<String> searchMatchWithoutInchikey = Arrays.asList("Deleted CAS-RN","PC-Code","Substance_id","Approved Name","Alternate CAS-RN",
+    private final List<String> searchMatchWithoutInchikey = Arrays.asList("Deleted CAS-RN","PC-Code","Substance_id","Approved Name","Alternate CAS-RN",
             "CAS-RN","Synonym","Integrated Source CAS-RN","DSSTox_Compound_Id","Systematic Name","Integrated Source Name",
             "Expert Validated Synonym","Synonym from Valid Source","FDA CAS-Like Identifier","DSSTox_Substance_Id", "EHCA Number", "EC Number");
-    private List<String> searchMatchAll = Arrays.asList("Deleted CAS-RN","PC-Code","Substance_id","Approved Name","Alternate CAS-RN",
+    private final List<String> searchMatchAll = Arrays.asList("Deleted CAS-RN","PC-Code","Substance_id","Approved Name","Alternate CAS-RN",
             "CAS-RN","Synonym","Integrated Source CAS-RN","DSSTox_Compound_Id","Systematic Name","Integrated Source Name",
             "Expert Validated Synonym","Synonym from Valid Source","FDA CAS-Like Identifier","DSSTox_Substance_Id",
             "InChIKey", "Indigo InChIKey", "EHCA Number", "EC Number");
