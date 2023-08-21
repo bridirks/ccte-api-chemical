@@ -1,4 +1,4 @@
-package gov.epa.ccte.api.chemical;
+package gov.epa.ccte.api.chemical.datatest;
 
 import gov.epa.ccte.api.chemical.projection.chemicallist.ChemicalListDetailAll;
 import gov.epa.ccte.api.chemical.repository.ChemicalListDetailRepository;
