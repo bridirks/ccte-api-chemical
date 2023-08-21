@@ -1,4 +1,4 @@
-package gov.epa.ccte.api.chemical;
+package gov.epa.ccte.api.chemical.datatest;
 
 import gov.epa.ccte.api.chemical.projection.chemicaldetail.ChemicalDetailAll;
 import gov.epa.ccte.api.chemical.repository.ChemicalDetailRepository;
@@ -8,7 +8,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 
 import javax.sql.DataSource;
 

@@ -1,6 +1,7 @@
-package gov.epa.ccte.api.chemical;
+package gov.epa.ccte.api.chemical.datatest;
 
-import gov.epa.ccte.api.chemical.repository.FateRepository;
+import gov.epa.ccte.api.chemical.projection.ChemicalSynonymAll;
+import gov.epa.ccte.api.chemical.repository.ChemicalSynonymRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -14,13 +15,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
 @ActiveProfiles("test")
-public class FateRepositoryTest {
+public class ChemicalSynonymRepositoryTest {
 
     @Autowired
     private DataSource dataSource;
     @Autowired private JdbcTemplate jdbcTemplate;
     @Autowired private TestEntityManager entityManager;
-    @Autowired private FateRepository repository;
+    @Autowired private ChemicalSynonymRepository repository;
 
     @Test
     void injectedComponentsAreNotNull(){
@@ -31,6 +32,11 @@ public class FateRepositoryTest {
     }
     @Test
     void testDataLoaded(){
-        assertThat(repository.findAll().size()).isEqualTo(4);
+        assertThat(repository.findAll().size()).isEqualTo(2);
+    }
+
+    @Test
+    void testFindByDtxsid(){
+        assertThat(repository.findByDtxsid("DTXSID9020112", ChemicalSynonymAll.class).isPresent()).isTrue();
     }
 }
