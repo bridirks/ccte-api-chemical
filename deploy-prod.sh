@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "*** Building app ..."
-./mvnw clean package
+./mvnw clean package -DskipTests
 echo "*** Selecting the production space in epa-ccte organization..."
 cf target -o epa-ccte -s prod
 echo "*** Deleting previous app instance..."
