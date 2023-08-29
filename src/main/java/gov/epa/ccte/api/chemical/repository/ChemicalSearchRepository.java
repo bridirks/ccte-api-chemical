@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
+import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -13,6 +14,10 @@ import java.util.List;
 public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, Long> {
 
     <T> List<T> findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(String word, List<String> searchWords, Class<T> type);
+
+    <T> List<T> findTop20ByModifiedValueStartsWithAndSearchNameInOrderByRankAscSearchValueAsc(String modifiedValue, Collection<String> searchNames, Class<T> type);
+
+
 
     <T> List<T> findByModifiedValueOrderByRankAsc(String word, Class<T> type);
 

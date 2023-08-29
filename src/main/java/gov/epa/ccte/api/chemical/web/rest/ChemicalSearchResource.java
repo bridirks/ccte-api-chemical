@@ -102,6 +102,42 @@ public class ChemicalSearchResource {
         }
     }
 
+    @Operation(hidden = true)
+    @RequestMapping(value = "chemical/search/start-with2/{word}",  method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<ChemicalSearchAll> chemicalStartWith2(@Parameter(required = true, description = "Starting characters for search word",
+            examples = {@ExampleObject(name="DSSTox Substance Identifier", value = "DTXSID7020182", description = "Starting part of DTXSID"),
+                    @ExampleObject(name="DSSTox Compound Identifier", value = "DTXCID505", description = "Starting part of DTXCID"),
+                    @ExampleObject(name="Synonym Starting characters", value = "atraz", description = "URLencoded starting characters of chemical name"),
+                    @ExampleObject(name="CASRN", value = "1912-24", description = "Starting part of CASRN"),
+                    @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU", description = "For InChIKey starting 13 characters are needed")
+            })
+                                              @PathVariable("word") String word ) {
+
+        String searchWord = chemicalService.preprocessingSearchWord(word);
+
+        log.debug("input search word = {} and process search word = {}. ", word, searchWord);
+
+        List<ChemicalSearchAll> searchResult;
+
+        // avoid InChIKey
+        if(searchWord.length() > 13){
+            searchResult =  searchRepository.findTop20ByModifiedValueStartsWithAndSearchNameInOrderByRankAscSearchValueAsc(searchWord, searchMatchAll, ChemicalSearchAll.class);
+        }else{
+            log.debug("searchWord = {}", searchWord);
+            searchResult =  searchRepository.findTop20ByModifiedValueStartsWithAndSearchNameInOrderByRankAscSearchValueAsc(searchWord, searchMatchWithoutInchikey, ChemicalSearchAll.class);
+        }
+        log.debug("{} records match for {}", searchResult.size(), word);
+
+        searchResult = chemicalService.removeDuplicates(searchResult);
+
+        if(searchResult.size() != 0)
+            return searchResult;
+        else {
+            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getCaffeineFixSuggestions(word));
+        }
+    }
+
     /**
      * {@code GET  /chemical/search/equal/:word} : get the list of chemicalSearch matching the "word".
      *
