@@ -1,12 +1,15 @@
 package gov.epa.ccte.api.chemical.service;
 
 
-import gov.epa.ccte.api.chemical.projection.ChemicalSearchAll;
+import gov.epa.ccte.api.chemical.projection.search.ChemicalBatchSearchResult;
+import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchAll;
+import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -25,23 +28,34 @@ public class SearchChemicalService {
     public List<String> getErrorMsgs(String notFoundWord){
         List<String> errors = new ArrayList<String>();
 
-        if(isCasrn(notFoundWord)){
-            errors.add("Searched by CASRN: Found 0 results for '" + notFoundWord + "'.");
-            if(checkCasrnFormat(notFoundWord, true) == false)
-                errors.add("CAS number fails checksum.");
-        } else if(isDtxcid(notFoundWord)){
+        if(isDtxcid(notFoundWord)){
             errors.add("Searched by DTX Compound Id: Found 0 results for '" + notFoundWord + "'.");
         } else if(isDtxsid(notFoundWord)){
             errors.add("Searched by DTX Substance Id: Found 0 results for '" + notFoundWord + "'.");
         } else if(isInchiKey(notFoundWord)){
             errors.add("Searched by Inchi Key: Found 0 results for '" + notFoundWord + "'.");
-        } else if(isInchiKeySkeleton(notFoundWord)){
-            errors.add("Searched by Inchi Key: Found 0 results for '" + notFoundWord + "'.");
+        } else if(isInchiKeySkeleton(notFoundWord)) {
+            errors.add("Searched by Inchi String: Found 0 results for '" + notFoundWord + "'.");
+        } else if(isCasrn(notFoundWord)) {
+            errors.add("Searched by CASRN: Found 0 results for '" + notFoundWord + "'.");
+            if (!checkCasrnChecksum(notFoundWord))
+                errors.add("CAS number fails checksum.");
         }else{
             errors.add("Searched by Synonym: Found 0 results for '" + notFoundWord + "'.");
         }
 
         return errors;
+    }
+
+    public String[] preprocessingSearchWord(String[] searchWords){
+
+        List<String> searches = new ArrayList<String>();
+
+        for(String word : searchWords){
+            searches.add(preprocessingSearchWord(word));
+        }
+
+        return searches.toArray(new String[searches.size()]);
     }
 
     public String preprocessingSearchWord(String searchWord){
@@ -125,9 +139,9 @@ public class SearchChemicalService {
         }
     }
 
-    public boolean checkCasrnFormat(String casrn, boolean checkForDash) {
+    public boolean checkCasrnChecksum(String casrn) {
 // Check the string against the mask
-        if (checkForDash && !casrn.matches("^\\d{1,7}-\\d{2}-\\d$")) {
+        if (!casrn.matches("^\\d{1,7}-\\d{2}-\\d$")) {
             return false;
         } else {
 // Remove the dashes
@@ -137,19 +151,19 @@ public class SearchChemicalService {
                 sum += (casrn.length() - indx - 1) * Integer.parseInt(casrn.substring(indx, indx + 1));
             }
 // Check digit is the last char, compare to sum mod 10.
-            log.debug("v1= %1 and v2= %2",Integer.parseInt(casrn.substring(casrn.length() - 1)), (sum % 10));
+            log.debug("v1= {} and v2= {}",Integer.parseInt(casrn.substring(casrn.length() - 1)), (sum % 10));
             return Integer.parseInt(casrn.substring(casrn.length() - 1)) == (sum % 10);
         }
     }
 
     // This will remove duplicates(same dtxsid number) from search result
-    public List<ChemicalSearchAll> removeDuplicates(List<ChemicalSearchAll> chemicals) {
+    public List<ChemicalSearchResult> removeDuplicates(List<ChemicalSearchResult> chemicals) {
 
-        List<ChemicalSearchAll> returnList = new ArrayList<ChemicalSearchAll>();
+        List<ChemicalSearchResult> returnList = new ArrayList<ChemicalSearchResult>();
         List<String> dtxsidList = new ArrayList<String>();
         //List<String> dtxcidList = new ArrayList<String>();
 
-        for(ChemicalSearchAll chemical : chemicals){
+        for(ChemicalSearchResult chemical : chemicals){
             //if(chemical.getDtxsid() != null ){}
             if(dtxsidList.contains(chemical.getDtxsid()) == false){
                 dtxsidList.add(chemical.getDtxsid());
@@ -163,7 +177,7 @@ public class SearchChemicalService {
 
 
 
-    public List<String> getCaffeineFixSuggestions(String word) {
+    public List<String> getSuggestions(String word) {
 
         // we will get caffeinefix suggestion for synonyms,
         // caffeinefix data dictionary is case-sensitive, this is why we are converting word to lower case.
@@ -174,6 +188,40 @@ public class SearchChemicalService {
             return null;
         }
     }
+
+    public List<ChemicalBatchSearchResult> processBatchResult(List<ChemicalSearchAll> searchResult, String[] searchWords) {
+        // create a hashmap with searchResult where use searchValue as key
+        // this will help us to find the searchResult for a given searchWord
+        HashMap<String, ChemicalSearchAll> searchResultMap = new HashMap<String, ChemicalSearchAll>();
+
+        // create hasmap for dtxsid to check duplicates
+        HashMap<String, String> dtxsidMap = new HashMap<String, String>();
+
+        for(ChemicalSearchAll result : searchResult){
+            searchResultMap.put(result.getModifiedValue(), result);
+        }
+
+        log.debug("searchResultMap size = {}, keys = {}", searchResultMap.size(), searchResultMap.keySet());
+
+
+        // create a new list of ChemicalBatchSearchResult to return
+        List<ChemicalBatchSearchResult> returnList = new ArrayList<ChemicalBatchSearchResult>();
+
+        // I need to loop through searchWords, if they are in searchResultMap, I will add them to returnList
+        for(String searchWord : searchWords){
+            String processedSearchWord = preprocessingSearchWord(searchWord);
+            if(searchResultMap.containsKey(processedSearchWord)){
+                ChemicalSearchAll result = searchResultMap.get(processedSearchWord);
+                returnList.add(new ChemicalBatchSearchResult(result.getDtxsid(), result.getDtxcid(), result.getCasrn(), result.getSmiles(), result.getPreferredName(), result.getSearchName(), searchWord, result.getRank(), result.getHasStructureImage(), result.getIsMarkush(), null, null, dtxsidMap.containsKey(result.getDtxsid())));
+                dtxsidMap.put(result.getDtxsid(), result.getDtxsid());
+            }else{
+                returnList.add(new ChemicalBatchSearchResult(null, null, null, null, null, null, searchWord, null, null, null, getErrorMsgs(searchWord), getSuggestions(searchWord),false));
+            }
+        }
+
+        return returnList;
+    }
+
 
     // This will remove duplicates(same dtxsid number) from search result
 /*    public List<SearchResult> removeSearchResultDuplicates(List<SearchResult> results) {

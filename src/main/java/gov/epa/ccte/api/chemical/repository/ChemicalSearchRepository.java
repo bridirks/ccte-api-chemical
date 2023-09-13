@@ -21,6 +21,8 @@ public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, 
 
     <T> List<T> findByModifiedValueOrderByRankAsc(String word, Class<T> type);
 
+    <T> List<T> findByModifiedValueInOrderByRankAsc(String[] words, Class<T> type);
+
     <T> List<T> findByModifiedValueContainsOrderByRankAscDtxsid(String word, Class<T> type);
 
     @Query(nativeQuery = true)
