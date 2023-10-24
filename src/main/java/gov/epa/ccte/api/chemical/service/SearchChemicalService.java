@@ -1,7 +1,8 @@
 package gov.epa.ccte.api.chemical.service;
 
 
-import gov.epa.ccte.api.chemical.projection.ChemicalSearchAll;
+import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchAll;
+import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -10,15 +11,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static gov.epa.ccte.api.chemical.service.ChemicalUtils.*;
+
 @Slf4j
 @Service
 public class SearchChemicalService {
 
     private final CaffeineFixSynonymService caffeineFixService;
+    private final ChemicalSearchRepository searchRepository;
     private static final Pattern ENCODED_PATTERN = Pattern.compile("(%[0-9A-Fa-f]{2}|\\+)");
 
-    public SearchChemicalService(CaffeineFixSynonymService caffeineFixService) {
+    public SearchChemicalService(CaffeineFixSynonymService caffeineFixService, ChemicalSearchRepository searchRepository) {
         this.caffeineFixService = caffeineFixService;
+        this.searchRepository = searchRepository;
     }
 
 
@@ -87,60 +92,6 @@ public class SearchChemicalService {
         return ENCODED_PATTERN.matcher(input).find();
     }
 
-    public boolean isDtxcid(String dtxcid) {
-        dtxcid = dtxcid.toUpperCase();
-        return dtxcid.matches("DTXCID(.*)");
-    }
-
-    public boolean isDtxsid(String dtxsid) {
-        dtxsid = dtxsid.toUpperCase();
-        return dtxsid.matches("DTXSID(.*)");
-    }
-
-
-    public boolean isCasrn(String casrn) {
-        return casrn.matches("^\\d{1,7}-\\d{2}-\\d$");
-    }
-
-    public boolean isECNumber(String casrn) {
-        return casrn.matches("^\\d{3}-\\d{3}-\\d$");
-    }
-
-    public boolean isInchiKey(String inchikey) {
-        inchikey = inchikey.toUpperCase();
-        return inchikey.matches("[A-Z]{14}-[A-Z]{10}-[A-Z]");
-    }
-
-    public boolean isInchiKeySkeleton(String inchikeyskeleton) {
-        inchikeyskeleton = inchikeyskeleton.toUpperCase();
-        return inchikeyskeleton.matches("[A-Z]{14}");
-    }
-
-    public boolean isChemicalSynonym(String word){
-
-        if(!isCasrn(word) && !isDtxcid(word) && !isDtxsid(word) && !isECNumber(word) && !isInchiKey(word) && !isInchiKeySkeleton(word)){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    public boolean checkCasrnFormat(String casrn, boolean checkForDash) {
-// Check the string against the mask
-        if (checkForDash && !casrn.matches("^\\d{1,7}-\\d{2}-\\d$")) {
-            return false;
-        } else {
-// Remove the dashes
-            casrn = casrn.replaceAll("-", "");
-            int sum = 0;
-            for (int indx = 0; indx < casrn.length() - 1; indx++) {
-                sum += (casrn.length() - indx - 1) * Integer.parseInt(casrn.substring(indx, indx + 1));
-            }
-// Check digit is the last char, compare to sum mod 10.
-            log.debug("v1= %1 and v2= %2",Integer.parseInt(casrn.substring(casrn.length() - 1)), (sum % 10));
-            return Integer.parseInt(casrn.substring(casrn.length() - 1)) == (sum % 10);
-        }
-    }
 
     // This will remove duplicates(same dtxsid number) from search result
     public List<ChemicalSearchAll> removeDuplicates(List<ChemicalSearchAll> chemicals) {
@@ -163,17 +114,31 @@ public class SearchChemicalService {
 
 
 
-    public List<String> getCaffeineFixSuggestions(String word) {
+    public List<String> getSuggestions(String word) {
 
         // we will get caffeinefix suggestion for synonyms,
         // caffeinefix data dictionary is case-sensitive, this is why we are converting word to lower case.
-        word = word.toLowerCase();
-        if(isChemicalSynonym(word)){
-            return caffeineFixService.caffeineFix(word);
+        if(isChemicalSynonym(word)) {
+            return caffeineFixService.caffeineFix(word.toLowerCase());
+        }else if(isInchiKey(word)){
+            return inchikeySuggestion(word);
         }else{
             return null;
         }
     }
+
+    private List<String> inchikeySuggestion(String word) {
+        String search = inchikeyWithoutCharge(word);
+
+        List<String> suggestions = searchRepository.getInchiKey(inchikeyWithoutCharge(word));
+
+        if(suggestions.size() > 0){
+            return suggestions;
+        }else{
+            return searchRepository.getInchiKey(inchikeyWithoutSecondlayer(word));
+        }
+    }
+
 
     // This will remove duplicates(same dtxsid number) from search result
 /*    public List<SearchResult> removeSearchResultDuplicates(List<SearchResult> results) {

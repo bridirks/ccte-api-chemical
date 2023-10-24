@@ -1,6 +1,6 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
-import gov.epa.ccte.api.chemical.projection.ChemicalSearchAll;
+import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchAll;
 import gov.epa.ccte.api.chemical.projection.search.CcdChemicalSearchResult;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import gov.epa.ccte.api.chemical.service.CaffeineFixSynonymService;
@@ -98,7 +98,7 @@ public class ChemicalSearchResource {
         if(searchResult.size() != 0)
             return searchResult;
         else {
-            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getCaffeineFixSuggestions(word));
+            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
         }
     }
 
@@ -134,7 +134,7 @@ public class ChemicalSearchResource {
         if(searchResult.size() != 0)
             return searchResult;
         else {
-            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getCaffeineFixSuggestions(word));
+            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
         }
     }
 
@@ -171,7 +171,7 @@ public class ChemicalSearchResource {
         if(searchResult.size() != 0)
             return chemicalService.removeDuplicates(searchResult);
         else
-            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getCaffeineFixSuggestions(word));
+            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
     }
 
     /**
@@ -207,7 +207,7 @@ public class ChemicalSearchResource {
         if(searchResult.size() != 0)
             return chemicalService.removeDuplicates(searchResult);
         else
-            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getCaffeineFixSuggestions(word));
+            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
     }
 
     /**

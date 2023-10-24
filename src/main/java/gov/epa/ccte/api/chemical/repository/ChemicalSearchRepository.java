@@ -4,6 +4,7 @@ import gov.epa.ccte.api.chemical.domain.ChemicalSearch;
 import gov.epa.ccte.api.chemical.projection.search.CcdChemicalSearchResult;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 import java.util.Collection;
@@ -17,11 +18,13 @@ public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, 
 
     <T> List<T> findTop20ByModifiedValueStartsWithAndSearchNameInOrderByRankAscSearchValueAsc(String modifiedValue, Collection<String> searchNames, Class<T> type);
 
-
-
     <T> List<T> findByModifiedValueOrderByRankAsc(String word, Class<T> type);
 
     <T> List<T> findByModifiedValueContainsOrderByRankAscDtxsid(String word, Class<T> type);
+
+    // Query for inchikey suggestion
+    @Query("select distinct c.searchValue from ChemicalSearch c where c.modifiedValue like concat(:inchikey, '%')")
+    List<String> getInchiKey(@Param("inchikey") String inchikey);
 
     @Query(nativeQuery = true)
     List<CcdChemicalSearchResult> equalCcd(String searchWord);
