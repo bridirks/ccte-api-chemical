@@ -28,7 +28,7 @@ public class SearchChemicalService {
 
 
     public List<String> getErrorMsgs(String notFoundWord){
-        List<String> errors = new ArrayList<String>();
+        List<String> errors = new ArrayList<>();
 
         if(isCasrn(notFoundWord)){
             errors.add("Searched by CASRN: Found 0 results for '" + notFoundWord + "'.");
@@ -97,12 +97,12 @@ public class SearchChemicalService {
     public List<ChemicalSearchAll> removeDuplicates(List<ChemicalSearchAll> chemicals) {
 
         List<ChemicalSearchAll> returnList = new ArrayList<>();
-        List<String> dtxsidList = new ArrayList<String>();
+        List<String> dtxsidList = new ArrayList<>();
         //List<String> dtxcidList = new ArrayList<String>();
 
         for(ChemicalSearchAll chemical : chemicals){
             //if(chemical.getDtxsid() != null ){}
-            if(dtxsidList.contains(chemical.getDtxsid()) == false){
+            if(!dtxsidList.contains(chemical.getDtxsid())){
                 dtxsidList.add(chemical.getDtxsid());
                 returnList.add(chemical);
             } else{
