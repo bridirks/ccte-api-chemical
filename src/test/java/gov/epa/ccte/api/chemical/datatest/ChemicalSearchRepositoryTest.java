@@ -1,6 +1,6 @@
 package gov.epa.ccte.api.chemical.datatest;
 
-import gov.epa.ccte.api.chemical.projection.ChemicalSearchAll;
+import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchAll;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
