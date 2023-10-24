@@ -39,7 +39,7 @@ public class ChemicalSearchResource {
     private final List<String> searchMatchWithoutInchikey;
     private final List<String> searchMatchAll;
 
-    public ChemicalSearchResource(CaffeineFixSynonymService caffeineFixService, ChemicalSearchRepository searchRepository, SearchChemicalService chemicalService) {
+    public ChemicalSearchResource(ChemicalSearchRepository searchRepository, SearchChemicalService chemicalService) {
         this.searchRepository = searchRepository;
         this.chemicalService = chemicalService;
 
@@ -95,7 +95,7 @@ public class ChemicalSearchResource {
 
         searchResult = chemicalService.removeDuplicates(searchResult);
 
-        if(searchResult.size() != 0)
+        if(!searchResult.isEmpty())
             return searchResult;
         else {
             throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
@@ -131,7 +131,7 @@ public class ChemicalSearchResource {
 
         searchResult = chemicalService.removeDuplicates(searchResult);
 
-        if(searchResult.size() != 0)
+        if(!searchResult.isEmpty())
             return searchResult;
         else {
             throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
@@ -168,7 +168,7 @@ public class ChemicalSearchResource {
 
         List<ChemicalSearchAll> searchResult =  searchRepository.findByModifiedValueOrderByRankAsc(searchWord, ChemicalSearchAll.class);
 
-        if(searchResult.size() != 0)
+        if(!searchResult.isEmpty())
             return chemicalService.removeDuplicates(searchResult);
         else
             throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
@@ -204,7 +204,7 @@ public class ChemicalSearchResource {
 
         List<ChemicalSearchAll> searchResult = searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord, ChemicalSearchAll.class);
 
-        if(searchResult.size() != 0)
+        if(!searchResult.isEmpty())
             return chemicalService.removeDuplicates(searchResult);
         else
             throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));

@@ -32,7 +32,7 @@ public class SearchChemicalService {
 
         if(isCasrn(notFoundWord)){
             errors.add("Searched by CASRN: Found 0 results for '" + notFoundWord + "'.");
-            if(checkCasrnFormat(notFoundWord, true) == false)
+            if(!checkCasrnFormat(notFoundWord, true))
                 errors.add("CAS number fails checksum.");
         } else if(isDtxcid(notFoundWord)){
             errors.add("Searched by DTX Compound Id: Found 0 results for '" + notFoundWord + "'.");
@@ -96,7 +96,7 @@ public class SearchChemicalService {
     // This will remove duplicates(same dtxsid number) from search result
     public List<ChemicalSearchAll> removeDuplicates(List<ChemicalSearchAll> chemicals) {
 
-        List<ChemicalSearchAll> returnList = new ArrayList<ChemicalSearchAll>();
+        List<ChemicalSearchAll> returnList = new ArrayList<>();
         List<String> dtxsidList = new ArrayList<String>();
         //List<String> dtxcidList = new ArrayList<String>();
 
@@ -112,8 +112,6 @@ public class SearchChemicalService {
         return returnList;
     }
 
-
-
     public List<String> getSuggestions(String word) {
 
         // we will get caffeinefix suggestion for synonyms,
@@ -128,17 +126,15 @@ public class SearchChemicalService {
     }
 
     private List<String> inchikeySuggestion(String word) {
-        String search = inchikeyWithoutCharge(word);
 
         List<String> suggestions = searchRepository.getInchiKey(inchikeyWithoutCharge(word));
 
-        if(suggestions.size() > 0){
+        if(!suggestions.isEmpty()){
             return suggestions;
         }else{
             return searchRepository.getInchiKey(inchikeyWithoutSecondlayer(word));
         }
     }
-
 
     // This will remove duplicates(same dtxsid number) from search result
 /*    public List<SearchResult> removeSearchResultDuplicates(List<SearchResult> results) {

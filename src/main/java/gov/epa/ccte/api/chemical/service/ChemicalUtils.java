@@ -24,11 +24,7 @@ public class ChemicalUtils {
 
     public static boolean isChemicalSynonym(String word){
 
-        if(!isCasrn(word) && !isDtxcid(word) && !isDtxsid(word) && !isECNumber(word) && !isInchiKey(word) && !isInchiKeySkeleton(word)){
-            return true;
-        }else{
-            return false;
-        }
+        return !isCasrn(word) && !isDtxcid(word) && !isDtxsid(word) && !isECNumber(word) && !isInchiKey(word) && !isInchiKeySkeleton(word);
     }
 
     public static boolean isInchiKey(String inchikey) {
@@ -64,7 +60,7 @@ public class ChemicalUtils {
                 sum += (casrn.length() - indx - 1) * Integer.parseInt(casrn.substring(indx, indx + 1));
             }
 // Check digit is the last char, compare to sum mod 10.
-            log.debug("v1= %1 and v2= %2",Integer.parseInt(casrn.substring(casrn.length() - 1)), (sum % 10));
+            log.debug("v1= {} and v2= {}",Integer.parseInt(casrn.substring(casrn.length() - 1)), (sum % 10));
             return Integer.parseInt(casrn.substring(casrn.length() - 1)) == (sum % 10);
         }
     }
