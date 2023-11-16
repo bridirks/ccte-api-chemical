@@ -3,7 +3,6 @@ package gov.epa.ccte.api.chemical.web.rest;
 import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchAll;
 import gov.epa.ccte.api.chemical.projection.search.CcdChemicalSearchResult;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
-import gov.epa.ccte.api.chemical.service.CaffeineFixSynonymService;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
 import gov.epa.ccte.api.chemical.web.rest.errors.ChemicalSearchNotFoundProblem;
 import io.swagger.v3.oas.annotations.Operation;
@@ -64,7 +63,7 @@ public class ChemicalSearchResource {
                     schema=@Schema(oneOf = {ChemicalSearchAll.class}))),
             @ApiResponse(responseCode = "400", description = "Data not found, it might have some suggestions for chemical synonyms.",
                     content = @Content( mediaType = "application/problem+json",
-                    examples = {@ExampleObject(name="", value = "{\"title\":\"Not found \",\"status\":400,\"detail\":\"No search result found for caffiene.\",\"suggestions\":[\"caffine\"]}", description = "Here response is with suggestion for 'caffiene'")},
+                    examples = {@ExampleObject(value = "{\"title\":\"Not found \",\"status\":400,\"detail\":\"No search result found for caffiene.\",\"suggestions\":[\"caffine\"]}", description = "Here response is with suggestion for 'caffiene'")},
                     schema=@Schema(oneOf = {Problem.class})))
     })
     @RequestMapping(value = "chemical/search/start-with/{word}",  method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -157,7 +156,7 @@ public class ChemicalSearchResource {
                     schema=@Schema(oneOf = {ChemicalSearchAll.class}))),
             @ApiResponse(responseCode = "400", description = "Data not found, it might have some suggestions for chemical synonyms.",
                     content = @Content( mediaType = "application/problem+json",
-                    examples = {@ExampleObject(name="", value = "{\"title\":\"Not found \",\"status\":400,\"detail\":\"No search result found for caffiene.\",\"suggestions\":[\"caffine\"]}", description = "Here response is with suggestion for 'caffiene'")},
+                    examples = {@ExampleObject( value = "{\"title\":\"Not found \",\"status\":400,\"detail\":\"No search result found for caffiene.\",\"suggestions\":[\"caffine\"]}", description = "Here response is with suggestion for 'caffiene'")},
                     schema=@Schema(oneOf = {Problem.class})))
     })
     @RequestMapping(value = "chemical/search/equal/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -193,7 +192,7 @@ public class ChemicalSearchResource {
                     schema=@Schema(oneOf = {ChemicalSearchAll.class}))),
             @ApiResponse(responseCode = "400", description = "Data not found, it might have some suggestions for chemical synonyms.",
                     content = @Content( mediaType = "application/problem+json",
-                    examples = {@ExampleObject(name="", value = "{\"title\":\"Not found \",\"status\":400,\"detail\":\"No search result found for caffiene.\",\"suggestions\":[\"caffine\"]}", description = "Here response is with suggestion for 'caffiene'")},
+                    examples = {@ExampleObject(value = "{\"title\":\"Not found \",\"status\":400,\"detail\":\"No search result found for caffiene.\",\"suggestions\":[\"caffine\"]}", description = "Here response is with suggestion for 'caffiene'")},
                     schema=@Schema(oneOf = {Problem.class})))
     })
     @RequestMapping(value = "chemical/search/contain/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
