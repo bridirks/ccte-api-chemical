@@ -20,6 +20,8 @@ public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, 
 
     <T> List<T> findByModifiedValueOrderByRankAsc(String word, Class<T> type);
 
+    <T> List<T> findByModifiedValueInOrderByRankAsc(Collection<String> modifiedValues, Class<T> type);
+
     <T> List<T> findByModifiedValueContainsOrderByRankAscDtxsid(String word, Class<T> type);
 
     // Query for inchikey suggestion

@@ -85,7 +85,9 @@ public class ChemicalSearchResource {
         List<ChemicalSearchAll> searchResult2; // start-with results
 
         // for adding exact search on top of return result
-        searchResult = searchRepository.findByModifiedValueOrderByRankAsc(searchWord,ChemicalSearchAll.class);
+        String removeSpaces = searchWord.replaceAll(" ", "");
+
+        searchResult = searchRepository.findByModifiedValueInOrderByRankAsc(List.of(searchWord, removeSpaces),ChemicalSearchAll.class);
 
         // avoid InChIKey
         if(searchWord.length() > 13){
