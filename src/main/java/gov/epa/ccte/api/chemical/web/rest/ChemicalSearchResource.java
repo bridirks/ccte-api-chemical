@@ -82,15 +82,22 @@ public class ChemicalSearchResource {
 
         log.debug("input search word = {} and process search word = {}. ", word, searchWord);
 
-        List<ChemicalSearchAll> searchResult;
+        List<ChemicalSearchAll> searchResult; // exact search and final results
+        List<ChemicalSearchAll> searchResult2; // start-with results
+
+        // for adding exact search on top of return result
+        searchResult = searchRepository.findByModifiedValueOrderByRankAsc(searchWord,ChemicalSearchAll.class);
 
         // avoid InChIKey
         if(searchWord.length() > 13){
-            searchResult =  searchRepository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(searchWord, searchMatchAll, ChemicalSearchAll.class);
+            searchResult2 =  searchRepository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(searchWord, searchMatchAll, ChemicalSearchAll.class);
         }else{
             log.debug("searchWord = {}", searchWord);
-            searchResult =  searchRepository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(searchWord, searchMatchWithoutInchikey, ChemicalSearchAll.class);
+            searchResult2 =  searchRepository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(searchWord, searchMatchWithoutInchikey, ChemicalSearchAll.class);
         }
+
+        searchResult.addAll(searchResult2); // append start-with results
+
         log.debug("{} records match for {}", searchResult.size(), word);
 
         searchResult = chemicalService.removeDuplicates(searchResult);
