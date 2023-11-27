@@ -5,8 +5,8 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.task.AsyncTaskExecutor;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
+import java.util.concurrent.Callable;
 
 @Slf4j
 public class AsyncTaskExecutorException implements AsyncTaskExecutor,
@@ -98,3 +98,4 @@ public class AsyncTaskExecutorException implements AsyncTaskExecutor,
         return executor.submit(createCallable(task));
     }
 }
+

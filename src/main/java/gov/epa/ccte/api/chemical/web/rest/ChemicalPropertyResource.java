@@ -6,7 +6,7 @@ import gov.epa.ccte.api.chemical.dto.mapper.ChemicalPropertyMapper;
 import gov.epa.ccte.api.chemical.projection.ChemicalPropertyAll;
 import gov.epa.ccte.api.chemical.projection.ChemicalPropertyIds;
 import gov.epa.ccte.api.chemical.repository.ChemicalPropertyRepository;
-import gov.epa.ccte.api.chemical.web.rest.errors.RequestWithHigherNumberOfDtxsidProblem;
+import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfDtxsidException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -20,9 +20,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.zalando.problem.Problem;
 
 import java.util.List;
 
@@ -124,7 +124,7 @@ public class ChemicalPropertyResource {
             @ApiResponse(responseCode = "400", description = "When user has submitted more then allowed number (${application.batch-size}) of DTXSID(s).",
                     content = @Content( mediaType = "application/json",
                     examples = {@ExampleObject(name = "", value = "{\"title\":\"Validation Error\",\"status\":400,\"detail\":\"System supports only '200' dtxsid at one time, '202' are submitted.\"}", description = "Validation error for more then allowed number of dtxsid(s).")},
-                    schema=@Schema(oneOf = {Problem.class})))
+                    schema=@Schema(oneOf = {ProblemDetail.class})))
     })
     @RequestMapping(value = "chemical/property/search/by-dtxsid/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
@@ -136,7 +136,7 @@ public class ChemicalPropertyResource {
         log.debug("dtxsids = {}", dtxsids.length);
 
         if(dtxsids.length > batchSize)
-            throw new RequestWithHigherNumberOfDtxsidProblem(dtxsids.length, batchSize);
+            throw new HigherNumberOfDtxsidException(dtxsids.length, batchSize);
 
         return repository.findByDtxsidInOrderByDtxsidAscPropTypeAscNameAsc(dtxsids, ChemicalPropertyAll.class);
     }

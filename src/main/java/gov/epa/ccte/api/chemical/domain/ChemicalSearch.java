@@ -1,11 +1,14 @@
 package gov.epa.ccte.api.chemical.domain;
 
 import gov.epa.ccte.api.chemical.projection.search.CcdChemicalSearchResult;
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.hibernate.type.SqlTypes;
+
 import java.math.BigInteger;
 import java.time.Instant;
 
@@ -101,7 +104,7 @@ public class ChemicalSearch {
     private String casrn;
 
     @Column(name = "smiles")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String smiles;
 
     @Size(max = 255)
@@ -117,11 +120,11 @@ public class ChemicalSearch {
     private String searchName;
 
     @Column(name = "search_value")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String searchValue;
 
     @Column(name = "modified_value")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String modifiedValue;
 
     @Column(name = "rank")

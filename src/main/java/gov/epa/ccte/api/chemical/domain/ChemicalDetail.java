@@ -1,9 +1,11 @@
 package gov.epa.ccte.api.chemical.domain;
 
+import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
-import javax.validation.constraints.Size;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "chemical_details", schema = "ms", indexes = {
@@ -78,11 +80,11 @@ public class ChemicalDetail {
     private Integer pubchemCid;
 
     @Column(name = "mol_file")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String molFile;
 
     @Column(name = "mrv_file")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String mrvFile;
 
     @Column(name = "related_substance_count")
@@ -102,11 +104,11 @@ public class ChemicalDetail {
     private String iupacName;
 
     @Column(name = "smiles")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String smiles;
 
     @Column(name = "inchi_string")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String inchiString;
 
     @Column(name = "average_mass")
@@ -121,11 +123,11 @@ public class ChemicalDetail {
     private String qcNotes;
 
     @Column(name = "qsar_ready_smiles")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String qsarReadySmiles;
 
     @Column(name = "ms_ready_smiles")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String msReadySmiles;
 
     @Size(max = 255)
