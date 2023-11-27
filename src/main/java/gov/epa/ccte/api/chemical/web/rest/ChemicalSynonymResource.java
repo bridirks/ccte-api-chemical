@@ -5,7 +5,7 @@ import gov.epa.ccte.api.chemical.dto.ChemicalSynonymDto;
 import gov.epa.ccte.api.chemical.dto.mapper.ChemicalSynonymMapper;
 import gov.epa.ccte.api.chemical.projection.ChemicalSynonymAll;
 import gov.epa.ccte.api.chemical.repository.ChemicalSynonymRepository;
-import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundProblem;
+import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -62,7 +62,7 @@ public class ChemicalSynonymResource {
 
         // return mapper.toDto(synonym);
 
-        return repository.findByDtxsid(dtxsid, ChemicalSynonymAll.class).orElseThrow(()->new IdentifierNotFoundProblem("DTXSID", dtxsid));
+        return repository.findByDtxsid(dtxsid, ChemicalSynonymAll.class).orElseThrow(()->new IdentifierNotFoundException("DTXSID", dtxsid));
     }
 
 }

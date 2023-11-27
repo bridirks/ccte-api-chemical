@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.7.14</version>
+		<version>3.2.0-RC2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>gov.epa.ccte.api</groupId>
@@ -39,32 +39,32 @@
 			<version>42.4.3</version>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.datatype</groupId>
-			<artifactId>jackson-datatype-hibernate5</artifactId>
-			<version>2.10.4</version>
-		</dependency>
-		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
-		</dependency>
+<!--		<dependency>-->
+<!--			<groupId>com.fasterxml.jackson.datatype</groupId>-->
+<!--			<artifactId>jackson-datatype-hibernate5</artifactId>-->
+<!--			<version>2.10.4</version>-->
+<!--		</dependency>-->
+<!--		<dependency>-->
+<!--			<groupId>com.fasterxml.jackson.core</groupId>-->
+<!--			<artifactId>jackson-databind</artifactId>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
 			<optional>true</optional>
 		</dependency>
-		<!-- Exception handler - ref https://www.baeldung.com/problem-spring-web -->
-		<dependency>
-			<groupId>org.zalando</groupId>
-			<artifactId>problem-spring-web</artifactId>
-			<version>0.27.0</version>
-		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.zalando/jackson-datatype-problem -->
-		<dependency>
-			<groupId>org.zalando</groupId>
-			<artifactId>jackson-datatype-problem</artifactId>
-			<version>0.27.1</version>
-		</dependency>
+<!--		&lt;!&ndash; Exception handler - ref https://www.baeldung.com/problem-spring-web &ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>org.zalando</groupId>-->
+<!--			<artifactId>problem-spring-web</artifactId>-->
+<!--			<version>0.27.0</version>-->
+<!--		</dependency>-->
+<!--		&lt;!&ndash; https://mvnrepository.com/artifact/org.zalando/jackson-datatype-problem &ndash;&gt;-->
+<!--		<dependency>-->
+<!--			<groupId>org.zalando</groupId>-->
+<!--			<artifactId>jackson-datatype-problem</artifactId>-->
+<!--			<version>0.27.1</version>-->
+<!--		</dependency>-->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
@@ -160,4 +160,24 @@
 		</plugins>
 	</build>
 
+	<repositories>
+		<repository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>spring-milestones</id>
+			<name>Spring Milestones</name>
+			<url>https://repo.spring.io/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
 </project>

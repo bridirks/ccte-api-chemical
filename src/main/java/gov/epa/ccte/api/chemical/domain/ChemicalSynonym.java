@@ -1,14 +1,14 @@
 package gov.epa.ccte.api.chemical.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Type;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.Size;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Getter
 @Setter
@@ -21,31 +21,31 @@ public class ChemicalSynonym {
     private String dtxsid;
 
     @Column(name = "pc_code")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String pcCode;
 
     @Column(name = "valid_synonym")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String validSynonym;
 
     @Column(name = "good_synonyms")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String goodSynonyms;
 
     @Column(name = "delete_synonyms")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String deleteSynonyms;
 
     @Column(name = "other_synonyms")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String otherSynonyms;
 
     @Column(name = "beilstein_synonyms")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String beilsteinSynonyms;
 
     @Column(name = "alternate_synonyms")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String alternateSynonyms;
 
 }

@@ -1,10 +1,10 @@
 package gov.epa.ccte.api.chemical.projection.search;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Transient;
 import java.math.BigInteger;
 
 @Setter

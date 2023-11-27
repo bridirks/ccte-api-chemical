@@ -5,7 +5,7 @@ import com.epam.indigo.IndigoObject;
 import com.epam.indigo.IndigoRenderer;
 import gov.epa.ccte.api.chemical.domain.ImageFormat;
 import gov.epa.ccte.api.chemical.repository.ChemicalDetailRepository;
-import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundProblem;
+import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -65,7 +65,7 @@ public class ChemicalFileResource {
             return ResponseEntity.ok().contentType(IMAGE_PNG).body(image);
         }else if(format == ImageFormat.SVG){
             String mol = detailRepository.getMolFileForDtxsid(dtxsid)
-                    .orElseThrow(()->new IdentifierNotFoundProblem("DTXSID",dtxsid));
+                    .orElseThrow(()->new IdentifierNotFoundException("DTXSID",dtxsid));
 
             byte[] image = getSvgImage(mol);
 
@@ -99,7 +99,7 @@ public class ChemicalFileResource {
             return ResponseEntity.ok().contentType(IMAGE_PNG).body(image);
         }else if(format == ImageFormat.SVG){
             String mol = detailRepository.getMolFileForDtxcid(dtxcid)
-                    .orElseThrow(()->new IdentifierNotFoundProblem("DTXCID", dtxcid));
+                    .orElseThrow(()->new IdentifierNotFoundException("DTXCID", dtxcid));
 
             byte[] image = getSvgImage(mol);
 
@@ -152,7 +152,7 @@ public class ChemicalFileResource {
         log.debug("dtxsid = {}", dtxsid);
 
         String mol = detailRepository.getMolFileForDtxsid(dtxsid)
-                .orElseThrow(()->new IdentifierNotFoundProblem("DTXSID", dtxsid));
+                .orElseThrow(()->new IdentifierNotFoundException("DTXSID", dtxsid));
 
         return ResponseEntity.ok().contentType(TEXT_PLAIN).body(mol);
     }
@@ -174,7 +174,7 @@ public class ChemicalFileResource {
         log.debug("dtxsid = {}", dtxcid);
 
         String mol = detailRepository.getMolFileForDtxcid(dtxcid)
-                .orElseThrow(()->new IdentifierNotFoundProblem("DTXCID", dtxcid));
+                .orElseThrow(()->new IdentifierNotFoundException("DTXCID", dtxcid));
 
         return ResponseEntity.ok().contentType(TEXT_PLAIN).body(mol);
     }
@@ -194,7 +194,7 @@ public class ChemicalFileResource {
         log.debug("dtxsid = {}", dtxsid);
 
         String mol = detailRepository.getMrvFileForDtxsid(dtxsid)
-                .orElseThrow(()-> new IdentifierNotFoundProblem("DTXSID",dtxsid));
+                .orElseThrow(()-> new IdentifierNotFoundException("DTXSID",dtxsid));
 
         return ResponseEntity.ok().contentType(TEXT_PLAIN).body(mol);
     }
@@ -213,7 +213,7 @@ public class ChemicalFileResource {
         log.debug("dtxsid = {}", dtxcid);
 
         String mol = detailRepository.getMrvFileForDtxcid(dtxcid)
-                .orElseThrow(()-> new IdentifierNotFoundProblem("DTXCID",dtxcid));
+                .orElseThrow(()-> new IdentifierNotFoundException("DTXCID",dtxcid));
 
         return ResponseEntity.ok().contentType(TEXT_PLAIN).body(mol);
     }
