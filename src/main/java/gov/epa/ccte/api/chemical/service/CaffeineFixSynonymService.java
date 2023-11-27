@@ -1,12 +1,12 @@
 package gov.epa.ccte.api.chemical.service;
 
 import com.nextmovesoftware.CaffeineFix.CaffeineFix;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.util.List;
 

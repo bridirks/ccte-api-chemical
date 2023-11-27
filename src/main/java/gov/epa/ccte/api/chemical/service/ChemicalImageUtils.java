@@ -3,7 +3,6 @@ package gov.epa.ccte.api.chemical.service;
 import com.epam.indigo.Indigo;
 import com.epam.indigo.IndigoObject;
 import com.epam.indigo.IndigoRenderer;
-import gov.epa.ccte.api.chemical.domain.ImageFormat;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

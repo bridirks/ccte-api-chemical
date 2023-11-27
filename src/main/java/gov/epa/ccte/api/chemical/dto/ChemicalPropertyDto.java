@@ -1,10 +1,9 @@
 package gov.epa.ccte.api.chemical.dto;
 
-import lombok.Data;
-
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
+
 import java.io.Serializable;
 
 /**
