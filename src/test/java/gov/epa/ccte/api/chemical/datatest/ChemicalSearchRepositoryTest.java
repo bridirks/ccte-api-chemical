@@ -47,16 +47,16 @@ public class ChemicalSearchRepositoryTest {
 
     @Test
     void testFindByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(){
-        assertThat(repository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue("BPA", searchMatchWithoutInchikey, ChemicalSearchAll.class).size()).isEqualTo(1);
+        assertThat(repository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue("BPA", searchMatchWithoutInchikey, ChemicalSearchResult.class).size()).isEqualTo(1);
     }
 
     @Test
     void testFindByModifiedValueOrderByRankAsc(){
-        assertThat(repository.findByModifiedValueOrderByRankAsc("BPA", ChemicalSearchAll.class).size()).isEqualTo(1);
+        assertThat(repository.findByModifiedValueOrderByRankAsc("BPA", ChemicalSearchResult.class).size()).isEqualTo(1);
     }
 
     @Test
     void testFindByModifiedValueContainsOrderByRankAscDtxsidAsc(){
-        assertThat(repository.findByModifiedValueContainsOrderByRankAscDtxsid("BPA", ChemicalSearchAll.class).size()).isEqualTo(1);
+        assertThat(repository.findByModifiedValueContainsOrderByRankAscDtxsid("BPA", ChemicalSearchResult.class).size()).isEqualTo(1);
     }
 }
