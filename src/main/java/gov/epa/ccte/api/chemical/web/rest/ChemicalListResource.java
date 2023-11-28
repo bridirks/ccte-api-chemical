@@ -6,7 +6,7 @@ import gov.epa.ccte.api.chemical.dto.mapper.ChemicalListMapper;
 import gov.epa.ccte.api.chemical.projection.chemicallist.*;
 import gov.epa.ccte.api.chemical.repository.ChemicalListDetailRepository;
 import gov.epa.ccte.api.chemical.repository.ChemicalListRepository;
-import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundProblem;
+import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -122,9 +122,9 @@ public class ChemicalListResource {
 
         switch (projection){
             case chemicallistall: return listRepository.findByNameIgnoreCase(listName, ChemicalListAll.class)
-                    .orElseThrow(()->new IdentifierNotFoundProblem("List name", listName));
+                    .orElseThrow(()->new IdentifierNotFoundException("List name", listName));
             case chemicallistname: return listRepository.findByNameIgnoreCase(listName, ChemicalListName.class)
-                    .orElseThrow(()->new IdentifierNotFoundProblem("List name", listName));
+                    .orElseThrow(()->new IdentifierNotFoundException("List name", listName));
             default:
                 return null;
         }

@@ -1,7 +1,7 @@
 package gov.epa.ccte.api.chemical.service;
 
 import gov.epa.ccte.api.chemical.repository.ChemicalDetailRepository;
-import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundProblem;
+import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -20,10 +20,10 @@ public class ChemicalDetailService {
 
         if(type.equals("dtxsid")) {
             return detailRepository.findByDtxsid(id, tClass)
-                    .orElseThrow(() -> new IdentifierNotFoundProblem("dtxsid", id));
+                    .orElseThrow(() -> new IdentifierNotFoundException("dtxsid", id));
         }else{
             return detailRepository.findByDtxcid(id, tClass)
-                    .orElseThrow(() -> new IdentifierNotFoundProblem("dtxcid", id));
+                    .orElseThrow(() -> new IdentifierNotFoundException("dtxcid", id));
         }
     }
 

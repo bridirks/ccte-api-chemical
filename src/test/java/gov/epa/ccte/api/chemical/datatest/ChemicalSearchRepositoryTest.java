@@ -1,6 +1,6 @@
 package gov.epa.ccte.api.chemical.datatest;
 
-import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchResult;
+import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchAll;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 
 import javax.sql.DataSource;
-
 import java.util.Arrays;
 import java.util.List;
 

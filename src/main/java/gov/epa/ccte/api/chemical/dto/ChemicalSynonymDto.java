@@ -3,9 +3,9 @@ package gov.epa.ccte.api.chemical.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.epa.ccte.api.chemical.domain.ChemicalSynonym;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
-import javax.validation.constraints.Size;
 import java.io.Serializable;
 
 /**

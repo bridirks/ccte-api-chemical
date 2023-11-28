@@ -1,11 +1,9 @@
 package gov.epa.ccte.api.chemical.projection.search;
 
 /**
- * Projection for {@link gov.epa.ccte.api.chemical.domain.ChemicalSearch}
+ * A Projection for the {@link gov.epa.ccte.api.chemical.domain.ChemicalSearch} entity
  */
 public interface ChemicalSearchAll {
-    Integer getId();
-
     String getDtxsid();
 
     String getDtxcid();
@@ -16,13 +14,9 @@ public interface ChemicalSearchAll {
 
     String getPreferredName();
 
-    String getSearchGroup();
-
     String getSearchName();
 
     String getSearchValue();
-
-    String getModifiedValue();
 
     Integer getRank();
 

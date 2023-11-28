@@ -1,10 +1,14 @@
 package gov.epa.ccte.api.chemical.domain;
 
-import org.hibernate.annotations.Type;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.Instant;
 
@@ -31,7 +35,7 @@ public class ChemicalListDetail {
     private Integer genericSubstanceId;
 
     @Column(name = "preferred_name")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String preferredName;
 
     @Column(name = "active_assays")
@@ -74,33 +78,33 @@ public class ChemicalListDetail {
     private Integer totalAssays;
 
     @Column(name = "toxcast_select")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String toxcastSelect;
 
     @Column(name = "pubchem_cid")
     private Integer pubchemCid;
 
     @Column(name = "list_name")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String listName;
 
     @Column(name = "list_label")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String listLabel;
 
     @Column(name = "list_category")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String listCategory;
 
     @Column(name = "list_shortdesc")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String listShortdesc;
 
     @Column(name = "list_is_visible")
     private Boolean listIsVisible;
 
     @Column(name = "list_visibility")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String listVisibility;
 
     @Column(name = "sources_count")
@@ -122,19 +126,19 @@ public class ChemicalListDetail {
     private Integer relatedStructureCount;
 
     @Column(name = "inchi")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String inchi;
 
     @Column(name = "inchi_key")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String inchiKey;
 
     @Column(name = "iupac_name")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String iupacName;
 
     @Column(name = "smiles")
-    @Type(type = "org.hibernate.type.TextType")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String smiles;
 
     @Column(name = "created_at")

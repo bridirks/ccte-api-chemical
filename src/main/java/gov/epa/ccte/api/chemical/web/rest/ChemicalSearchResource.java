@@ -3,11 +3,11 @@ package gov.epa.ccte.api.chemical.web.rest;
 import gov.epa.ccte.api.chemical.projection.search.CcdChemicalSearchResult;
 import gov.epa.ccte.api.chemical.projection.search.ChemicalBatchSearchResult;
 import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchAll;
-import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchResult;
+import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchInfo;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import gov.epa.ccte.api.chemical.service.CaffeineFixSynonymService;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
-import gov.epa.ccte.api.chemical.web.rest.errors.ChemicalSearchNotFoundProblem;
+import gov.epa.ccte.api.chemical.web.rest.errors.ChemicalSearchNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -19,9 +19,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.zalando.problem.Problem;
 
 import java.util.Arrays;
 import java.util.List;
@@ -63,15 +63,15 @@ public class ChemicalSearchResource {
     @Operation(summary = "Search by starting value", description = "NOTE: Search value need to be URLencoded for synonyms")
     @ApiResponses(value= {
             @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
-                    schema=@Schema(oneOf = {ChemicalSearchResult.class}))),
+                    schema=@Schema(oneOf = {ChemicalSearchAll.class}))),
             @ApiResponse(responseCode = "400", description = "Data not found, it might have some suggestions for chemical synonyms.",
                     content = @Content( mediaType = "application/problem+json",
-                    examples = {@ExampleObject(name="", value = "{\"title\":\"Not found \",\"status\":400,\"detail\":\"No search result found for caffiene.\",\"suggestions\":[\"caffine\"]}", description = "Here response is with suggestion for 'caffiene'")},
-                    schema=@Schema(oneOf = {Problem.class})))
+                    examples = {@ExampleObject(value = "{\"title\":\"Not found \",\"status\":400,\"detail\":\"No search result found for caffiene.\",\"suggestions\":[\"caffine\"]}", description = "Here response is with suggestion for 'caffiene'")},
+                    schema=@Schema(oneOf = {ProblemDetail.class})))
     })
     @RequestMapping(value = "chemical/search/start-with/{word}",  method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    List<ChemicalSearchResult> chemicalStartWith(@Parameter(required = true, description = "Starting characters for search word",
+    List<ChemicalSearchAll> chemicalStartWith(@Parameter(required = true, description = "Starting characters for search word",
                                                 examples = {@ExampleObject(name="DSSTox Substance Identifier", value = "DTXSID7020182", description = "Starting part of DTXSID"),
                                                         @ExampleObject(name="DSSTox Compound Identifier", value = "DTXCID505", description = "Starting part of DTXCID"),
                                                         @ExampleObject(name="Synonym Starting characters", value = "atraz", description = "URLencoded starting characters of chemical name"),
@@ -84,30 +84,39 @@ public class ChemicalSearchResource {
 
         log.debug("input search word = {} and process search word = {}. ", word, searchWord);
 
-        List<ChemicalSearchResult> searchResult;
+        List<ChemicalSearchAll> searchResult; // exact search and final results
+        List<ChemicalSearchAll> searchResult2; // start-with results
+
+        // for adding exact search on top of return result
+        String removeSpaces = searchWord.replaceAll(" ", "");
+
+        searchResult = searchRepository.findByModifiedValueInOrderByRankAsc(List.of(searchWord, removeSpaces),ChemicalSearchAll.class);
 
         // avoid InChIKey
         if(searchWord.length() > 13){
-            searchResult =  searchRepository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(searchWord, searchMatchAll, ChemicalSearchResult.class);
+            searchResult2 =  searchRepository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(searchWord, searchMatchAll, ChemicalSearchAll.class);
         }else{
             log.debug("searchWord = {}", searchWord);
-            searchResult =  searchRepository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(searchWord, searchMatchWithoutInchikey, ChemicalSearchResult.class);
+            searchResult2 =  searchRepository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(searchWord, searchMatchWithoutInchikey, ChemicalSearchAll.class);
         }
+
+        searchResult.addAll(searchResult2); // append start-with results
+
         log.debug("{} records match for {}", searchResult.size(), word);
 
         searchResult = chemicalService.removeDuplicates(searchResult);
 
-        if(searchResult.size() != 0)
+        if(!searchResult.isEmpty())
             return searchResult;
         else {
-            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
+            throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
         }
     }
 
     @Operation(hidden = true)
     @RequestMapping(value = "chemical/search/start-with2/{word}",  method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    List<ChemicalSearchResult> chemicalStartWith2(@Parameter(required = true, description = "Starting characters for search word",
+    List<ChemicalSearchAll> chemicalStartWith2(@Parameter(required = true, description = "Starting characters for search word",
             examples = {@ExampleObject(name="DSSTox Substance Identifier", value = "DTXSID7020182", description = "Starting part of DTXSID"),
                     @ExampleObject(name="DSSTox Compound Identifier", value = "DTXCID505", description = "Starting part of DTXCID"),
                     @ExampleObject(name="Synonym Starting characters", value = "atraz", description = "URLencoded starting characters of chemical name"),
@@ -120,23 +129,23 @@ public class ChemicalSearchResource {
 
         log.debug("input search word = {} and process search word = {}. ", word, searchWord);
 
-        List<ChemicalSearchResult> searchResult;
+        List<ChemicalSearchAll> searchResult;
 
         // avoid InChIKey
         if(searchWord.length() > 13){
-            searchResult =  searchRepository.findTop20ByModifiedValueStartsWithAndSearchNameInOrderByRankAscSearchValueAsc(searchWord, searchMatchAll, ChemicalSearchResult.class);
+            searchResult =  searchRepository.findTop20ByModifiedValueStartsWithAndSearchNameInOrderByRankAscSearchValueAsc(searchWord, searchMatchAll, ChemicalSearchAll.class);
         }else{
             log.debug("searchWord = {}", searchWord);
-            searchResult =  searchRepository.findTop20ByModifiedValueStartsWithAndSearchNameInOrderByRankAscSearchValueAsc(searchWord, searchMatchWithoutInchikey, ChemicalSearchResult.class);
+            searchResult =  searchRepository.findTop20ByModifiedValueStartsWithAndSearchNameInOrderByRankAscSearchValueAsc(searchWord, searchMatchWithoutInchikey, ChemicalSearchAll.class);
         }
         log.debug("{} records match for {}", searchResult.size(), word);
 
         searchResult = chemicalService.removeDuplicates(searchResult);
 
-        if(searchResult.size() != 0)
+        if(!searchResult.isEmpty())
             return searchResult;
         else {
-            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
+            throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
         }
     }
 
@@ -149,14 +158,14 @@ public class ChemicalSearchResource {
     @Operation(summary = "Search by exact value", description = "NOTE: Search value need to be URLencoded for synonyms")
     @ApiResponses(value= {
             @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
-                    schema=@Schema(oneOf = {ChemicalSearchResult.class}))),
+                    schema=@Schema(oneOf = {ChemicalSearchAll.class}))),
             @ApiResponse(responseCode = "400", description = "Data not found, it might have some suggestions for chemical synonyms.",
                     content = @Content( mediaType = "application/problem+json",
-                    examples = {@ExampleObject(name="", value = "{\"title\":\"Not found \",\"status\":400,\"detail\":\"No search result found for caffiene.\",\"suggestions\":[\"caffine\"]}", description = "Here response is with suggestion for 'caffiene'")},
-                    schema=@Schema(oneOf = {Problem.class})))
+                    examples = {@ExampleObject( value = "{\"title\":\"Not found \",\"status\":400,\"detail\":\"No search result found for caffiene.\",\"suggestions\":[\"caffine\"]}", description = "Here response is with suggestion for 'caffiene'")},
+                    schema=@Schema(oneOf = {ProblemDetail.class})))
     })
     @RequestMapping(value = "chemical/search/equal/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    List<ChemicalSearchResult> chemicalEqual (@Parameter(required = true, description = "Exact match of search word",
+    List<ChemicalSearchAll> chemicalEqual (@Parameter(required = true, description = "Exact match of search word",
             examples = {@ExampleObject(name="DSSTox Substance Identifier", value = "DTXSID7020182", description = "Exact match of DTXSID"),
                     @ExampleObject(name="DSSTox Compound Identifier", value = "DTXCID505", description = "Exact match of DTXCID"),
                     @ExampleObject(name="Synonym", value = "atrazine", description = "Exact match of URLencoded chemical name(including synonyms)"),
@@ -168,12 +177,12 @@ public class ChemicalSearchResource {
 
         log.debug("input search word = {} and process search word = {}. ", word, searchWord);
 
-        List<ChemicalSearchResult> searchResult =  searchRepository.findByModifiedValueOrderByRankAsc(searchWord, ChemicalSearchResult.class);
+        List<ChemicalSearchAll> searchResult =  searchRepository.findByModifiedValueOrderByRankAsc(searchWord, ChemicalSearchAll.class);
 
-        if(searchResult.size() != 0)
+        if(!searchResult.isEmpty())
             return chemicalService.removeDuplicates(searchResult);
         else
-            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
+            throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
     }
 
     /**
@@ -185,7 +194,7 @@ public class ChemicalSearchResource {
     @Operation(summary = "Search by exact batch of values", description = "NOTE: Search batch of values (values are separated by EOL character and maximum 200 values are allowed).")
     @ApiResponses(value= {
             @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
-                    schema=@Schema(oneOf = {ChemicalBatchSearchResult.class})))
+                    schema=@Schema(oneOf = {ChemicalSearchAll.class})))
     })
     @RequestMapping(value = "chemical/search/equal/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     List<ChemicalBatchSearchResult> chemicalBatchEqual (@Parameter(required = true, description = "Exact match of batch of search words (separated by end of line character)",
@@ -200,7 +209,7 @@ public class ChemicalSearchResource {
 
         log.debug("input search words = {} and process search word count = {}. ", words, searchWords.length);
 
-        List<ChemicalSearchAll> searchResult =  searchRepository.findByModifiedValueInOrderByRankAsc(searchWords, ChemicalSearchAll.class);
+        List<ChemicalSearchInfo> searchResult =  searchRepository.findByModifiedValueInOrderByRankAsc(List.of(searchWords), ChemicalSearchInfo.class);
 
         return chemicalService.processBatchResult(searchResult, searchWords);
 
@@ -215,14 +224,14 @@ public class ChemicalSearchResource {
     @Operation(summary = "Search by substring value", description = "NOTE: Search value need to be URLencoded for synonyms")
     @ApiResponses(value= {
             @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
-                    schema=@Schema(oneOf = {ChemicalSearchResult.class}))),
+                    schema=@Schema(oneOf = {ChemicalSearchAll.class}))),
             @ApiResponse(responseCode = "400", description = "Data not found, it might have some suggestions for chemical synonyms.",
                     content = @Content( mediaType = "application/problem+json",
-                    examples = {@ExampleObject(name="", value = "{\"title\":\"Not found \",\"status\":400,\"detail\":\"No search result found for caffiene.\",\"suggestions\":[\"caffine\"]}", description = "Here response is with suggestion for 'caffiene'")},
-                    schema=@Schema(oneOf = {Problem.class})))
+                    examples = {@ExampleObject(value = "{\"title\":\"Not found \",\"status\":400,\"detail\":\"No search result found for caffiene.\",\"suggestions\":[\"caffine\"]}", description = "Here response is with suggestion for 'caffiene'")},
+                    schema=@Schema(oneOf = {ProblemDetail.class})))
     })
     @RequestMapping(value = "chemical/search/contain/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    List<ChemicalSearchResult> chemicalContain(@Parameter(required = true, description = "Substring of search word",
+    List<ChemicalSearchAll> chemicalContain(@Parameter(required = true, description = "Substring of search word",
             examples = {@ExampleObject(name="DSSTox Substance Identifier", value = "DTXSID7020182", description = "Exact match of DTXSID"),
                     @ExampleObject(name="DSSTox Compound Identifier", value = "DTXCID505", description = "Substring match of DTXCID"),
                     @ExampleObject(name="Synonym", value = "razine", description = "Substring match of URLencoded chemical name(including synonyms)"),
@@ -234,12 +243,12 @@ public class ChemicalSearchResource {
 
         log.debug("input search word = {} and process search word = {}. ", word, searchWord);
 
-        List<ChemicalSearchResult> searchResult = searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord, ChemicalSearchResult.class);
+        List<ChemicalSearchAll> searchResult = searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord, ChemicalSearchAll.class);
 
-        if(searchResult.size() != 0)
+        if(!searchResult.isEmpty())
             return chemicalService.removeDuplicates(searchResult);
         else
-            throw new ChemicalSearchNotFoundProblem(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
+            throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
     }
 
     /**
@@ -282,3 +291,4 @@ public class ChemicalSearchResource {
         return searchRepository.equalCcd(searchWord);
     }
 }
+

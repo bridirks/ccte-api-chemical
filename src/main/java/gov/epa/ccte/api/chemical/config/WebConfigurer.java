@@ -1,5 +1,7 @@
 package gov.epa.ccte.api.chemical.config;
 
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.servlet.ServletContextInitializer;
@@ -10,8 +12,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import java.util.Arrays;
 
 
