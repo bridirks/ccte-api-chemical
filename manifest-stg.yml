@@ -5,7 +5,7 @@ applications:
 #      - route: ccte-chemical-p.app.cloud.gov
       - route: api-ccte-stg.epa.gov/chemical
       #- route: ccte-api-s.app.cloud.gov/chemical
-    memory: 2G
+    memory: 1G
     instances: 1
     random-route: false
     path: target/chemical.jar
