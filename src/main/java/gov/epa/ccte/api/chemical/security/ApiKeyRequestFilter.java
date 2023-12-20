@@ -133,6 +133,7 @@ public class ApiKeyRequestFilter extends GenericFilterBean {
 
         // if chemical/file path - allow access to images without any api key
         if(path.contains("/chemical/file/")){
+            log.debug("skipping api-key check");
             return false;
         }
 

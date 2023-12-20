@@ -3,7 +3,7 @@ package gov.epa.ccte.api.chemical.service;
 
 import gov.epa.ccte.api.chemical.projection.search.ChemicalBatchSearchResult;
 import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchAll;
-import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchInfo;
+import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchInternal;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -248,15 +248,15 @@ public class SearchChemicalService {
         }
     }
 
-    public List<ChemicalBatchSearchResult> processBatchResult(List<ChemicalSearchInfo> searchResult, String[] searchWords) {
+    public List<ChemicalBatchSearchResult> processBatchResult(List<ChemicalSearchInternal> searchResult, String[] searchWords) {
         // create a hashmap with searchResult where use searchValue as key
         // this will help us to find the searchResult for a given searchWord
-        HashMap<String, ChemicalSearchInfo> searchResultMap = new HashMap<>();
+        HashMap<String, ChemicalSearchInternal> searchResultMap = new HashMap<>();
 
         // create hasmap for dtxsid to check duplicates
         HashMap<String, String> dtxsidMap = new HashMap<String, String>();
 
-        for(ChemicalSearchInfo result : searchResult){
+        for(ChemicalSearchInternal result : searchResult){
             searchResultMap.put(result.getModifiedValue(), result);
         }
 
@@ -270,7 +270,7 @@ public class SearchChemicalService {
         for(String searchWord : searchWords){
             String processedSearchWord = preprocessingSearchWord(searchWord);
             if(searchResultMap.containsKey(processedSearchWord)){
-                ChemicalSearchInfo result = searchResultMap.get(processedSearchWord);
+                ChemicalSearchInternal result = searchResultMap.get(processedSearchWord);
                 returnList.add(new ChemicalBatchSearchResult(result.getDtxsid(), result.getDtxcid(), result.getCasrn(), result.getSmiles(), result.getPreferredName(), result.getSearchName(), searchWord, result.getRank(), result.getHasStructureImage(), result.getIsMarkush(), null, null, dtxsidMap.containsKey(result.getDtxsid())));
                 dtxsidMap.put(result.getDtxsid(), result.getDtxsid());
             }else{

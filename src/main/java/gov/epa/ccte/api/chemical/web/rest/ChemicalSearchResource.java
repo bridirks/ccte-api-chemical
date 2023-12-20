@@ -3,7 +3,7 @@ package gov.epa.ccte.api.chemical.web.rest;
 import gov.epa.ccte.api.chemical.projection.search.CcdChemicalSearchResult;
 import gov.epa.ccte.api.chemical.projection.search.ChemicalBatchSearchResult;
 import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchAll;
-import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchInfo;
+import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchInternal;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import gov.epa.ccte.api.chemical.service.CaffeineFixSynonymService;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
@@ -209,7 +209,7 @@ public class ChemicalSearchResource {
 
         log.debug("input search words = {} and process search word count = {}. ", words, searchWords.length);
 
-        List<ChemicalSearchInfo> searchResult =  searchRepository.findByModifiedValueInOrderByRankAsc(List.of(searchWords), ChemicalSearchInfo.class);
+        List<ChemicalSearchInternal> searchResult =  searchRepository.findByModifiedValueInOrderByRankAsc(List.of(searchWords), ChemicalSearchInternal.class);
 
         return chemicalService.processBatchResult(searchResult, searchWords);
 

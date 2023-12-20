@@ -3,8 +3,7 @@ package gov.epa.ccte.api.chemical.projection.search;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Value;
 
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.List;
 
