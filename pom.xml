@@ -87,10 +87,11 @@
 			<artifactId>indigo-renderer</artifactId>
 			<version>1.6.1</version>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/io.pivotal.cfenv/java-cfenv-boot -->
 		<dependency>
 			<groupId>io.pivotal.cfenv</groupId>
 			<artifactId>java-cfenv-boot</artifactId>
-			<version>2.4.0</version>
+			<version>3.1.4</version>
 		</dependency>
 		<dependency>
 			<groupId>org.mapstruct</groupId>
