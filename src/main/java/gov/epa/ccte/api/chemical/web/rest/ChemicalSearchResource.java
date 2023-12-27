@@ -292,7 +292,7 @@ public class ChemicalSearchResource {
     @RequestMapping(value = "chemical/msready/search/by-mass/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     HashMap<Double, List<String>> msReadyByBatchMass(@Valid @RequestBody BatchMsReadyMassForm form){
 
-        log.debug("input masses = {} error= {} ", form.getMasses(), form.getMassError());
+        log.debug("input masses = {} error= {} ", form.getMasses(), form.getError());
 
         return chemicalService.getMsReadyBatchResult(form);
     }

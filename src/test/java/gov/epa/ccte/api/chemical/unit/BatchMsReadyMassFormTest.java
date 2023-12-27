@@ -49,7 +49,7 @@ public class BatchMsReadyMassFormTest {
     @DisplayName("Give Error value is null when validation is performed, then one violations is generated.")
     public void testFormWithNullMasses() {
         BatchMsReadyMassForm form = new BatchMsReadyMassForm();
-        form.setMassError(1);
+        form.setError(1);
 
         Set<ConstraintViolation<BatchMsReadyMassForm>> violations = validator.validate(form);
 

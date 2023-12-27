@@ -285,10 +285,10 @@ public class SearchChemicalService {
         HashMap<Double, List<String>> result = new HashMap<>();
 
         for(Double mass: form.getMasses()){
-            Double error = mass * form.getMassError() / 1000000;
+            Double error = mass * form.getError() / 1000000;
             Double start = mass - error;
             Double end = mass + error;
-            log.debug("mass={} error={} cal-error={} start={} end={}",mass, form.getMassError(),error, start, end);
+            log.debug("mass={} error={} cal-error={} start={} end={}",mass, form.getError(),error, start, end);
             List<String> dtxsids = searchRepository.searchMsReadyMass(start,end);
             result.put(mass, dtxsids);
         }

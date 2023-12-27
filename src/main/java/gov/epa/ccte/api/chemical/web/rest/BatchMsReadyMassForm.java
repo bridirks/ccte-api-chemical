@@ -16,5 +16,5 @@ public class BatchMsReadyMassForm {
     @NotEmpty(message = "Array of Masses couldn't be empty")
     private Double[] masses;
     @NotNull(message = "error value couldn't be null")
-    private Integer massError;
+    private Integer error;
 }
