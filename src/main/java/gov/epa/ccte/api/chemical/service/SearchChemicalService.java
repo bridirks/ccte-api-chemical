@@ -57,13 +57,13 @@ public class SearchChemicalService {
 
     public String[] preprocessingSearchWord(String[] searchWords){
 
-        List<String> searches = new ArrayList<String>();
+        List<String> searches = new ArrayList<>();
 
         for(String word : searchWords){
             searches.add(preprocessingSearchWord(word));
         }
 
-        return searches.toArray(new String[searches.size()]);
+        return searches.toArray(new String[0]);
     }
 
     public String preprocessingSearchWord(String searchWord){
@@ -173,8 +173,7 @@ public class SearchChemicalService {
 
         if(isNumeric(word)){
             // remove leading zeros
-            String casrn = number2Casrn(Integer.valueOf(word));
-            return casrn;
+            return number2Casrn(Integer.valueOf(word));
         }else
             return null;
 
@@ -230,7 +229,7 @@ public class SearchChemicalService {
             suggestions = inchikeySuggestion(word);
 
         if((suggestions == null || suggestions.isEmpty()) && !isCasrn(word))
-            suggestions = new ArrayList<>(Arrays.asList(toCasrn(word)));
+            suggestions = new ArrayList<>(Collections.singletonList(toCasrn(word)));
 
         return suggestions;
     }
@@ -252,7 +251,7 @@ public class SearchChemicalService {
         HashMap<String, ChemicalSearchInternal> searchResultMap = new HashMap<>();
 
         // create hasmap for dtxsid to check duplicates
-        HashMap<String, String> dtxsidMap = new HashMap<String, String>();
+        HashMap<String, String> dtxsidMap = new HashMap<>();
 
         for(ChemicalSearchInternal result : searchResult){
             searchResultMap.put(result.getModifiedValue(), result);
@@ -262,7 +261,7 @@ public class SearchChemicalService {
 
 
         // create a new list of ChemicalBatchSearchResult to return
-        List<ChemicalBatchSearchResult> returnList = new ArrayList<ChemicalBatchSearchResult>();
+        List<ChemicalBatchSearchResult> returnList = new ArrayList<>();
 
         // I need to loop through searchWords, if they are in searchResultMap, I will add them to returnList
         for(String searchWord : searchWords){

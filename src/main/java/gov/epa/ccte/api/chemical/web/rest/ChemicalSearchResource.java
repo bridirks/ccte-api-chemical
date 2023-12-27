@@ -43,7 +43,7 @@ public class ChemicalSearchResource {
     private final List<String> searchMatchWithoutInchikey;
     private final List<String> searchMatchAll;
 
-    public ChemicalSearchResource(CaffeineFixSynonymService caffeineFixService, ChemicalSearchRepository searchRepository, SearchChemicalService chemicalService) {
+    public ChemicalSearchResource(ChemicalSearchRepository searchRepository, SearchChemicalService chemicalService) {
         this.searchRepository = searchRepository;
         this.chemicalService = chemicalService;
 
