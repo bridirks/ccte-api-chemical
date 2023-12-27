@@ -5,6 +5,7 @@ import gov.epa.ccte.api.chemical.projection.search.ChemicalBatchSearchResult;
 import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchAll;
 import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchInternal;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
+import gov.epa.ccte.api.chemical.service.ChemicalUtils;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
 import gov.epa.ccte.api.chemical.web.rest.errors.ChemicalSearchNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -93,16 +94,17 @@ public class ChemicalSearchResource {
 
         searchResult = searchRepository.findByModifiedValueInOrderByRankAsc(List.of(searchWord, removeSpaces),ChemicalSearchAll.class);
 
-        // avoid InChIKey
-        if(searchWord.length() > 13){
-            searchResult2 =  searchRepository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(searchWord, searchMatchAll, ChemicalSearchAll.class);
-        }else{
-            log.debug("searchWord = {}", searchWord);
-            searchResult2 =  searchRepository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(searchWord, searchMatchWithoutInchikey, ChemicalSearchAll.class);
+        if(!ChemicalUtils.isDtxsid(searchWord) && !ChemicalUtils.isDtxcid(searchWord)) {
+            // avoid InChIKey
+            if (searchWord.length() > 13) {
+                searchResult2 = searchRepository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(searchWord, searchMatchAll, ChemicalSearchAll.class);
+            } else {
+                log.debug("searchWord = {}", searchWord);
+                searchResult2 = searchRepository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(searchWord, searchMatchWithoutInchikey, ChemicalSearchAll.class);
+            }
+
+            searchResult.addAll(searchResult2); // append start-with results
         }
-
-        searchResult.addAll(searchResult2); // append start-with results
-
         log.debug("{} records match for {}", searchResult.size(), word);
 
         searchResult = chemicalService.removeDuplicates(searchResult);
