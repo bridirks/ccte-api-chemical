@@ -21,11 +21,13 @@ public class SearchChemicalService {
 
     private final CaffeineFixSynonymService caffeineFixService;
     private final ChemicalSearchRepository searchRepository;
+    private final OpsinService opsinService;
     private static final Pattern ENCODED_PATTERN = Pattern.compile("(%[0-9A-Fa-f]{2}|\\+)");
 
-    public SearchChemicalService(CaffeineFixSynonymService caffeineFixService, ChemicalSearchRepository searchRepository) {
+    public SearchChemicalService(CaffeineFixSynonymService caffeineFixService, ChemicalSearchRepository searchRepository, OpsinService opsinService) {
         this.caffeineFixService = caffeineFixService;
         this.searchRepository = searchRepository;
+        this.opsinService = opsinService;
     }
 
 
@@ -224,10 +226,22 @@ public class SearchChemicalService {
         if((suggestions == null || suggestions.isEmpty()) && isInchiKey(word))
             suggestions = inchikeySuggestion(word);
 
+        // if search is systematic name, find the inchikey for it
+        if(suggestions == null || suggestions.isEmpty())
+            suggestions = opsinSuggestion(word);
+
         if((suggestions == null || suggestions.isEmpty()) && !isCasrn(word))
             suggestions = new ArrayList<>(Collections.singletonList(toCasrn(word)));
 
         return suggestions;
+    }
+
+    private List<String> opsinSuggestion(String word) {
+        log.debug("checking is search word = {} is systematic name", word);
+
+        String inchikey = opsinService.toInChIKey(word);
+
+        return Collections.singletonList(inchikey);
     }
 
     private List<String> inchikeySuggestion(String word) {
