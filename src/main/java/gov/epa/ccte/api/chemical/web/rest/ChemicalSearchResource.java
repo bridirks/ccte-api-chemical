@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
@@ -24,6 +25,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -284,6 +286,15 @@ public class ChemicalSearchResource {
         log.debug("input mass = {} - {} ", start, end);
 
         return searchRepository.searchMsReadyMass(start, end);
+    }
+
+    @Operation(summary = "Search ms ready chemical using batch of mass range")
+    @RequestMapping(value = "chemical/msready/search/by-mass/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    HashMap<Double, List<String>> msReadyByBatchMass(@Valid @RequestBody BatchMsReadyMassForm form){
+
+        log.debug("input masses = {} error= {} ", form.getMasses(), form.getMassError());
+
+        return chemicalService.getMsReadyBatchResult(form);
     }
 
     @RequestMapping(value = "chemical/test/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
