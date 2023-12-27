@@ -7,8 +7,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.util.MimeType;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.http.MediaType.asMediaType;
+import static org.springframework.http.MediaType.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
@@ -46,5 +45,13 @@ public class ChemicalSearchTest {
                 .expectStatus().isOk().
                 expectHeader().contentType(APPLICATION_JSON);
 
+    }
+
+    @Test
+    void testMsReadyBatchMassesSearchForMissingError() {
+        webTestClient.post().uri("chemical/msready/search/by-mass/")
+                .header(APPLICATION_JSON_VALUE)
+                .exchange()
+                .expectStatus().isBadRequest();
     }
 }

@@ -5,14 +5,12 @@ import gov.epa.ccte.api.chemical.projection.search.ChemicalBatchSearchResult;
 import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchAll;
 import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchInternal;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
+import gov.epa.ccte.api.chemical.web.rest.BatchMsReadyMassForm;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 import static gov.epa.ccte.api.chemical.service.ChemicalUtils.*;
@@ -279,6 +277,23 @@ public class SearchChemicalService {
         }
 
         return returnList;
+    }
+
+
+    public HashMap<Double, List<String>> getMsReadyBatchResult(BatchMsReadyMassForm form){
+
+        HashMap<Double, List<String>> result = new HashMap<>();
+
+        for(Double mass: form.getMasses()){
+            Double error = mass * form.getMassError() / 1000000;
+            Double start = mass - error;
+            Double end = mass + error;
+            log.debug("mass={} error={} cal-error={} start={} end={}",mass, form.getMassError(),error, start, end);
+            List<String> dtxsids = searchRepository.searchMsReadyMass(start,end);
+            result.put(mass, dtxsids);
+        }
+
+        return result;
     }
 
 
