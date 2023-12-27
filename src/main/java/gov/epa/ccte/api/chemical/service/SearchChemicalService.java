@@ -140,11 +140,7 @@ public class SearchChemicalService {
 
     public boolean isChemicalSynonym(String word){
 
-        if(!isCasrn(word) && !isDtxcid(word) && !isDtxsid(word) && !isECNumber(word) && !isInchiKey(word) && !isInchiKeySkeleton(word)){
-            return true;
-        }else{
-            return false;
-        }
+        return !isCasrn(word) && !isDtxcid(word) && !isDtxsid(word) && !isECNumber(word) && !isInchiKey(word) && !isInchiKeySkeleton(word);
     }
 
     //  this will not check -ve and decimal numbers
@@ -199,8 +195,8 @@ public class SearchChemicalService {
     // This will remove duplicates(same dtxsid number) from search result
     public List<ChemicalSearchAll> removeDuplicates(List<ChemicalSearchAll> chemicals) {
 
-        List<ChemicalSearchAll> returnList = new ArrayList<ChemicalSearchAll>();
-        List<String> dtxsidList = new ArrayList<String>();
+        List<ChemicalSearchAll> returnList = new ArrayList<>();
+        List<String> dtxsidList = new ArrayList<>();
         //List<String> dtxcidList = new ArrayList<String>();
 
         for(ChemicalSearchAll chemical : chemicals){
