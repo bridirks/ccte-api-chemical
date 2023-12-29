@@ -131,7 +131,7 @@ public class ApiKeyRequestFilter extends GenericFilterBean {
             refererdHost = ""; //"https://" + req.getHeader("Referer").split("/")[2];  // example - referredHost = localhost:8888
         }
 
-        log.debug("origin = {}, referer ={}, refererdHost = {}, path={} ",origin, referer, refererdHost, path);
+        log.debug("method = {}, origin = {}, referer ={}, refererdHost = {}, path={} ",method, origin, referer, refererdHost, path);
 
         // if chemical/file path - allow access to images without any api key
         if(path.contains("/chemical/file/")){

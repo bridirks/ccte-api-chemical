@@ -32,7 +32,7 @@ public class ApiSecurityConfiguration {
         List<ApiKey> keys = repository.findAll();
 
         for(ApiKey key : keys)
-            keyStore.put(key.getId(), key.getEmail());
+            keyStore.put(key.getId(), key.getDataScope());
 
         log.info("*** {} keys are loaded. *** ", keys.size());
 
