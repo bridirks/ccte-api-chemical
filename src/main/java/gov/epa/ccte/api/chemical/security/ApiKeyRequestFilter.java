@@ -29,15 +29,16 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class ApiKeyRequestFilter extends GenericFilterBean {
 
-    private ConcurrentHashMap<UUID, String> keyStore;// = new ConcurrentHashMap();
+    private final ConcurrentHashMap<UUID, String> keyStore;// = new ConcurrentHashMap();
     private ConcurrentHashMap<String, String> approvedOriginStore;// = new ConcurrentHashMap();
     private final ObjectMapper mapper = new ObjectMapper();
     private final String keyName;
 
-    public ApiKeyRequestFilter(ApiKeyRepository repository, @Value("${application.api-key-name}") String keyName) {
+    public ApiKeyRequestFilter(ConcurrentHashMap<UUID, String> keyStore, @Value("${application.api-key-name}") String keyName) {
+        this.keyStore = keyStore;
         this.keyName = keyName;
 
-        initializeKeyStore(repository);
+        //initializeKeyStore(repository);
         initializeApprovedOriginStore();
     }
 
@@ -52,16 +53,16 @@ public class ApiKeyRequestFilter extends GenericFilterBean {
         approvedOriginStore.put("https://ccte-api-s.app.cloud.gov", "https://ccte-api-s.app.cloud.gov");
     }
 
-    private void initializeKeyStore(ApiKeyRepository repository) {
-        keyStore = new ConcurrentHashMap<>();
-
-        List<ApiKey> keys = repository.findAll();
-
-        for(ApiKey key : keys)
-            keyStore.put(key.getId(), key.getEmail());
-
-        log.info("*** {} keys are loaded. *** ", keys.size());
-    }
+//    private void initializeKeyStore(ApiKeyRepository repository) {
+//        keyStore = new ConcurrentHashMap<>();
+//
+//        List<ApiKey> keys = repository.findAll();
+//
+//        for(ApiKey key : keys)
+//            keyStore.put(key.getId(), key.getEmail());
+//
+//        log.info("*** {} keys are loaded. *** ", keys.size());
+//    }
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
