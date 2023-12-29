@@ -38,4 +38,22 @@ public class ApiSecurityConfiguration {
 
         return keyStore;
     }
+
+    @Bean
+    public ConcurrentHashMap<String, String> approvedOriginStore(){
+        log.debug("*** start filling approvedOriginStore ***");
+
+        ConcurrentHashMap<String, String> approvedOriginStore = new ConcurrentHashMap<>();
+        approvedOriginStore.put("http://localhost:3003", "http://localhost:3003");
+        approvedOriginStore.put("http://localhost:8888", "http://localhost:8888");
+        approvedOriginStore.put("https://ccte-ccd-dev.epa.gov", "https://ccte-ccd-dev.epa.gov");
+        approvedOriginStore.put("https://ccte-ccd-stg.epa.gov", "https://ccte-ccd-stg.epa.gov");
+        approvedOriginStore.put("https://ccte-ccd-prod.epa.gov", "https://ccte-ccd-prod.epa.gov");
+        approvedOriginStore.put("https://comptox.epa.gov", "https://comptox.epa.gov");
+        approvedOriginStore.put("https://ccte-api-s.app.cloud.gov", "https://ccte-api-s.app.cloud.gov");
+
+        log.info("*** {} urls are loaded. *** ", approvedOriginStore.size());
+
+        return approvedOriginStore;
+    }
 }
