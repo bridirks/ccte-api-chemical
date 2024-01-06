@@ -1,31 +1,33 @@
 package gov.epa.ccte.api.chemical.domain;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "chemical_lists", schema = "ms")
+@Table(name = "v_chemical_lists", schema = "ch")
 public class ChemicalList {
     @Id
-    @NotNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
+    @Size(max = 50)
+    @Column(name = "list_name", length = 50)
+    private String listName;
+
     @Size(max = 255)
-    @Column(name = "list_name")
-    private String name;
+    @Column(name = "label")
+    private String label;
+
+    @Size(max = 50)
+    @Column(name = "type", length = 50)
+    private String type;
 
     @Size(max = 255)
     @Column(name = "visibility")
@@ -34,35 +36,28 @@ public class ChemicalList {
     @Column(name = "is_visible")
     private Boolean isVisible;
 
-    @Column(name = "short_description")
-    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
+    @Size(max = 500)
+    @Column(name = "short_description", length = 500)
     private String shortDescription;
 
-    @Column(name = "long_description")
-    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
+    @Column(name = "long_description", length = Integer.MAX_VALUE)
     private String longDescription;
 
-    @Column(name = "created_date")
-    private Instant createdDate;
-
-    @Column(name = "last_modified_date")
-    private Instant lastModifiedDate;
-
-    @Size(max = 255)
-    @Column(name = "created_by")
-    private String createdBy;
-
     @Column(name = "chemical_count")
-    private Integer chemicalCount;
+    private Long chemicalCount;
 
     @Column(name = "created_at")
     private Instant createdAt;
 
     @Size(max = 255)
-    @Column(name = "label")
-    private String label;
+    @Column(name = "created_by")
+    private String createdBy;
 
-    @Size(max = 100)
-    @Column(name = "type", length = 100)
-    private String type;
+    @Column(name = "updated_at")
+    private Instant updatedAt;
+
+    @Size(max = 255)
+    @Column(name = "updated_by")
+    private String updatedBy;
+
 }

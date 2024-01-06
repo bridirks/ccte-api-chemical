@@ -38,7 +38,7 @@ public class ChemicalListRepositoryTest {
 
     @Test
     void testFindByVisibilityOrderByListNameAsc(){
-        assertThat(repository.findByVisibilityOrderByTypeAscNameAsc("PUBLIC", ChemicalListAll.class).size()).isEqualTo(2);
+        assertThat(repository.findByVisibilityOrderByTypeAscListNameAsc("PUBLIC", ChemicalListAll.class).size()).isEqualTo(2);
     }
 
     @Test
@@ -48,7 +48,7 @@ public class ChemicalListRepositoryTest {
 
     @Test
     void testFindByListName(){
-        assertThat(repository.findByNameIgnoreCase("MICROCYSTIN", ChemicalListAll.class).isPresent()).isTrue();
+        assertThat(repository.findByListNameIgnoreCase("MICROCYSTIN", ChemicalListAll.class).isPresent()).isTrue();
     }
 
     @Test
