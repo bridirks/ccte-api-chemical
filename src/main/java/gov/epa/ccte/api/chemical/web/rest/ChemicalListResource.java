@@ -45,7 +45,6 @@ public class ChemicalListResource {
 
     /**
      * {@code GET  /chemical/list/ : get list of chemical lists.
-     *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical lists}.
      */
     @Operation(summary = "Get all public lists")
@@ -55,32 +54,31 @@ public class ChemicalListResource {
     })
     @RequestMapping(value = "chemical/list/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    List listAll(@RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection) throws IOException {
+    List listAll(@RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection) {
         //return listRepository.findAll();
-        switch (projection){
-            case chemicallistall: return listRepository.findByVisibilityOrderByTypeAscListNameAsc("PUBLIC",ChemicalListAll.class);
-            case chemicallistname: return listRepository.findByVisibilityOrderByTypeAscListNameAsc("PUBLIC",ChemicalListName.class);
-            default:
-                return null;
-        }
+        return switch (projection) {
+            case chemicallistall ->
+                    listRepository.findByVisibilityOrderByTypeAscListNameAsc("PUBLIC", ChemicalListAll.class);
+            case chemicallistname ->
+                    listRepository.findByVisibilityOrderByTypeAscListNameAsc("PUBLIC", ChemicalListName.class);
+            default -> null;
+        };
     }
 
     /**
      * {@code GET  /chemical/list/type : get all types.
-     *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical list types}.
      */
     @Operation(summary = "Get all list types")
     @RequestMapping(value = "chemical/list/type", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    List<String> getAllType() throws IOException {
+    List<String> getAllType(){
 
         return listRepository.getAllTypes();
     }
 
     /**
      * {@code GET  /chemical/list/search : get list of chemical lists.
-     *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical lists}.
      */
     @Operation(summary = "Get public lists by type")
@@ -92,18 +90,16 @@ public class ChemicalListResource {
     public @ResponseBody
     List listByType( @Parameter(required = true, description = "Chemical List Type", example = "other") @PathVariable String type,
                                       @RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection
-                                      ) throws IOException {
-        switch (projection){
-            case chemicallistall: return listRepository.findByType(type, ChemicalListAll.class);
-            case chemicallistname: return listRepository.findByType(type, ChemicalListName.class);
-            default:
-                return null;
-        }
+                                      ){
+        return switch (projection) {
+            case chemicallistall -> listRepository.findByType(type, ChemicalListAll.class);
+            case chemicallistname -> listRepository.findByType(type, ChemicalListName.class);
+            default -> null;
+        };
     }
 
     /**
      * {@code GET  /chemical/list/by-dtxsid/{dtxsid} : get list of chemical lists names.
-     *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical lists name}.
      */
     @Operation(summary = "Get public list by name")
@@ -114,20 +110,19 @@ public class ChemicalListResource {
     @RequestMapping(value = "chemical/list/search/by-name/{listName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     ChemicalListBase listByName(@Parameter(required = true, description = "Chemical List Name", example = "40CFR1164") @PathVariable String listName,
-                                @RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection) throws IOException {
+                                @RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection){
 
         log.debug("list name={}", listName);
 //ChemicalListWithDtxsids
-        switch (projection){
-            case chemicallistall: return listRepository.findByListNameIgnoreCase(listName, ChemicalListAll.class)
-                    .orElseThrow(()->new IdentifierNotFoundException("List name", listName));
-            case chemicalListwithdtxsids: return getChemicalListWithDtxsids(listName)
-                    .orElseThrow(()->new IdentifierNotFoundException("List name", listName));
-            case chemicallistname: return listRepository.findByListNameIgnoreCase(listName, ChemicalListName.class)
-                    .orElseThrow(()->new IdentifierNotFoundException("List name", listName));
-            default:
-                return null;
-        }
+        return switch (projection) {
+            case chemicallistall -> listRepository.findByListNameIgnoreCase(listName, ChemicalListAll.class)
+                    .orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
+            case chemicalListwithdtxsids -> getChemicalListWithDtxsids(listName)
+                    .orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
+            case chemicallistname -> listRepository.findByListNameIgnoreCase(listName, ChemicalListName.class)
+                    .orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
+            default -> null;
+        };
     }
 
     private Optional<ChemicalListWithDtxsids> getChemicalListWithDtxsids(String listName) {
@@ -136,7 +131,6 @@ public class ChemicalListResource {
 
     /**
      * {@code GET  chemical/list/search/by-dtxsid/ : get chemical lists names.
-     *
      * @param dtxsid return chemical list name where this chemical is present.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical list names}.
      */
@@ -144,7 +138,7 @@ public class ChemicalListResource {
     @RequestMapping(value = "chemical/list/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<String> listByDtxsid( @Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID1020560")
-            @PathVariable String dtxsid) throws IOException {
+            @PathVariable String dtxsid){
 
         log.debug("dtxsid={}", dtxsid);
 
@@ -154,19 +148,16 @@ public class ChemicalListResource {
 
     /**
      * {@code GET  /chemical/list/{listName}/chemicals : get list of chemical lists.
-     *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical lists}.
      */
     @Operation(summary = "Get list chemicals by list name")
     @RequestMapping(value = "chemical/list/chemicals/search/by-listname/{listName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<ChemicalListDetailAll> chemicalInList(@Parameter(required = true, description = "Chemical List Name", example = "40CFR1164")
-            @PathVariable String listName) throws IOException {
+            @PathVariable String listName) {
 
         log.debug("list name={}", listName);
 
-        List<ChemicalListDetailAll> details = detailRepository.findByListNameIgnoreCaseOrderByDtxsid(listName, ChemicalListDetailAll.class);
-
-        return details;
+        return detailRepository.findByListNameIgnoreCaseOrderByDtxsid(listName, ChemicalListDetailAll.class);
     }
 }

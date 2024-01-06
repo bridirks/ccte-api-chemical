@@ -16,11 +16,6 @@ import java.util.Optional;
 public interface ChemicalListRepository extends JpaRepository<ChemicalList, Integer> {
 
     @Transactional(readOnly = true)
-    @Query("from ChemicalList order by type, listName")
-    <T>
-    List<T> getAllList(Class<T> type);
-
-    @Transactional(readOnly = true)
     <T> List<T> findByVisibilityOrderByTypeAscListNameAsc(String visibility, Class<T> type);
 
 
@@ -39,6 +34,7 @@ public interface ChemicalListRepository extends JpaRepository<ChemicalList, Inte
     @Query("SELECT distinct type from ChemicalList order by type")
     List<String> getAllTypes();
 
+    @Transactional(readOnly = true)
     @Query( nativeQuery = true,
             value = "select l.list_name, l.label, l.type, l.visibility, l.short_description, l.long_description, l.chemical_count, " +
                     " l.created_at, l.updated_at, string_agg(c.dtxsid,',') as dtxsids " +
