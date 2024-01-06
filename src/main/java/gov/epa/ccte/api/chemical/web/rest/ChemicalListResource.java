@@ -148,7 +148,7 @@ public class ChemicalListResource {
 
         log.debug("dtxsid={}", dtxsid);
 
-        return chemicalListChemicalRepository.getDtxsids(dtxsid);
+        return chemicalListChemicalRepository.getListNames(dtxsid);
     }
 
 

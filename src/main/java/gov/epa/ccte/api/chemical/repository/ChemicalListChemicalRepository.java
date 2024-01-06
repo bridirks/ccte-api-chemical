@@ -15,6 +15,6 @@ public interface ChemicalListChemicalRepository extends JpaRepository<ChemicalLi
     @Query(nativeQuery = true, value = "select string_agg(c.dtxsid,',') as dtxsids from ch.v_chemical_list_chemicals c where upper(c.list_name) = upper(:listName)")
     List<String> getDtxsids(@Param("listName") String listName);
 
-    <T> List<T> findDistinctByDtxsidOrderByListNameAsc(String dtxsid, Class<T> type);
-
+    @Query("select distinct c.listName from ChemicalListChemical c where c.dtxsid = ?1")
+    List<String> getListNames(String dtxsid);
 }
