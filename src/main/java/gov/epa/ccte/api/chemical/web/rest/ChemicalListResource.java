@@ -19,7 +19,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -113,7 +112,7 @@ public class ChemicalListResource {
                                 @RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection){
 
         log.debug("list name={}", listName);
-//ChemicalListWithDtxsids
+
         return switch (projection) {
             case chemicallistall -> listRepository.findByListNameIgnoreCase(listName, ChemicalListAll.class)
                     .orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
