@@ -1,9 +1,8 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
 import gov.epa.ccte.api.chemical.domain.ChemicalList;
-import gov.epa.ccte.api.chemical.dto.mapper.ChemicalListDetailMapper;
-import gov.epa.ccte.api.chemical.dto.mapper.ChemicalListMapper;
 import gov.epa.ccte.api.chemical.projection.chemicallist.*;
+import gov.epa.ccte.api.chemical.repository.ChemicalListChemicalRepository;
 import gov.epa.ccte.api.chemical.repository.ChemicalListDetailRepository;
 import gov.epa.ccte.api.chemical.repository.ChemicalListRepository;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * REST controller for getting the {@link ChemicalList}s.
@@ -34,15 +34,13 @@ import java.util.List;
 public class ChemicalListResource {
 
     final private ChemicalListRepository listRepository;
+    final private ChemicalListChemicalRepository chemicalListChemicalRepository;
     final private ChemicalListDetailRepository detailRepository;
-    final private ChemicalListDetailMapper chemicalListDetailMapper;
-    final private ChemicalListMapper chemicalListMapper;
 
-    public ChemicalListResource(ChemicalListRepository repository, ChemicalListDetailRepository detailRepository, ChemicalListDetailMapper chemicalListDetailMapper, ChemicalListMapper chemicalListMapper) {
+    public ChemicalListResource(ChemicalListRepository repository, ChemicalListChemicalRepository chemicalListChemicalRepository, ChemicalListDetailRepository detailRepository) {
         this.listRepository = repository;
+        this.chemicalListChemicalRepository = chemicalListChemicalRepository;
         this.detailRepository = detailRepository;
-        this.chemicalListDetailMapper = chemicalListDetailMapper;
-        this.chemicalListMapper = chemicalListMapper;
     }
 
     /**
@@ -60,8 +58,8 @@ public class ChemicalListResource {
     List listAll(@RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection) throws IOException {
         //return listRepository.findAll();
         switch (projection){
-            case chemicallistall: return listRepository.findByVisibilityOrderByTypeAscNameAsc("PUBLIC",ChemicalListAll.class);
-            case chemicallistname: return listRepository.findByVisibilityOrderByTypeAscNameAsc("PUBLIC",ChemicalListName.class);
+            case chemicallistall: return listRepository.findByVisibilityOrderByTypeAscListNameAsc("PUBLIC",ChemicalListAll.class);
+            case chemicallistname: return listRepository.findByVisibilityOrderByTypeAscListNameAsc("PUBLIC",ChemicalListName.class);
             default:
                 return null;
         }
@@ -119,15 +117,21 @@ public class ChemicalListResource {
                                 @RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection) throws IOException {
 
         log.debug("list name={}", listName);
-
+//ChemicalListWithDtxsids
         switch (projection){
-            case chemicallistall: return listRepository.findByNameIgnoreCase(listName, ChemicalListAll.class)
+            case chemicallistall: return listRepository.findByListNameIgnoreCase(listName, ChemicalListAll.class)
                     .orElseThrow(()->new IdentifierNotFoundException("List name", listName));
-            case chemicallistname: return listRepository.findByNameIgnoreCase(listName, ChemicalListName.class)
+            case chemicalListwithdtxsids: return getChemicalListWithDtxsids(listName)
+                    .orElseThrow(()->new IdentifierNotFoundException("List name", listName));
+            case chemicallistname: return listRepository.findByListNameIgnoreCase(listName, ChemicalListName.class)
                     .orElseThrow(()->new IdentifierNotFoundException("List name", listName));
             default:
                 return null;
         }
+    }
+
+    private Optional<ChemicalListWithDtxsids> getChemicalListWithDtxsids(String listName) {
+        return listRepository.getChemicalWithDtxsids(listName);
     }
 
     /**
@@ -144,7 +148,7 @@ public class ChemicalListResource {
 
         log.debug("dtxsid={}", dtxsid);
 
-        return detailRepository.findByDtxsid(dtxsid);
+        return chemicalListChemicalRepository.getDtxsids(dtxsid);
     }
 
 
