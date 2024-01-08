@@ -5,6 +5,7 @@ import com.epam.indigo.IndigoObject;
 import com.epam.indigo.IndigoRenderer;
 import gov.epa.ccte.api.chemical.domain.ImageFormat;
 import gov.epa.ccte.api.chemical.repository.ChemicalDetailRepository;
+import gov.epa.ccte.api.chemical.service.ChemicalImageUtils;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.nio.charset.StandardCharsets;
 
 import static org.springframework.http.MediaType.IMAGE_PNG;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
@@ -49,8 +52,7 @@ public class ChemicalFileResource {
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical image}.
      */
-    @Operation(summary = "Get structure image by dtxsid",
-            description = "This endpoint is deprecated. Please use /chemical-file/image/search/by-dtxsid/{dtxsid} instead.")
+    @Operation(summary = "Get structure image by dtxsid")
     @RequestMapping(value = "chemical/file/image/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
     ResponseEntity<byte[]> imageByDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID7020182") @PathVariable("dtxsid") String dtxsid,
@@ -99,7 +101,8 @@ public class ChemicalFileResource {
             String mol = detailRepository.getMolFileForDtxcid(dtxcid)
                     .orElseThrow(()->new IdentifierNotFoundException("DTXCID", dtxcid));
 
-            byte[] image = getSvgImage(mol);
+            // getSvgImage(mol)
+            byte[] image = ChemicalImageUtils.smileToImage(mol, ImageFormat.SVG);
 
             return ResponseEntity.ok().contentType(MediaType.valueOf("image/svg+xml")).body(image);
         }else{
@@ -212,4 +215,38 @@ public class ChemicalFileResource {
 
         return ResponseEntity.ok().contentType(TEXT_PLAIN).body(mol);
     }
+
+    /**
+     * {@code GET  chemical/file/image/generate?smile=<smiles-string> : get generated structure image for smiles.
+     * @param smiles generate structure image using smiles.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical structure image file}.
+     *
+     *
+     */
+    @Operation(summary = "Get generated structure image for smiles",
+            description = "User can use generate structure image by providing smiles string")
+    @RequestMapping(value = "chemical/file/image/generate", method = RequestMethod.GET)
+    public @ResponseBody
+    ResponseEntity<byte[]> generateImageBySmiles(@Parameter(required = true, description = "SMILES String", example = "CC(C)(C1=CC=C(O)C=C1)C1=CC=C(O)C=C1")
+                                                 @RequestParam(required = true, value = "smiles") String smiles,
+                                                 @Parameter(name = "Image Format", description = "In case of absence, it will return png image")
+                                                 @RequestParam(value = "format", required = false, defaultValue = "PNG") ImageFormat format){
+        log.debug("smiles = {}, image type={}", smiles, format);
+
+        byte[] image = ChemicalImageUtils.smileToImage(smiles, format);
+
+        switch (format){
+            case PNG -> {
+                return ResponseEntity.ok().contentType(IMAGE_PNG).body(image);
+            }
+            case SVG -> {
+                return ResponseEntity.ok().contentType(MediaType.valueOf("image/svg+xml")).body(image);
+            }
+            default -> {
+                return null;
+            }
+        }
+    }
+
 }
+
