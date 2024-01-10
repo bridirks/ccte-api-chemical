@@ -1,10 +1,8 @@
 package gov.epa.ccte.api.chemical.projection.chemicallist;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import gov.epa.ccte.api.chemical.domain.ChemicalList;
 
 import java.time.Instant;
-import java.util.List;
 
 /**
  * Projection for {@link ChemicalList}

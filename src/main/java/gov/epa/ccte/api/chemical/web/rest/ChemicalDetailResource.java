@@ -87,15 +87,15 @@ public class ChemicalDetailResource {
     }
 
     private ChemicalDetailBase getChemicalDetail(String dtxsid, String type, ChemicalDetailProjection projection) {
-        switch (projection) {
-            case chemicaldetailall: return detailService.getChemicalDetailsForId(dtxsid, type, ChemicalDetailAll.class);
-            case chemicaldetailstandard: return detailService.getChemicalDetailsForId(dtxsid, type, ChemicalDetailStandard.class);
-            case chemicalidentifier: return detailService.getChemicalDetailsForId(dtxsid, type, ChemicalIdentifier.class);
-            case chemicalstructure: return detailService.getChemicalDetailsForId(dtxsid, type, ChemicalStructure.class);
-            case ntatoolkit: return detailService.getChemicalDetailsForId(dtxsid, type, NtaToolkit.class);
-            default:
-                return null;
-        }
+        return switch (projection) {
+            case chemicaldetailall -> detailService.getChemicalDetailsForId(dtxsid, type, ChemicalDetailAll.class);
+            case chemicaldetailstandard ->
+                    detailService.getChemicalDetailsForId(dtxsid, type, ChemicalDetailStandard.class);
+            case chemicalidentifier -> detailService.getChemicalDetailsForId(dtxsid, type, ChemicalIdentifier.class);
+            case chemicalstructure -> detailService.getChemicalDetailsForId(dtxsid, type, ChemicalStructure.class);
+            case ntatoolkit -> detailService.getChemicalDetailsForId(dtxsid, type, NtaToolkit.class);
+            default -> null;
+        };
     }
 
     /**
@@ -127,14 +127,15 @@ public class ChemicalDetailResource {
         if(dtxsids.length > batchSize)
             throw new HigherNumberOfDtxsidException(dtxsids.length, batchSize);
 
-        switch (projection){
-            case chemicaldetailall: return detailService.getChemicalDetailsForBatch(dtxsids, ChemicalDetailAll.class);
-            case chemicaldetailstandard: return detailService.getChemicalDetailsForBatch(dtxsids, ChemicalDetailStandard.class);
-            case chemicalidentifier: return detailService.getChemicalDetailsForBatch(dtxsids, ChemicalIdentifier.class);
-            case chemicalstructure: return detailService.getChemicalDetailsForBatch(dtxsids, ChemicalStructure.class);
-            case ntatoolkit: return detailService.getChemicalDetailsForBatch(dtxsids, NtaToolkit.class);
-            default:return null;
-        }
+        return switch (projection) {
+            case chemicaldetailall -> detailService.getChemicalDetailsForBatch(dtxsids, ChemicalDetailAll.class);
+            case chemicaldetailstandard ->
+                    detailService.getChemicalDetailsForBatch(dtxsids, ChemicalDetailStandard.class);
+            case chemicalidentifier -> detailService.getChemicalDetailsForBatch(dtxsids, ChemicalIdentifier.class);
+            case chemicalstructure -> detailService.getChemicalDetailsForBatch(dtxsids, ChemicalStructure.class);
+            case ntatoolkit -> detailService.getChemicalDetailsForBatch(dtxsids, NtaToolkit.class);
+            default -> null;
+        };
     }
 
     /**
@@ -152,20 +153,20 @@ public class ChemicalDetailResource {
     })
     @RequestMapping(value = "chemical/detail/search/by-listname/{listname}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    ChemicalDetailBase detailsByListname(@Parameter(required = true, description = "Chemical list name", example = "ACSREAG")  @PathVariable("listname") String listname,
+    List detailsByListname(@Parameter(required = true, description = "Chemical list name", example = "ACSREAG")  @PathVariable("listname") String listname,
                                        @RequestParam(value = "projection", required = false, defaultValue = "chemicaldetailall") ChemicalDetailProjection projection) {
 
         log.debug("listname = {}", listname);
 
-        switch (projection) {
-            case chemicaldetailall: return detailService.getChemicalDetailsForListName(listname, ChemicalDetailAll.class);
-            case chemicaldetailstandard: return detailService.getChemicalDetailsForListName(listname,  ChemicalDetailStandard.class);
-            case chemicalidentifier: return detailService.getChemicalDetailsForListName(listname,  ChemicalIdentifier.class);
-            case chemicalstructure: return detailService.getChemicalDetailsForListName(listname,  ChemicalStructure.class);
-            case ntatoolkit: return detailService.getChemicalDetailsForListName(listname,  NtaToolkit.class);
-            default:
-                return null;
-        }
+        return switch (projection) {
+            case chemicaldetailall -> detailService.getChemicalDetailsForListName(listname, ChemicalDetailAll.class);
+            case chemicaldetailstandard ->
+                    detailService.getChemicalDetailsForListName(listname, ChemicalDetailStandard.class);
+            case chemicalidentifier -> detailService.getChemicalDetailsForListName(listname, ChemicalIdentifier.class);
+            case chemicalstructure -> detailService.getChemicalDetailsForListName(listname, ChemicalStructure.class);
+            case ntatoolkit -> detailService.getChemicalDetailsForListName(listname, NtaToolkit.class);
+            default -> null;
+        };
     }
 }
 

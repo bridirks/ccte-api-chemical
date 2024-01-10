@@ -1,22 +1,24 @@
 package gov.epa.ccte.api.chemical.service;
 
+import gov.epa.ccte.api.chemical.projection.chemicallist.ChemicalListWithDtxsids;
 import gov.epa.ccte.api.chemical.repository.ChemicalDetailRepository;
-import gov.epa.ccte.api.chemical.repository.ChemicalListDetailRepository;
+import gov.epa.ccte.api.chemical.repository.ChemicalListRepository;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
 public class ChemicalDetailService {
-    private ChemicalDetailRepository detailRepository;
-    //private ChemicalListDetailRepository
+    private final ChemicalDetailRepository detailRepository;
+    private final ChemicalListRepository listRepository;
 
-    public ChemicalDetailService(ChemicalDetailRepository detailRepository) {
+    public ChemicalDetailService(ChemicalDetailRepository detailRepository, ChemicalListRepository listRepository) {
         this.detailRepository = detailRepository;
-    }
+        this.listRepository = listRepository;    }
 
     public <T> T getChemicalDetailsForId(String id, String type, Class<T> tClass) {
 
@@ -40,17 +42,11 @@ public class ChemicalDetailService {
 //        }
     }
 
-    public <T> T getChemicalDetailsForListName(String listName, Class<T> tClass) {
+    public <T> List<T> getChemicalDetailsForListName(String listName, Class<T> tClass) {
 
         // first get list of dtxsids for chemical list members
-        return null;
+        ChemicalListWithDtxsids list = listRepository.getChemicalWithDtxsids(listName).get();
 
-//        if(type.equals("dtxsid")) {
-//            return detailRepository.findByDtxsid(id, tClass)
-//                    .orElseThrow(() -> new IdentifierNotFoundException("dtxsid", id));
-//        }else{
-//            return detailRepository.findByDtxcid(id, tClass)
-//                    .orElseThrow(() -> new IdentifierNotFoundException("dtxcid", id));
-//        }
+        return detailRepository.findByDtxsidInOrderByDtxsidAsc(list.getDtxsids().split(","), tClass);
     }
 }
