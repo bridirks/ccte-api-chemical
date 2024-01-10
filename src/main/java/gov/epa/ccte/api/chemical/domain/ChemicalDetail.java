@@ -267,5 +267,4 @@ public class ChemicalDetail {
 
     @Column(name = "is_markush")
     private Integer isMarkush;
-
 }
