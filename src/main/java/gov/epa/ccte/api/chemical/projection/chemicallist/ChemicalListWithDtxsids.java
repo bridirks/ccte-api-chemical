@@ -3,7 +3,6 @@ package gov.epa.ccte.api.chemical.projection.chemicallist;
 import gov.epa.ccte.api.chemical.domain.ChemicalList;
 
 import java.time.Instant;
-import java.util.List;
 
 /**
  * Projection for {@link ChemicalList}
@@ -29,5 +28,5 @@ public interface ChemicalListWithDtxsids extends ChemicalListBase{
 
     Instant getUpdatedAt();
 
-    List<String> getDtxsids();
+    String getDtxsids();
 }
