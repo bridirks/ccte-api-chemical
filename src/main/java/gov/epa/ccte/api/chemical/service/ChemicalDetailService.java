@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -45,7 +44,7 @@ public class ChemicalDetailService {
     public <T> List<T> getChemicalDetailsForListName(String listName, Class<T> tClass) {
 
         // first get list of dtxsids for chemical list members
-        ChemicalListWithDtxsids list = listRepository.getChemicalWithDtxsids(listName).get();
+        ChemicalListWithDtxsids list = listRepository.getChemicalWithDtxsids(listName).orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
 
         return detailRepository.findByDtxsidInOrderByDtxsidAsc(list.getDtxsids().split(","), tClass);
     }

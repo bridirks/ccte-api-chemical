@@ -94,7 +94,6 @@ public class ChemicalDetailResource {
             case chemicalidentifier -> detailService.getChemicalDetailsForId(dtxsid, type, ChemicalIdentifier.class);
             case chemicalstructure -> detailService.getChemicalDetailsForId(dtxsid, type, ChemicalStructure.class);
             case ntatoolkit -> detailService.getChemicalDetailsForId(dtxsid, type, NtaToolkit.class);
-            default -> null;
         };
     }
 
@@ -110,7 +109,7 @@ public class ChemicalDetailResource {
                     schema=@Schema(oneOf = {ChemicalDetailStandard.class, ChemicalIdentifier.class, ChemicalStructure.class}))),
             @ApiResponse(responseCode = "400", description = "When user has submitted more then allowed number (${application.batch-size}) of DTXSID(s).",
                     content = @Content( mediaType = "application/problem+json",
-                    examples = {@ExampleObject(name = "", value = "{\"title\":\"Validation Error\",\"status\":400,\"detail\":\"System supports only '200' dtxsid at one time, '202' are submitted.\"}", description = "Validation error for more then allowed number of dtxsid(s).")},
+                    examples = {@ExampleObject(value = "{\"title\":\"Validation Error\",\"status\":400,\"detail\":\"System supports only '200' dtxsid at one time, '202' are submitted.\"}", description = "Validation error for more then allowed number of dtxsid(s).")},
                     schema=@Schema(oneOf = {ProblemDetail.class})))
     })
     @RequestMapping(value = "chemical/detail/search/by-dtxsid/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -134,7 +133,6 @@ public class ChemicalDetailResource {
             case chemicalidentifier -> detailService.getChemicalDetailsForBatch(dtxsids, ChemicalIdentifier.class);
             case chemicalstructure -> detailService.getChemicalDetailsForBatch(dtxsids, ChemicalStructure.class);
             case ntatoolkit -> detailService.getChemicalDetailsForBatch(dtxsids, NtaToolkit.class);
-            default -> null;
         };
     }
 
@@ -165,7 +163,6 @@ public class ChemicalDetailResource {
             case chemicalidentifier -> detailService.getChemicalDetailsForListName(listname, ChemicalIdentifier.class);
             case chemicalstructure -> detailService.getChemicalDetailsForListName(listname, ChemicalStructure.class);
             case ntatoolkit -> detailService.getChemicalDetailsForListName(listname, NtaToolkit.class);
-            default -> null;
         };
     }
 }
