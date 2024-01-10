@@ -1,17 +1,29 @@
 package gov.epa.ccte.api.chemical.domain;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.math.BigDecimal;
+
+@Getter
+@Setter
 @Entity
 @Table(name = "v_chemical_details", schema = "ch")
 public class ChemicalDetail {
     @Id
-    @Size(max = 64)
-    @Column(name = "h_chem_hash_key", length = 64)
-    private String id;
+    @Column(name = "id")
+    private Long id;
+
+    @Column(name = "dtxsid", length = Integer.MAX_VALUE)
+    private String dtxsid;
+
+    @Column(name = "dtxcid", length = Integer.MAX_VALUE)
+    private String dtxcid;
 
     @Size(max = 255)
     @Column(name = "casrn")
@@ -41,7 +53,7 @@ public class ChemicalDetail {
     private Double monoisotopicMass;
 
     @Column(name = "percent_assays")
-    private Double percentAssays;
+    private BigDecimal percentAssays;
 
     @Column(name = "pubchem_count")
     private Integer pubchemCount;
@@ -59,8 +71,7 @@ public class ChemicalDetail {
     @Column(name = "qc_level_desc")
     private String qcLevelDesc;
 
-    @Size(max = 1)
-    @Column(name = "stereo", length = 1)
+    @Column(name = "stereo", length = Integer.MAX_VALUE)
     private String stereo;
 
     @Column(name = "isotope")
@@ -72,15 +83,16 @@ public class ChemicalDetail {
     @Column(name = "total_assays")
     private Integer totalAssays;
 
+    @Column(name = "toxcast_select", length = Integer.MAX_VALUE)
+    private String toxcastSelect;
+
     @Column(name = "pubchem_cid")
     private Integer pubchemCid;
 
-    @Column(name = "mol_file")
-    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
+    @Column(name = "mol_file", length = Integer.MAX_VALUE)
     private String molFile;
 
-    @Column(name = "mrv_file")
-    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
+    @Column(name = "mrv_file", length = Integer.MAX_VALUE)
     private String mrvFile;
 
     @Column(name = "related_substance_count")
@@ -99,12 +111,10 @@ public class ChemicalDetail {
     @Column(name = "iupac_name", length = 5000)
     private String iupacName;
 
-    @Column(name = "smiles")
-    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
+    @Column(name = "smiles", length = Integer.MAX_VALUE)
     private String smiles;
 
-    @Column(name = "inchi_string")
-    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
+    @Column(name = "inchi_string", length = Integer.MAX_VALUE)
     private String inchiString;
 
     @Column(name = "average_mass")
@@ -118,12 +128,10 @@ public class ChemicalDetail {
     @Column(name = "qc_notes", length = 4000)
     private String qcNotes;
 
-    @Column(name = "qsar_ready_smiles")
-    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
+    @Column(name = "qsar_ready_smiles", length = Integer.MAX_VALUE)
     private String qsarReadySmiles;
 
-    @Column(name = "ms_ready_smiles")
-    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
+    @Column(name = "ms_ready_smiles", length = Integer.MAX_VALUE)
     private String msReadySmiles;
 
     @Size(max = 255)
@@ -138,25 +146,6 @@ public class ChemicalDetail {
     @Column(name = "wikipedia_article")
     private String wikipediaArticle;
 
-    @Size(max = 20000)
-    @Column(name = "descriptor_string_tsv", length = 20000)
-    private String descriptorStringTsv;
-
-//    @Column(name = "is_markush")
-//    private Integer isMarkush;
-
-
-    @Size(max = 100)
-    @Column(name = "dtxsid", length = 100)
-    private String dtxsid;
-
-    @Size(max = 100)
-    @Column(name = "dtxcid", length = 100)
-    private String dtxcid;
-
-    @Size(max = 10)
-    @Column(name = "toxcast_select", length = 10)
-    private String toxcastSelect;
     @Size(max = 50)
     @Column(name = "expocat_median_prediction", length = 50)
     private String expocatMedianPrediction;
@@ -262,5 +251,21 @@ public class ChemicalDetail {
 
     @Column(name = "pkab_opera_pred")
     private Double pkabOperaPred;
+
+    @Size(max = 20000)
+    @Column(name = "descriptor_string_tsv", length = 20000)
+    private String descriptorStringTsv;
+
+    @Column(name = "logd5_5")
+    private Double logd55;
+
+    @Column(name = "logd7_4")
+    private Double logd74;
+
+    @Column(name = "ready_bio_deg")
+    private Double readyBioDeg;
+
+    @Column(name = "is_markush")
+    private Integer isMarkush;
 
 }
