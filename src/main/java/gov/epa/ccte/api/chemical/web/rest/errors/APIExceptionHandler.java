@@ -21,7 +21,7 @@ public class APIExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IdentifierNotFoundException.class)
     ProblemDetail handleIdentifierNotFoundException(IdentifierNotFoundException ex){
-        return ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+        return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(TypeValueNotFoundException.class)
