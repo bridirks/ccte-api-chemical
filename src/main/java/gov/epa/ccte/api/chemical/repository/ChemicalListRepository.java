@@ -39,8 +39,10 @@ public interface ChemicalListRepository extends JpaRepository<ChemicalList, Inte
             value = "select l.list_name, l.label, l.type, l.visibility, l.short_description, l.long_description, l.chemical_count, " +
                     " l.created_at, l.updated_at, string_agg(c.dtxsid,',') as dtxsids " +
                     " from ch.v_chemical_lists l join ch.v_chemical_list_chemicals c on " +
-                    " l.id = c.list_id and l.list_name = 'LCSSPUBCHEM' " +
+                    " l.id = c.list_id and upper(l.list_name) = upper(:listName) " +
                     " group by l.list_name, l.label, l.type, l.visibility, l.short_description, l.long_description, l.chemical_count, " +
                     " l.created_at, l.updated_at")
     Optional<ChemicalListWithDtxsids> getChemicalWithDtxsids(String listName);
+
+
 }
