@@ -33,6 +33,7 @@ import java.util.List;
 @RestController
 public class ChemicalDetailResource {
     final private ChemicalDetailService detailService;
+
     @Value("${application.batch-size}")
     private Integer batchSize;
 
@@ -61,6 +62,7 @@ public class ChemicalDetailResource {
 
         return getChemicalDetail(dtxsid, "dtxsid", projection);
     }
+
     /**
      * {@code GET  /chemical/detail/by-dtxcid/:dtxcid} : get list of chemicalDetail for the "dtxcid".
      *
@@ -132,6 +134,37 @@ public class ChemicalDetailResource {
             case chemicalstructure: return detailService.getChemicalDetailsForBatch(dtxsids, ChemicalStructure.class);
             case ntatoolkit: return detailService.getChemicalDetailsForBatch(dtxsids, NtaToolkit.class);
             default:return null;
+        }
+    }
+
+    /**
+     * {@code GET  /chemical/detail/search/by-listname/:listname} : get list of chemicalDetail for the "listname".
+     *
+     * @param listname chemicals defined in this list will return with chemical details.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalDetail}.
+     * chemicaldetailall, chemicaldetailstandard, chemicalidentifier, chemicalstructure, ntatoolkit
+     */
+    @Operation(summary = "Get data by listname",
+            description = "Specify the listname as part of the path, and optionally user can also define projection (set of attributes to return).")
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
+                    schema=@Schema(oneOf = {ChemicalDetailStandard.class, ChemicalIdentifier.class, ChemicalStructure.class, ChemicalDetailAll.class, NtaToolkit.class})))
+    })
+    @RequestMapping(value = "chemical/detail/search/by-listname/{listname}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    ChemicalDetailBase detailsByListname(@Parameter(required = true, description = "Chemical list name", example = "ACSREAG")  @PathVariable("listname") String listname,
+                                       @RequestParam(value = "projection", required = false, defaultValue = "chemicaldetailall") ChemicalDetailProjection projection) {
+
+        log.debug("listname = {}", listname);
+
+        switch (projection) {
+            case chemicaldetailall: return detailService.getChemicalDetailsForListName(listname, ChemicalDetailAll.class);
+            case chemicaldetailstandard: return detailService.getChemicalDetailsForListName(listname,  ChemicalDetailStandard.class);
+            case chemicalidentifier: return detailService.getChemicalDetailsForListName(listname,  ChemicalIdentifier.class);
+            case chemicalstructure: return detailService.getChemicalDetailsForListName(listname,  ChemicalStructure.class);
+            case ntatoolkit: return detailService.getChemicalDetailsForListName(listname,  NtaToolkit.class);
+            default:
+                return null;
         }
     }
 }

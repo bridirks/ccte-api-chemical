@@ -1,6 +1,7 @@
 package gov.epa.ccte.api.chemical.service;
 
 import gov.epa.ccte.api.chemical.repository.ChemicalDetailRepository;
+import gov.epa.ccte.api.chemical.repository.ChemicalListDetailRepository;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,7 @@ import java.util.List;
 @Service
 public class ChemicalDetailService {
     private ChemicalDetailRepository detailRepository;
+    //private ChemicalListDetailRepository
 
     public ChemicalDetailService(ChemicalDetailRepository detailRepository) {
         this.detailRepository = detailRepository;
@@ -35,6 +37,20 @@ public class ChemicalDetailService {
 //            case DTXSID: return detailRepository.findByDtxsidInOrderByDtxsidAsc(request.getValues(), tClass);
 //            //case DTXCID: return detailRepository.findByDtxcidInOrderByDtxcidAsc(request.getValues(),tClass);
 //            default: return Collections.emptyList();
+//        }
+    }
+
+    public <T> T getChemicalDetailsForListName(String listName, Class<T> tClass) {
+
+        // first get list of dtxsids for chemical list members
+        return null;
+
+//        if(type.equals("dtxsid")) {
+//            return detailRepository.findByDtxsid(id, tClass)
+//                    .orElseThrow(() -> new IdentifierNotFoundException("dtxsid", id));
+//        }else{
+//            return detailRepository.findByDtxcid(id, tClass)
+//                    .orElseThrow(() -> new IdentifierNotFoundException("dtxcid", id));
 //        }
     }
 }
