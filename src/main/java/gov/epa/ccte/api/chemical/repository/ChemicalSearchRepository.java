@@ -53,12 +53,12 @@ public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, 
     <T>
     List<T> searchChemical(String word, Class<T> type);
 
-    @Query(value = "select distinct dtxsid from ms.search_msready where mol_formula = :formula", nativeQuery = true)
+    @Query(value = "select distinct ms_ready_dtxsid from ch.v_msready_search where mol_formula = :formula", nativeQuery = true)
     List<String> searchMsReadyFormula(String formula);
 
-    @Query(value = "select distinct dtxsid from ms.search_msready where dtxcid = :dtxcid", nativeQuery = true)
+    @Query(value = "select distinct ms_ready_dtxsid from ch.v_msready_search where input_dtxcid = :dtxcid", nativeQuery = true)
     List<String> searchMsReadyDtxcid(String dtxcid);
 
-    @Query(value = "select distinct dtxsid from ms.search_msready where monoisotopic_mass between :start and :end", nativeQuery = true)
+    @Query(value = "select distinct ms_ready_dtxsid from ch.v_msready_search where monoisotopic_mass between :start and :end", nativeQuery = true)
     List<String> searchMsReadyMass(Double start, Double end);
 }
