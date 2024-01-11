@@ -60,5 +60,6 @@ public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, 
     List<String> searchMsReadyDtxcid(String dtxcid);
 
     @Query(value = "select distinct ms_ready_dtxsid from ch.v_msready_search where monoisotopic_mass between :start and :end and substance_public is true", nativeQuery = true)
+
     List<String> searchMsReadyMass(Double start, Double end);
 }
