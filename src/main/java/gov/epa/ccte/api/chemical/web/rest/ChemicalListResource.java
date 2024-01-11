@@ -3,7 +3,6 @@ package gov.epa.ccte.api.chemical.web.rest;
 import gov.epa.ccte.api.chemical.domain.ChemicalList;
 import gov.epa.ccte.api.chemical.projection.chemicallist.*;
 import gov.epa.ccte.api.chemical.repository.ChemicalListChemicalRepository;
-import gov.epa.ccte.api.chemical.repository.ChemicalListDetailRepository;
 import gov.epa.ccte.api.chemical.repository.ChemicalListRepository;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,12 +33,10 @@ public class ChemicalListResource {
 
     final private ChemicalListRepository listRepository;
     final private ChemicalListChemicalRepository chemicalListChemicalRepository;
-    final private ChemicalListDetailRepository detailRepository;
 
-    public ChemicalListResource(ChemicalListRepository repository, ChemicalListChemicalRepository chemicalListChemicalRepository, ChemicalListDetailRepository detailRepository) {
+    public ChemicalListResource(ChemicalListRepository repository, ChemicalListChemicalRepository chemicalListChemicalRepository) {
         this.listRepository = repository;
         this.chemicalListChemicalRepository = chemicalListChemicalRepository;
-        this.detailRepository = detailRepository;
     }
 
     /**
@@ -142,21 +139,5 @@ public class ChemicalListResource {
         log.debug("dtxsid={}", dtxsid);
 
         return chemicalListChemicalRepository.getListNames(dtxsid);
-    }
-
-
-    /**
-     * {@code GET  /chemical/list/{listName}/chemicals : get list of chemical lists.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemical lists}.
-     */
-    @Operation(summary = "Get list chemicals by list name")
-    @RequestMapping(value = "chemical/list/chemicals/search/by-listname/{listName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    List<ChemicalListDetailAll> chemicalInList(@Parameter(required = true, description = "Chemical List Name", example = "40CFR1164")
-            @PathVariable String listName) {
-
-        log.debug("list name={}", listName);
-
-        return detailRepository.findByListNameIgnoreCaseOrderByDtxsid(listName, ChemicalListDetailAll.class);
     }
 }
