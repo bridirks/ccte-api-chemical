@@ -19,8 +19,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
 import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -83,7 +81,7 @@ public class ChemicalSearchResource {
                                                         @ExampleObject(name="CASRN", value = "1912-24", description = "Starting part of CASRN"),
                                                         @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU", description = "For InChIKey starting 13 characters are needed")
                                                             })
-                                              @PathVariable("word") String word, @Parameter(required = false, description = "Limit number of records to return", examples = @ExampleObject(value = "20"))
+                                              @PathVariable("word") String word, @Parameter(description = "Limit number of records to return", examples = @ExampleObject(value = "20"))
                                               @RequestParam(value = "top", required = false) Integer top) {
 
         String searchWord = chemicalService.preprocessingSearchWord(word);
@@ -250,7 +248,7 @@ public class ChemicalSearchResource {
                     @ExampleObject(name="Synonym", value = "razine", description = "Substring match of URLencoded chemical name(including synonyms)"),
                     @ExampleObject(name="CASRN", value = "1912-24", description = "Substring match of CASRN"),
                     @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU", description = "Substring match of InChIKey")})
-            @PathVariable("word") String word, @Parameter(required = false, description = "Limit number of records to return", examples = @ExampleObject(value = "20"))
+            @PathVariable("word") String word, @Parameter(description = "Limit number of records to return", examples = @ExampleObject(value = "20"))
     @RequestParam(value = "top", required = false) Integer top) {
 
         String searchWord = chemicalService.preprocessingSearchWord(word);
