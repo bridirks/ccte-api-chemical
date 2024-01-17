@@ -4,6 +4,7 @@ import gov.epa.ccte.api.chemical.domain.ChemicalList;
 import gov.epa.ccte.api.chemical.projection.chemicallist.*;
 import gov.epa.ccte.api.chemical.repository.ChemicalListChemicalRepository;
 import gov.epa.ccte.api.chemical.repository.ChemicalListRepository;
+import gov.epa.ccte.api.chemical.service.SearchChemicalService;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -33,10 +34,11 @@ public class ChemicalListResource {
 
     final private ChemicalListRepository listRepository;
     final private ChemicalListChemicalRepository chemicalListChemicalRepository;
-
-    public ChemicalListResource(ChemicalListRepository repository, ChemicalListChemicalRepository chemicalListChemicalRepository) {
+    final private SearchChemicalService chemicalService;
+    public ChemicalListResource(ChemicalListRepository repository, ChemicalListChemicalRepository chemicalListChemicalRepository, SearchChemicalService chemicalService) {
         this.listRepository = repository;
         this.chemicalListChemicalRepository = chemicalListChemicalRepository;
+        this.chemicalService = chemicalService;
     }
 
     /**
@@ -139,5 +141,30 @@ public class ChemicalListResource {
         log.debug("dtxsid={}", dtxsid);
 
         return chemicalListChemicalRepository.getListNames(dtxsid);
+    }
+
+
+    @RequestMapping(value = "chemical/list/chemicals/search/start-with/{list}/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<String> startWith(@PathVariable String list, @PathVariable String word){
+
+        log.debug("list={}, search word={}", list, word);
+
+        String searchWord = chemicalService.preprocessingSearchWord(word);
+
+        return chemicalListChemicalRepository.startWith(searchWord, list);
+
+    }
+
+    @RequestMapping(value = "chemical/list/chemicals/search/contain/{list}/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<String> contain(@PathVariable String list, @PathVariable String word){
+
+        log.debug("list={}, search word={}", list, word);
+
+        String searchWord = chemicalService.preprocessingSearchWord(word);
+
+        return chemicalListChemicalRepository.contain(searchWord, list);
+
     }
 }
