@@ -6,6 +6,7 @@ import gov.epa.ccte.api.chemical.repository.ChemicalListChemicalRepository;
 import gov.epa.ccte.api.chemical.repository.ChemicalListRepository;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
+import gov.epa.ccte.api.chemical.web.rest.requests.ChemicalListsAndDtxsids;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -165,6 +166,19 @@ public class ChemicalListResource {
         String searchWord = chemicalService.preprocessingSearchWord(word);
 
         return chemicalListChemicalRepository.contain(searchWord, list);
+
+    }
+
+    @Operation(hidden = true)
+    @RequestMapping(value = "chemical/list/chemicals/search/by-dtxsid", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<String> contain(@RequestBody ChemicalListsAndDtxsids request){
+
+        log.debug("dtxsids = {}, chemical lists = {}", request.getDtxsids().size(), request.getChemicalLists().size());
+
+        List<String> result = chemicalListChemicalRepository.chemicalListsAndDtxsids(request.getChemicalLists(), request.getDtxsids());
+
+        return result;
 
     }
 }
