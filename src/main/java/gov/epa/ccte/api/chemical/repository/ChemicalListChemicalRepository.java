@@ -24,4 +24,8 @@ public interface ChemicalListChemicalRepository extends JpaRepository<ChemicalLi
                     " where s.modified_value like %:word% and upper(l.list_name) = upper(:list) ")
     List<String> contain(String word, String list);
 
+    @Query(nativeQuery = true,
+    value = " select dtxsid || '-' || list_name from ch.v_chemical_list_chemicals where dtxsid in (:dtxsids) and list_name in (:chemicalLists) ")
+    List<String> chemicalListsAndDtxsids( List<String> chemicalLists, List<String> dtxsids);
+
 }
