@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.2.1</version>
+		<version>3.2.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>gov.epa.ccte.api</groupId>
@@ -51,8 +51,8 @@
 		<!-- Swagger/OpenAPI doc -->
 		<dependency>
 			<groupId>org.springdoc</groupId>
-			<artifactId>springdoc-openapi-ui</artifactId>
-			<version>1.6.13</version>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.3.0</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/com.epam.indigo/indigo -->
 		<dependency>
@@ -64,6 +64,12 @@
 		<dependency>
 			<groupId>com.epam.indigo</groupId>
 			<artifactId>indigo-renderer</artifactId>
+			<version>1.6.1</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.epam.indigo/indigo-inchi -->
+		<dependency>
+			<groupId>com.epam.indigo</groupId>
+			<artifactId>indigo-inchi</artifactId>
 			<version>1.6.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/io.pivotal.cfenv/java-cfenv-boot -->

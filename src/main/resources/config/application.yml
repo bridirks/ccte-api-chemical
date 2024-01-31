@@ -58,6 +58,7 @@ springdoc:
     enabled: true
   swagger-ui:
     enabled: true
+    disable-swagger-default-url: false
   remove-broken-reference-definitions: false
 server:
   servlet:
