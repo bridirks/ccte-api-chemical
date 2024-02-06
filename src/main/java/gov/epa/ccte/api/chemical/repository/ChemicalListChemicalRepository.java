@@ -11,8 +11,8 @@ import java.util.List;
 @RepositoryRestResource(exported = false)
 public interface ChemicalListChemicalRepository extends JpaRepository<ChemicalListChemical, Long> {
 
-    @Query("select distinct c.listName from ChemicalListChemical c where c.dtxsid = ?1")
-    List<String> getListNames(String dtxsid);
+    @Query("select distinct c.listName from ChemicalListChemical c join ChemicalList l on c.listId = l.id and c.dtxsid = :dtxsid and l.visibility = :visibility ")
+    List<String> getListNames(String dtxsid, String visibility);
 
     @Query(nativeQuery = true,
     value = " select distinct s.dtxsid from ms.chemical_search s join ch.v_chemical_list_chemicals l on l.dtxsid = s.dtxsid " +

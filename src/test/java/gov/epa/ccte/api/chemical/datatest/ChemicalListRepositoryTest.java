@@ -43,12 +43,12 @@ public class ChemicalListRepositoryTest {
 
     @Test
     void testFindByType(){
-        assertThat(repository.findByType("federal", ChemicalListAll.class).size()).isEqualTo(1);
+        assertThat(repository.findByTypeAndVisibility("federal", "PUBLIC", ChemicalListAll.class).size()).isEqualTo(1);
     }
 
     @Test
     void testFindByListName(){
-        assertThat(repository.findByListNameIgnoreCase("MICROCYSTIN", ChemicalListAll.class).isPresent()).isTrue();
+        assertThat(repository.findByListNameIgnoreCaseAndVisibility("MICROCYSTIN", "PUBLIC", ChemicalListAll.class).isPresent()).isTrue();
     }
 
     @Test
