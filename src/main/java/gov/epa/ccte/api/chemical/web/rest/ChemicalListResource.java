@@ -60,6 +60,8 @@ public class ChemicalListResource {
                     listRepository.findByVisibilityOrderByTypeAscListNameAsc("PUBLIC", ChemicalListAll.class);
             case chemicallistname ->
                     listRepository.findByVisibilityOrderByTypeAscListNameAsc("PUBLIC", ChemicalListName.class);
+            case chemicalListwithdtxsids ->
+                    listRepository.getListsWithDtxsids("PUBLIC");
             default -> null;
         };
     }
@@ -91,8 +93,9 @@ public class ChemicalListResource {
                                       @RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection
                                       ){
         return switch (projection) {
-            case chemicallistall -> listRepository.findByType(type, ChemicalListAll.class);
-            case chemicallistname -> listRepository.findByType(type, ChemicalListName.class);
+            case chemicallistall -> listRepository.findByTypeAndVisibility(type, "PUBLIC", ChemicalListAll.class);
+            case chemicallistname -> listRepository.findByTypeAndVisibility(type,"PUBLIC", ChemicalListName.class);
+            case chemicalListwithdtxsids -> listRepository.getListsWithDtxsidsByType(type, "PUBLIC");
             default -> null;
         };
     }
@@ -114,19 +117,19 @@ public class ChemicalListResource {
         log.debug("list name={}", listName);
 
         return switch (projection) {
-            case chemicallistall -> listRepository.findByListNameIgnoreCase(listName, ChemicalListAll.class)
+            case chemicallistall -> listRepository.findByListNameIgnoreCaseAndVisibility(listName, "PUBLIC", ChemicalListAll.class)
                     .orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
-            case chemicalListwithdtxsids -> getChemicalListWithDtxsids(listName)
+            case chemicallistname -> listRepository.findByListNameIgnoreCaseAndVisibility(listName,"PUBLIC", ChemicalListName.class)
                     .orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
-            case chemicallistname -> listRepository.findByListNameIgnoreCase(listName, ChemicalListName.class)
+            case chemicalListwithdtxsids -> listRepository.getListWithDtxsidsByListName(listName, "PUBLIC")
                     .orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
             default -> null;
         };
     }
 
-    private Optional<ChemicalListWithDtxsids> getChemicalListWithDtxsids(String listName) {
-        return listRepository.getChemicalWithDtxsids(listName);
-    }
+//    private Optional<ChemicalListWithDtxsids> getChemicalListWithDtxsids(String listName) {
+//        return listRepository.getListWithDtxsidsByListName(listName);
+//    }
 
     /**
      * {@code GET  chemical/list/search/by-dtxsid/ : get chemical lists names.
@@ -136,12 +139,17 @@ public class ChemicalListResource {
     @Operation(summary = "Get lists names by dtxsid")
     @RequestMapping(value = "chemical/list/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    List<String> listByDtxsid( @Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID1020560")
-            @PathVariable String dtxsid){
+    List listByDtxsid( @Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID1020560") @PathVariable String dtxsid,
+                               @RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection){
 
-        log.debug("dtxsid={}", dtxsid);
+        log.debug("dtxsid={}, projection={}", dtxsid, projection);
 
-        return chemicalListChemicalRepository.getListNames(dtxsid);
+        return switch (projection){
+            case chemicallistname -> chemicalListChemicalRepository.getListNames(dtxsid, "PUBLIC");
+            case chemicallistall -> listRepository.getListsByDtxsid(dtxsid, "PUBLIC");
+            default -> null;
+        };
+       // return chemicalListChemicalRepository.getListNames(dtxsid);
     }
 
 
