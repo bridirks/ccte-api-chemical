@@ -14,6 +14,6 @@ jobs:
          token: ${{ secrets.GITHUB_TOKEN }}
          format: openapi
          target: 'https://api-ccte-stg.epa.gov/docs/chemical.json'
-        #specify the scanning mode as '-a' for active and "-p" for passive scan on the target API
-         cmd_options: '-p'
+        #specify the scanning mode as '-a' for active scan on the target API
+         #cmd_options: '-a'
          
