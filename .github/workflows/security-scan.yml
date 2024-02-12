@@ -2,7 +2,7 @@ name: Application-security-scan
 
 on:
   push:
-   branches: [ dev, staging, dev-756 ]
+   branches: [ dev, staging ]
     
 jobs:
   security-scan:
@@ -15,5 +15,5 @@ jobs:
          format: openapi
          target: 'https://api-ccte-stg.epa.gov/docs/chemical.json'
          cmd_options: '-a'
-         active_scan: false
+         #active_scan: false
          
