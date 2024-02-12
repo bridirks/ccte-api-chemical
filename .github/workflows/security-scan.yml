@@ -2,7 +2,7 @@ name: Application-security-scan
 
 on:
   push:
-   branches: [ dev, staging ]
+   branches: [ dev, staging, dev-756 ]
     
 jobs:
   security-scan:
@@ -14,6 +14,6 @@ jobs:
          token: ${{ secrets.GITHUB_TOKEN }}
          format: openapi
          target: 'https://api-ccte-stg.epa.gov/docs/chemical.json'
-        #include the alpha passive scan rules as well
-         cmd_options: '-a'
+        #specify the scanning mode as 'Attack' for active scan on the target API
+         #cmd_options: '-a'
          
