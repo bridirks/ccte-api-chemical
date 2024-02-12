@@ -2,7 +2,7 @@ name: Application-security-scan
 
 on:
   push:
-   branches: [ dev, staging, dev-756 ]
+   branches: [ dev, staging ]
     
 jobs:
   security-scan:
