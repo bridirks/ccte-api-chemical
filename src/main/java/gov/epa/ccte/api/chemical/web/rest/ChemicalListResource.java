@@ -21,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * REST controller for getting the {@link ChemicalList}s.
@@ -60,7 +59,7 @@ public class ChemicalListResource {
                     listRepository.findByVisibilityOrderByTypeAscListNameAsc("PUBLIC", ChemicalListAll.class);
             case chemicallistname ->
                     listRepository.findByVisibilityOrderByTypeAscListNameAsc("PUBLIC", ChemicalListName.class);
-            case chemicalListwithdtxsids ->
+            case chemicallistwithdtxsids ->
                     listRepository.getListsWithDtxsids("PUBLIC");
             default -> null;
         };
@@ -95,7 +94,7 @@ public class ChemicalListResource {
         return switch (projection) {
             case chemicallistall -> listRepository.findByTypeAndVisibility(type, "PUBLIC", ChemicalListAll.class);
             case chemicallistname -> listRepository.findByTypeAndVisibility(type,"PUBLIC", ChemicalListName.class);
-            case chemicalListwithdtxsids -> listRepository.getListsWithDtxsidsByType(type, "PUBLIC");
+            case chemicallistwithdtxsids -> listRepository.getListsWithDtxsidsByType(type, "PUBLIC");
             default -> null;
         };
     }
@@ -121,7 +120,7 @@ public class ChemicalListResource {
                     .orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
             case chemicallistname -> listRepository.findByListNameIgnoreCaseAndVisibility(listName,"PUBLIC", ChemicalListName.class)
                     .orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
-            case chemicalListwithdtxsids -> listRepository.getListWithDtxsidsByListName(listName, "PUBLIC")
+            case chemicallistwithdtxsids -> listRepository.getListWithDtxsidsByListName(listName, "PUBLIC")
                     .orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
             default -> null;
         };
@@ -147,6 +146,7 @@ public class ChemicalListResource {
         return switch (projection){
             case chemicallistname -> chemicalListChemicalRepository.getListNames(dtxsid, "PUBLIC");
             case chemicallistall -> listRepository.getListsByDtxsid(dtxsid, "PUBLIC");
+           // case chemicalListwithdtxsids -> listRepository.getListsByDtxsidWithDtxsids(dtxsid, "PUBLIC");
             default -> null;
         };
        // return chemicalListChemicalRepository.getListNames(dtxsid);

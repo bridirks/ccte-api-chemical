@@ -36,32 +36,32 @@ public interface ChemicalListRepository extends JpaRepository<ChemicalList, Inte
 
     @Transactional(readOnly = true)
     @Query( nativeQuery = true,
-            value = "select l.list_name, l.label, l.type, l.visibility, l.short_description, l.long_description, l.chemical_count, " +
-                    " l.created_at, l.updated_at, string_agg(c.dtxsid,',') as dtxsids " +
+            value = "select l.list_name as listName, l.label, l.type, l.visibility, l.short_description as shortDescription, l.long_description as longDescription, l.chemical_count as chemicalCount, " +
+                    " l.created_at as createdAt, l.updated_at as updatedAt, l.id, string_agg(c.dtxsid,',') as dtxsids " +
                     " from ch.v_chemical_lists l join ch.v_chemical_list_chemicals c on " +
                     " l.id = c.list_id and upper(l.list_name) = upper(:listName) and l.visibility = :visibility" +
                     " group by l.list_name, l.label, l.type, l.visibility, l.short_description, l.long_description, l.chemical_count, " +
-                    " l.created_at, l.updated_at")
+                    " l.created_at, l.updated_at, l.id")
     Optional<ChemicalListWithDtxsids> getListWithDtxsidsByListName(String listName, String visibility);
 
     @Transactional(readOnly = true)
     @Query( nativeQuery = true,
-            value = "select l.list_name, l.label, l.type, l.visibility, l.short_description, l.long_description, l.chemical_count, " +
-                    " l.created_at, l.updated_at, string_agg(c.dtxsid,',') as dtxsids " +
+            value = "select l.list_name as listName, l.label, l.type, l.visibility, l.short_description as shortDescription, l.long_description as longDescription, l.chemical_count as chemicalCount, " +
+                    " l.created_at as createdAt, l.updated_at as updatedAt, l.id, string_agg(c.dtxsid,',') as dtxsids " +
                     " from ch.v_chemical_lists l join ch.v_chemical_list_chemicals c on " +
                     " l.id = c.list_id and l.type = :type and l.visibility = :visibility "+
                     " group by l.list_name, l.label, l.type, l.visibility, l.short_description, l.long_description, l.chemical_count, " +
-                    " l.created_at, l.updated_at")
+                    " l.created_at, l.updated_at, l.id")
     List<ChemicalListWithDtxsids> getListsWithDtxsidsByType(String type, String visibility);
 
     @Transactional(readOnly = true)
     @Query( nativeQuery = true,
-            value = "select l.list_name, l.label, l.type, l.visibility, l.short_description, l.long_description, l.chemical_count, " +
-                    " l.created_at, l.updated_at, string_agg(c.dtxsid,',') as dtxsids " +
+            value = "select l.list_name as listName, l.label, l.type, l.visibility, l.short_description as shortDescription, l.long_description as longDescription, l.chemical_count as chemicalCount, " +
+                    " l.created_at as createdAt, l.updated_at as updatedAt, l.id, string_agg(c.dtxsid,',') as dtxsids " +
                     " from ch.v_chemical_lists l join ch.v_chemical_list_chemicals c on " +
                     " l.id = c.list_id and l.visibility = :visibility " +
                     " group by l.list_name, l.label, l.type, l.visibility, l.short_description, l.long_description, l.chemical_count, " +
-                    " l.created_at, l.updated_at")
+                    " l.created_at, l.updated_at, l.id")
     List<ChemicalListWithDtxsids> getListsWithDtxsids(String visibility);
 
     @Transactional(readOnly = true)
@@ -72,4 +72,14 @@ public interface ChemicalListRepository extends JpaRepository<ChemicalList, Inte
                     " l.id = c.list_id and c.dtxsid = :dtxsid and l.visibility = :visibility " +
                     " order by l.type, l.list_name, l.label  " )
     List getListsByDtxsid(String dtxsid,String visibility);
+
+    @Transactional(readOnly = true)
+    @Query( nativeQuery = true,
+            value = "select l.list_name, l.label, l.type, l.visibility, l.short_description, l.long_description, l.chemical_count, " +
+                    " l.created_at, l.updated_at, l.id, string_agg(c.dtxsid,',') as dtxsids " +
+                    " from ch.v_chemical_lists l join ch.v_chemical_list_chemicals c on " +
+                    " l.id = c.list_id and c.dtxsid = :dtxsid and l.visibility = :visibility " +
+                    " group by l.list_name, l.label, l.type, l.visibility, l.short_description, l.long_description, l.chemical_count, " +
+                    " l.created_at, l.updated_at, l.id")
+    List getListsByDtxsidWithDtxsids(String dtxsid,String visibility);
 }
