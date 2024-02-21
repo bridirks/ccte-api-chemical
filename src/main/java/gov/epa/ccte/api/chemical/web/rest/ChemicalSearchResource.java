@@ -1,9 +1,7 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
-import gov.epa.ccte.api.chemical.projection.search.CcdChemicalSearchResult;
-import gov.epa.ccte.api.chemical.projection.search.ChemicalBatchSearchResult;
-import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchAll;
-import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchInternal;
+import gov.epa.ccte.api.chemical.domain.ChemicalSearch;
+import gov.epa.ccte.api.chemical.projection.search.*;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import gov.epa.ccte.api.chemical.service.ChemicalUtils;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
@@ -31,7 +29,7 @@ import java.util.stream.Collectors;
 
 
 /**
- * REST controller for getting the {@link gov.epa.ccte.api.chemical.domain.ChemicalSearch}s.
+ * REST controller for getting the {@link ChemicalSearch}s.
  */
 @Tag(name = "Chemical Search Resource",
         description = "API endpoints for searching chemicals using different identifiers or characteristics.")
@@ -176,24 +174,43 @@ public class ChemicalSearchResource {
                     schema=@Schema(oneOf = {ProblemDetail.class})))
     })
     @RequestMapping(value = "chemical/search/equal/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    List<ChemicalSearchAll> chemicalEqual (@Parameter(required = true, description = "Exact match of search word",
+    List chemicalEqual (@Parameter(required = true, description = "Exact match of search word",
             examples = {@ExampleObject(name="DSSTox Substance Identifier", value = "DTXSID7020182", description = "Exact match of DTXSID"),
                     @ExampleObject(name="DSSTox Compound Identifier", value = "DTXCID505", description = "Exact match of DTXCID"),
                     @ExampleObject(name="Synonym", value = "atrazine", description = "Exact match of URLencoded chemical name(including synonyms)"),
                     @ExampleObject(name="CASRN", value = "1912-24-9", description = "Exact match of CASRN"),
                     @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU-UHFFFAOYSA-N", description = "Exact match of InChIKey")})
-                                           @PathVariable("word") String word) {
+                                           @PathVariable("word") String word,
+                                           @RequestParam (value = "projection",required = false, defaultValue = "chemicalsearchall") String projection) {
 
         String searchWord = chemicalService.preprocessingSearchWord(word);
 
         log.debug("input search word = {} and process search word = {}. ", word, searchWord);
 
-        List<ChemicalSearchAll> searchResult =  searchRepository.findByModifiedValueOrderByRankAsc(searchWord, ChemicalSearchAll.class);
+        List searchResult = null;
 
-        if(!searchResult.isEmpty())
-            return chemicalService.removeDuplicates(searchResult);
-        else
+        switch (projection){
+            case "chemicalsearchall": {
+                searchResult = searchRepository.findByModifiedValueOrderByRankAsc(searchWord, ChemicalSearchAll.class);
+                searchResult = chemicalService.removeDuplicates(searchResult);
+                break;
+            }
+            case "dtxsidonly":{
+                searchResult = searchRepository.findByModifiedValueOrderByRankAsc(searchWord, DtxsidOnly.class);
+                searchResult = chemicalService.removeDuplicates(searchResult);
+                break;
+            }
+            case "ccdsearchresult":{
+                searchResult = searchRepository.equalCcd(searchWord);
+                searchResult = chemicalService.removeDuplicates(searchResult);
+                break;
+            }
+        }
+
+        if(searchResult == null || searchResult.isEmpty())
             throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
+        else
+            return searchResult;
     }
 
     /**
@@ -249,7 +266,7 @@ public class ChemicalSearchResource {
                     @ExampleObject(name="CASRN", value = "1912-24", description = "Substring match of CASRN"),
                     @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU", description = "Substring match of InChIKey")})
             @PathVariable("word") String word, @Parameter(description = "Limit number of records to return", examples = @ExampleObject(value = "20"))
-    @RequestParam(value = "top", required = false) Integer top) {
+    @RequestParam(value = "top", required = false, defaultValue = "0") Integer top) {
 
         String searchWord = chemicalService.preprocessingSearchWord(word);
 
@@ -259,13 +276,13 @@ public class ChemicalSearchResource {
 
         searchResult = chemicalService.removeDuplicates(searchResult);
 
+        if(top > 0){
+            log.debug("picking up top {} records", top);
+            searchResult = searchResult.stream().limit(top).collect(Collectors.toList());
+        }
+
         if(!searchResult.isEmpty()) {
-            if (top != null && top > 0) {
-                log.debug("picking up top {} records", top);
-                return searchResult.stream().limit(top).collect(Collectors.toList());
-            } else {
-                return searchResult;
-            }
+            return searchResult;
         }else
             throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
     }
@@ -316,7 +333,7 @@ public class ChemicalSearchResource {
 
     @RequestMapping(value = "chemical/test/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     List<CcdChemicalSearchResult> testSearch( @PathVariable("word") String searchWord){
-        return searchRepository.equalCcd(searchWord);
+        return searchRepository.equalCcd(searchWord.toUpperCase());
     }
 }
 
