@@ -1,9 +1,7 @@
 package gov.epa.ccte.api.chemical.service;
 
 
-import gov.epa.ccte.api.chemical.projection.search.ChemicalBatchSearchResult;
-import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchAll;
-import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchInternal;
+import gov.epa.ccte.api.chemical.projection.search.*;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import gov.epa.ccte.api.chemical.web.rest.BatchMsReadyMassForm;
 import lombok.extern.slf4j.Slf4j;
@@ -195,23 +193,51 @@ public class SearchChemicalService {
     }
 
     // This will remove duplicates(same dtxsid number) from search result
-    public List<ChemicalSearchAll> removeDuplicates(List<ChemicalSearchAll> chemicals) {
+    public List removeDuplicates(List chemicals) {
 
-        List<ChemicalSearchAll> returnList = new ArrayList<>();
+        List returnList = new ArrayList<>();
         List<String> dtxsidList = new ArrayList<>();
+        int duplicateCount = 0;
         //List<String> dtxcidList = new ArrayList<String>();
 
-        for(ChemicalSearchAll chemical : chemicals){
+        for(Object chemical : chemicals){
             //if(chemical.getDtxsid() != null ){}
-            if(dtxsidList.contains(chemical.getDtxsid()) == false){
-                dtxsidList.add(chemical.getDtxsid());
+            String dtxsid = "";
+            if(chemical instanceof ChemicalSearchAll)
+                dtxsid = ((ChemicalSearchAll) chemical).getDtxsid();
+            else if (chemical instanceof CcdChemicalSearchResult)
+                dtxsid = ((CcdChemicalSearchResult) chemical).getDtxsid();
+            else if (chemical instanceof DtxsidOnly)
+                dtxsid = ((DtxsidOnly) chemical).getDtxsid();
+
+            if(dtxsidList.contains(dtxsid) == false){
+                dtxsidList.add(dtxsid);
                 returnList.add(chemical);
             } else{
-                log.debug("skip duplicate -  " + chemical );
+                duplicateCount++;
             }
         }
+        log.debug("{} are skipped as duplicate", duplicateCount);
         return returnList;
     }
+
+//    public List<DtxsidOnly> removeDuplicates(List<DtxsidOnly> chemicals){
+//        List<DtxsidOnly> returnList = new ArrayList<>();
+//        List<String> dtxsidList = new ArrayList<>();
+//        int duplicateCount = 0;
+//
+//        for(DtxsidOnly chemical : chemicals){
+//            if(dtxsidList.contains(chemical.getDtxsid()) == false){
+//                dtxsidList.add(chemical.getDtxsid());
+//                returnList.add(chemical);
+//            }else{
+//                duplicateCount++;
+//            }
+//        }
+//
+//        log.debug("{} are skipped as duplicate", duplicateCount);
+//        return returnList;
+//    }
 
     public List<String> getSuggestions(String word) {
 
