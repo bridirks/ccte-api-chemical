@@ -128,7 +128,10 @@ public class ChemicalDetailResource {
         if(dtxsids.length > batchSize)
             throw new HigherNumberOfDtxsidException(dtxsids.length, batchSize);
 
-        return getChemicalDetails(dtxsids, "dtxsid", projection);
+        List data =  getChemicalDetails(dtxsids, "dtxsid", projection);
+        log.debug("database return {}", data.size());
+
+        return data;
     }
 
     private List getChemicalDetails(String[] dtxsids, String type, ChemicalDetailProjection projection) {
