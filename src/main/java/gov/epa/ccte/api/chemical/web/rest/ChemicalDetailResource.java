@@ -4,6 +4,7 @@ import gov.epa.ccte.api.chemical.domain.ChemicalDetail;
 import gov.epa.ccte.api.chemical.projection.chemicaldetail.*;
 import gov.epa.ccte.api.chemical.service.ChemicalDetailService;
 import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfDtxsidException;
+import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -60,7 +61,14 @@ public class ChemicalDetailResource {
 
         log.debug("dtxsid = {}", dtxsid);
 
-        return getChemicalDetail(dtxsid, "dtxsid", projection);
+        //return getChemicalDetail(dtxsid, "dtxsid", projection);
+
+        List data = getChemicalDetails(new String[]{dtxsid}, "dtxsid", projection);
+
+        if(data.isEmpty())
+            throw  new IdentifierNotFoundException("dtxsid", dtxsid);
+        else
+            return (ChemicalDetailBase) data.get(0);
     }
 
     /**
@@ -83,18 +91,12 @@ public class ChemicalDetailResource {
 
         log.debug("dtxcid = {}", dtxcid);
 
-        return getChemicalDetail(dtxcid, "dtxcid", projection);
-    }
+        List data = getChemicalDetails(new String[]{dtxcid}, "dtxcid", projection);
 
-    private ChemicalDetailBase getChemicalDetail(String dtxsid, String type, ChemicalDetailProjection projection) {
-        return switch (projection) {
-            case chemicaldetailall -> detailService.getChemicalDetailsForId(dtxsid, type, ChemicalDetailAll.class);
-            case chemicaldetailstandard ->
-                    detailService.getChemicalDetailsForId(dtxsid, type, ChemicalDetailStandard.class);
-            case chemicalidentifier -> detailService.getChemicalDetailsForId(dtxsid, type, ChemicalIdentifier.class);
-            case chemicalstructure -> detailService.getChemicalDetailsForId(dtxsid, type, ChemicalStructure.class);
-            case ntatoolkit -> detailService.getChemicalDetailsForId(dtxsid, type, NtaToolkit.class);
-        };
+        if(data.isEmpty())
+            throw  new IdentifierNotFoundException("dtxcid", dtxcid);
+        else
+            return (ChemicalDetailBase) data.get(0);
     }
 
     /**
@@ -126,13 +128,20 @@ public class ChemicalDetailResource {
         if(dtxsids.length > batchSize)
             throw new HigherNumberOfDtxsidException(dtxsids.length, batchSize);
 
+        return getChemicalDetails(dtxsids, "dtxsid", projection);
+    }
+
+    private List getChemicalDetails(String[] dtxsids, String type, ChemicalDetailProjection projection) {
         return switch (projection) {
-            case chemicaldetailall -> detailService.getChemicalDetailsForBatch(dtxsids, ChemicalDetailAll.class);
+            case chemicaldetailall ->
+                    detailService.getChemicalDetailsForBatch(dtxsids, ChemicalDetailAll.class, type);
             case chemicaldetailstandard ->
-                    detailService.getChemicalDetailsForBatch(dtxsids, ChemicalDetailStandard.class);
-            case chemicalidentifier -> detailService.getChemicalDetailsForBatch(dtxsids, ChemicalIdentifier.class);
-            case chemicalstructure -> detailService.getChemicalDetailsForBatch(dtxsids, ChemicalStructure.class);
-            case ntatoolkit -> detailService.getChemicalDetailsForBatch(dtxsids, NtaToolkit.class);
+                    detailService.getChemicalDetailsForBatch(dtxsids, ChemicalDetailStandard.class, type);
+            case chemicalidentifier ->
+                    detailService.getChemicalDetailsForBatch(dtxsids, ChemicalIdentifier.class, type);
+            case chemicalstructure ->
+                    detailService.getChemicalDetailsForBatch(dtxsids, ChemicalStructure.class, type);
+            case ntatoolkit -> detailService.getChemicalDetailsForBatch(dtxsids, NtaToolkit.class, type);
         };
     }
 

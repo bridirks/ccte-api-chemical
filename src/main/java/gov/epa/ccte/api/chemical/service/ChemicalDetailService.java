@@ -30,15 +30,12 @@ public class ChemicalDetailService {
         }
     }
 
-    public  <T> List<T> getChemicalDetailsForBatch(String[] dtxsids, Class<T> tClass) {
+    public  <T> List<T> getChemicalDetailsForBatch(String[] dtxsids, Class<T> tClass, String type) {
 
-        return detailRepository.findByDtxsidInOrderByDtxsidAsc(dtxsids, tClass);
-
-//        switch (request.getSearchTerm()){
-//            case DTXSID: return detailRepository.findByDtxsidInOrderByDtxsidAsc(request.getValues(), tClass);
-//            //case DTXCID: return detailRepository.findByDtxcidInOrderByDtxcidAsc(request.getValues(),tClass);
-//            default: return Collections.emptyList();
-//        }
+        if(type.equalsIgnoreCase("dtxsid"))
+            return detailRepository.findByDtxsidInOrderByDtxsidAsc(dtxsids, tClass);
+        else
+            return detailRepository.findByDtxcidInOrderByDtxcidAsc(dtxsids, tClass);
     }
 
     public <T> List<T> getChemicalDetailsForListName(String listName, Class<T> tClass) {
