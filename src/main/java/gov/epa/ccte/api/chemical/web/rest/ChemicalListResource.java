@@ -56,9 +56,9 @@ public class ChemicalListResource {
         //return listRepository.findAll();
         return switch (projection) {
             case chemicallistall ->
-                    listRepository.findByVisibilityOrderByTypeAscListNameAsc("PUBLIC", ChemicalListAll.class);
+                    listRepository.findByVisibilityAndIsVisibleOrderByTypeAscListNameAsc("PUBLIC",true, ChemicalListAll.class);
             case chemicallistname ->
-                    listRepository.findByVisibilityOrderByTypeAscListNameAsc("PUBLIC", ChemicalListName.class);
+                    listRepository.findByVisibilityAndIsVisibleOrderByTypeAscListNameAsc("PUBLIC", true, ChemicalListName.class);
             case chemicallistwithdtxsids ->
                     listRepository.getListsWithDtxsids("PUBLIC");
             default -> null;
@@ -92,8 +92,8 @@ public class ChemicalListResource {
                                       @RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection
                                       ){
         return switch (projection) {
-            case chemicallistall -> listRepository.findByTypeAndVisibility(type, "PUBLIC", ChemicalListAll.class);
-            case chemicallistname -> listRepository.findByTypeAndVisibility(type,"PUBLIC", ChemicalListName.class);
+            case chemicallistall -> listRepository.findByTypeAndVisibilityAndIsVisibleOrderByListNameAsc(type, "PUBLIC", true, ChemicalListAll.class);
+            case chemicallistname -> listRepository.findByTypeAndVisibilityAndIsVisibleOrderByListNameAsc(type,"PUBLIC", true, ChemicalListName.class);
             case chemicallistwithdtxsids -> listRepository.getListsWithDtxsidsByType(type, "PUBLIC");
             default -> null;
         };
@@ -116,9 +116,9 @@ public class ChemicalListResource {
         log.debug("list name={}", listName);
 
         return switch (projection) {
-            case chemicallistall -> listRepository.findByListNameIgnoreCaseAndVisibility(listName, "PUBLIC", ChemicalListAll.class)
+            case chemicallistall -> listRepository.findByListNameIgnoreCaseAndVisibilityAndIsVisible(listName, "PUBLIC",true, ChemicalListAll.class)
                     .orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
-            case chemicallistname -> listRepository.findByListNameIgnoreCaseAndVisibility(listName,"PUBLIC", ChemicalListName.class)
+            case chemicallistname -> listRepository.findByListNameIgnoreCaseAndVisibilityAndIsVisible(listName,"PUBLIC",true, ChemicalListName.class)
                     .orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
             case chemicallistwithdtxsids -> listRepository.getListWithDtxsidsByListName(listName, "PUBLIC")
                     .orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
