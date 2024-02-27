@@ -42,6 +42,10 @@ public class ChemicalSearchResource {
     private final List<String> searchMatchWithoutInchikey;
     private final List<String> searchMatchAll;
 
+    private final List<String> searchNames4SImgleSearch;
+    
+    private final List<String> isThisCASRN;
+
     public ChemicalSearchResource(ChemicalSearchRepository searchRepository, SearchChemicalService chemicalService) {
         this.searchRepository = searchRepository;
         this.chemicalService = chemicalService;
@@ -53,6 +57,10 @@ public class ChemicalSearchResource {
                 "CAS-RN","Synonym","Integrated Source CAS-RN","DSSTox_Compound_Id","Systematic Name","Integrated Source Name",
                 "Expert Validated Synonym","Synonym from Valid Source","FDA CAS-Like Identifier","DSSTox_Substance_Id",
                 "InChIKey", "Indigo InChIKey", "EHCA Number", "EC Number");
+        searchNames4SImgleSearch = Arrays.asList("Deleted CAS-RN","PC-Code","Approved Name","Alternate CAS-RN",
+                "CAS-RN","Synonym","Integrated Source CAS-RN","DSSTox_Compound_Id","Systematic Name","Integrated Source Name",
+                "Expert Validated Synonym","Synonym from Valid Source","FDA CAS-Like Identifier","DSSTox_Substance_Id", "EHCA Number", "EC Number");
+        isThisCASRN = Arrays.asList("Alternate CAS-RN","Integrated Source CAS-RN","CASRN","FDA CAS-Like Identifier","Deleted CAS-RN");
     }
 
     /**
@@ -93,9 +101,12 @@ public class ChemicalSearchResource {
         // for adding exact search on top of return result
         String removeSpaces = searchWord.replaceAll(" ", "");
 
-        searchResult = searchRepository.findByModifiedValueInOrderByRankAsc(List.of(searchWord, removeSpaces),ChemicalSearchAll.class);
+        // searchResult = searchRepository.findByModifiedValueInOrderByRankAsc(List.of(searchWord, removeSpaces),ChemicalSearchAll.class);
+        searchResult = searchRepository.findByModifiedValueInAndSearchNameInOrderByRankAsc(List.of(searchWord, removeSpaces), searchNames4SImgleSearch, ChemicalSearchAll.class);
 
-        if(!ChemicalUtils.isDtxsid(searchWord) && !ChemicalUtils.isDtxcid(searchWord)) {
+        log.debug("records {}",searchResult.size());
+
+        if(shouldSearchMore(searchWord, searchResult)) {
             // avoid InChIKey
             if (searchWord.length() > 13) {
                 searchResult2 = searchRepository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(searchWord, searchMatchAll, ChemicalSearchAll.class);
@@ -120,6 +131,13 @@ public class ChemicalSearchResource {
         }else {
             throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
         }
+    }
+
+
+    // identify the condition if there is not more searching needed
+    private boolean shouldSearchMore(String searchWord, List<ChemicalSearchAll> searchResult) {
+
+        return !ChemicalUtils.isDtxsid(searchWord) && !ChemicalUtils.isDtxcid(searchWord) && !isThisCASRN.contains(searchResult.get(0).getSearchName());
     }
 
     @Operation(hidden = true)

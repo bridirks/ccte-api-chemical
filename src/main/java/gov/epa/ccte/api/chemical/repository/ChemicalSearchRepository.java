@@ -22,6 +22,9 @@ public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, 
 
     <T> List<T> findByModifiedValueInOrderByRankAsc(Collection<String> modifiedValues, Class<T> type);
 
+    <T> List<T> findByModifiedValueInAndSearchNameInOrderByRankAsc(Collection<String> modifiedValues, Collection<String> searchNames, Class<T> type);
+
+
     <T> List<T> findByModifiedValueContainsOrderByRankAscDtxsid(String word, Class<T> type);
 
     // Query for inchikey suggestion
@@ -46,4 +49,5 @@ public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, 
     @Query(value = "select distinct ms_ready_dtxsid from ch.v_msready_search where monoisotopic_mass between :start and :end and substance_public is true", nativeQuery = true)
 
     List<String> searchMsReadyMass(Double start, Double end);
+
 }
