@@ -42,7 +42,7 @@ public class ChemicalSearchResource {
     private final List<String> searchMatchWithoutInchikey;
     private final List<String> searchMatchAll;
 
-    private final List<String> searchNames4SImgleSearch;
+    private final List<String> searchNames4SingleSearch;
     
     private final List<String> isThisCASRN;
 
@@ -57,9 +57,10 @@ public class ChemicalSearchResource {
                 "CAS-RN","Synonym","Integrated Source CAS-RN","DSSTox_Compound_Id","Systematic Name","Integrated Source Name",
                 "Expert Validated Synonym","Synonym from Valid Source","FDA CAS-Like Identifier","DSSTox_Substance_Id",
                 "InChIKey", "Indigo InChIKey", "EHCA Number", "EC Number");
-        searchNames4SImgleSearch = Arrays.asList("Deleted CAS-RN","PC-Code","Approved Name","Alternate CAS-RN",
+        searchNames4SingleSearch = Arrays.asList("Deleted CAS-RN","PC-Code","Approved Name","Alternate CAS-RN",
                 "CAS-RN","Synonym","Integrated Source CAS-RN","DSSTox_Compound_Id","Systematic Name","Integrated Source Name",
-                "Expert Validated Synonym","Synonym from Valid Source","FDA CAS-Like Identifier","DSSTox_Substance_Id", "EHCA Number", "EC Number");
+                "Expert Validated Synonym","Synonym from Valid Source","FDA CAS-Like Identifier","DSSTox_Substance_Id",
+                "EHCA Number", "EC Number", "InChIKey", "Indigo InChIKey");
         isThisCASRN = Arrays.asList("Alternate CAS-RN","Integrated Source CAS-RN","CASRN","FDA CAS-Like Identifier","Deleted CAS-RN");
     }
 
@@ -102,7 +103,7 @@ public class ChemicalSearchResource {
         String removeSpaces = searchWord.replaceAll(" ", "");
 
         // searchResult = searchRepository.findByModifiedValueInOrderByRankAsc(List.of(searchWord, removeSpaces),ChemicalSearchAll.class);
-        searchResult = searchRepository.findByModifiedValueInAndSearchNameInOrderByRankAsc(List.of(searchWord, removeSpaces), searchNames4SImgleSearch, ChemicalSearchAll.class);
+        searchResult = searchRepository.findByModifiedValueInAndSearchNameInOrderByRankAsc(List.of(searchWord, removeSpaces), searchNames4SingleSearch, ChemicalSearchAll.class);
 
         log.debug("records {}",searchResult.size());
 
@@ -137,7 +138,7 @@ public class ChemicalSearchResource {
     // identify the condition if there is not more searching needed
     private boolean shouldSearchMore(String searchWord, List<ChemicalSearchAll> searchResult) {
 
-        return !ChemicalUtils.isDtxsid(searchWord) && !ChemicalUtils.isDtxcid(searchWord) && !isThisCASRN.contains(searchResult.get(0).getSearchName());
+        return !ChemicalUtils.isDtxsid(searchWord) && !ChemicalUtils.isDtxcid(searchWord) && (!searchResult.isEmpty() && !isThisCASRN.contains(searchResult.get(0).getSearchName()));
     }
 
     @Operation(hidden = true)
