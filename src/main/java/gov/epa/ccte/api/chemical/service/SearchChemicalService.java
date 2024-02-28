@@ -80,9 +80,9 @@ public class SearchChemicalService {
         } else if (isInchiKey (searchWord)) {
             log.debug("{} is inchiKey ", searchWord);
             return searchWord;
-        } else if (isCasrn(searchWord.replaceAll("–","-"))){ 
+        } else if (isCasrn(processCasrnDashes(searchWord))){
             log.debug("{} is casrn with wrong dash", searchWord);
-            return searchWord.replaceAll("–","-");
+            return processCasrnDashes(searchWord);
         }else if (isECNumber(searchWord)){
             log.debug("{} is EC number ", searchWord);
             return searchWord;
@@ -103,6 +103,13 @@ public class SearchChemicalService {
             searchWord = searchWord.replaceAll("-"," ");
             return searchWord;
         }
+    }
+
+    // This is for replacing different types of dashes with -
+    private static String processCasrnDashes(String searchWord) {
+         return StringUtils.replaceChars(searchWord,"‐–—‒―−","------");
+
+        // return searchWord.replaceAll("–", "-");
     }
 
     private boolean isUrlEncoded(String input) {
