@@ -266,5 +266,5 @@ public class ChemicalDetail {
     private Double readyBioDeg;
 
     @Column(name = "is_markush")
-    private Integer isMarkush;
+    private Boolean isMarkush;
 }

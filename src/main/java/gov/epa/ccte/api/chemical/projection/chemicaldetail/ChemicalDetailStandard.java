@@ -73,7 +73,7 @@ public interface ChemicalDetailStandard extends ChemicalDetailBase {
 
     String getDescriptorStringTsv();
 
-    Integer getIsMarkush();
+    Boolean getIsMarkush();
 
     String getDtxsid();
 
