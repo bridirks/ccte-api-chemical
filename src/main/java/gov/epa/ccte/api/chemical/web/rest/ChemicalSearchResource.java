@@ -58,7 +58,7 @@ public class ChemicalSearchResource {
                 "Expert Validated Synonym","Synonym from Valid Source","FDA CAS-Like Identifier","DSSTox_Substance_Id",
                 "InChIKey", "Indigo InChIKey", "EHCA Number", "EC Number");
         searchNames4SingleSearch = Arrays.asList("Deleted CAS-RN","PC-Code","Approved Name","Alternate CAS-RN",
-                "CAS-RN","Synonym","Integrated Source CAS-RN","DSSTox_Compound_Id","Systematic Name","Integrated Source Name",
+                "CASRN","Synonym","Integrated Source CAS-RN","DSSTox_Compound_Id","Systematic Name","Integrated Source Name",
                 "Expert Validated Synonym","Synonym from Valid Source","FDA CAS-Like Identifier","DSSTox_Substance_Id",
                 "EHCA Number", "EC Number", "InChIKey", "Indigo InChIKey");
         isThisCASRN = Arrays.asList("Alternate CAS-RN","Integrated Source CAS-RN","CASRN","FDA CAS-Like Identifier","Deleted CAS-RN");
@@ -137,8 +137,13 @@ public class ChemicalSearchResource {
 
     // identify the condition if there is not more searching needed
     private boolean shouldSearchMore(String searchWord, List<ChemicalSearchAll> searchResult) {
-
-        return !ChemicalUtils.isDtxsid(searchWord) && !ChemicalUtils.isDtxcid(searchWord) && (!searchResult.isEmpty() && !isThisCASRN.contains(searchResult.get(0).getSearchName()));
+        if(ChemicalUtils.isDtxsid(searchWord) || ChemicalUtils.isDtxcid(searchWord) || ChemicalUtils.isCasrn(searchWord))
+            return false;
+        // in case CASRN is in number format
+        else if (!searchResult.isEmpty() && isThisCASRN.contains(searchResult.get(0).getSearchName()))
+            return false;
+        else
+            return true;
     }
 
     @Operation(hidden = true)
