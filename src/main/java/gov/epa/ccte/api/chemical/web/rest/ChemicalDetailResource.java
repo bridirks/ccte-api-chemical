@@ -145,6 +145,7 @@ public class ChemicalDetailResource {
             case chemicalstructure ->
                     detailService.getChemicalDetailsForBatch(dtxsids, ChemicalStructure.class, type);
             case ntatoolkit -> detailService.getChemicalDetailsForBatch(dtxsids, NtaToolkit.class, type);
+            case ccdchemicaldetails -> detailService.getChemicalDetailsForBatch(dtxsids, CcdChemicalDetails.class, type);
         };
     }
 
@@ -175,6 +176,7 @@ public class ChemicalDetailResource {
             case chemicalidentifier -> detailService.getChemicalDetailsForListName(listname, ChemicalIdentifier.class);
             case chemicalstructure -> detailService.getChemicalDetailsForListName(listname, ChemicalStructure.class);
             case ntatoolkit -> detailService.getChemicalDetailsForListName(listname, NtaToolkit.class);
+            case ccdchemicaldetails -> detailService.getChemicalDetailsForListName(listname, CcdChemicalDetails.class);
         };
     }
 }
