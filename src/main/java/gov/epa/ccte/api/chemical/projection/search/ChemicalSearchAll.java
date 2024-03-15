@@ -22,5 +22,5 @@ public interface ChemicalSearchAll {
 
     Integer getHasStructureImage();
 
-    Integer getIsMarkush();
+    Boolean getIsMarkush();
 }

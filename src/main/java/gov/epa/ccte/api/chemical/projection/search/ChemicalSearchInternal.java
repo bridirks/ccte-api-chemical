@@ -32,7 +32,7 @@ public interface ChemicalSearchInternal {
 
     Integer getHasStructureImage();
 
-    Integer getIsMarkush();
+    Boolean getIsMarkush();
 
     String getCreatedBy();
 

@@ -26,7 +26,7 @@ public class ChemicalBatchSearchResult implements Serializable {
     String searchValue;
     Integer rank;
     Integer hasStructureImage;
-    Integer isMarkush;
+    Boolean isMarkush;
     // add annotation for springdoc to add description for following
     @Schema(description = "Message about the search")
     List<String> searchMsgs;
