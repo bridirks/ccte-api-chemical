@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 /**
  * A Projection for the {@link gov.epa.ccte.api.chemical.domain.ChemicalDetail} entity
  */
-@Schema(name = "ChemicalDetailAll", description = "All attributes available for chemical details APIs")
+@Schema(name = "chemicaldetailall", description = "All attributes available for chemical details APIs")
 public interface ChemicalDetailAll extends ChemicalDetailBase {
     String getId();
 
@@ -77,7 +77,7 @@ public interface ChemicalDetailAll extends ChemicalDetailBase {
 
     String getDescriptorStringTsv();
 
-    Integer getIsMarkush();
+    Boolean getIsMarkush();
 
     String getDtxsid();
 
