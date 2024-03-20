@@ -36,7 +36,8 @@ public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, 
     List<CcdChemicalSearchResult> equalCcd(String searchWord);
 
     @Query(nativeQuery = true)
-    List<CcdChemicalSearchResult> containCcd(String searchWord);
+    List<CcdChemicalSearchResult> containCcd(@Param("searchWord") String searchWord);
+
 
     // Advance search parameters
 
