@@ -283,32 +283,63 @@ public class ChemicalSearchResource {
                     schema=@Schema(oneOf = {ProblemDetail.class})))
     })
     @RequestMapping(value = "chemical/search/contain/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    List<ChemicalSearchAll> chemicalContain(@Parameter(required = true, description = "Substring of search word",
+    List chemicalContain(@Parameter(required = true, description = "Substring of search word",
             examples = {@ExampleObject(name="DSSTox Substance Identifier", value = "DTXSID7020182", description = "Exact match of DTXSID"),
                     @ExampleObject(name="DSSTox Compound Identifier", value = "DTXCID505", description = "Substring match of DTXCID"),
                     @ExampleObject(name="Synonym", value = "razine", description = "Substring match of URLencoded chemical name(including synonyms)"),
                     @ExampleObject(name="CASRN", value = "1912-24", description = "Substring match of CASRN"),
                     @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU", description = "Substring match of InChIKey")})
             @PathVariable("word") String word, @Parameter(description = "Limit number of records to return", examples = @ExampleObject(value = "20"))
-    @RequestParam(value = "top", required = false, defaultValue = "0") Integer top) {
+            @RequestParam(value = "top", required = false, defaultValue = "0") Integer top,
+            @RequestParam (value = "projection",required = false, defaultValue = "chemicalsearchall") String projection) {
 
         String searchWord = chemicalService.preprocessingSearchWord(word);
 
-        log.debug("input search word = {} and process search word = {}. ", word, searchWord);
+        log.debug("input search word = {} and process search word = {}. projection = {}", word, searchWord, projection);
 
-        List<ChemicalSearchAll> searchResult = searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord, ChemicalSearchAll.class);
+        List searchResult = null;
 
-        searchResult = chemicalService.removeDuplicates(searchResult);
-
-        if(top > 0){
-            log.debug("picking up top {} records", top);
-            searchResult = searchResult.stream().limit(top).collect(Collectors.toList());
+        switch (projection){
+            case "chemicalsearchall": {
+                searchResult = searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord, ChemicalSearchAll.class);
+                searchResult = chemicalService.removeDuplicates(searchResult);
+                break;
+            }
+            case "dtxsidonly":{
+                searchResult = searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord, DtxsidOnly.class);
+                searchResult = chemicalService.removeDuplicates(searchResult);
+                break;
+            }
+            case "ccdsearchresult":{
+                searchResult = searchRepository.containCcd(searchWord);
+                searchResult = chemicalService.removeDuplicates(searchResult);
+                break;
+            }
         }
 
-        if(!searchResult.isEmpty()) {
-            return searchResult;
-        }else
+        if(searchResult == null || searchResult.isEmpty())
             throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
+        else
+            return searchResult;
+
+
+//        String searchWord = chemicalService.preprocessingSearchWord(word);
+//
+//        log.debug("input search word = {} and process search word = {}. ", word, searchWord);
+//
+//        List<ChemicalSearchAll> searchResult = searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord, ChemicalSearchAll.class);
+//
+//        searchResult = chemicalService.removeDuplicates(searchResult);
+//
+//        if(top > 0){
+//            log.debug("picking up top {} records", top);
+//            searchResult = searchResult.stream().limit(top).collect(Collectors.toList());
+//        }
+//
+//        if(!searchResult.isEmpty()) {
+//            return searchResult;
+//        }else
+//            throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
     }
 
     /**
