@@ -47,6 +47,8 @@ public class ApiSecurityConfiguration {
         // make sure it is https even it is localhost
         approvedOriginStore.put("https://localhost:3003", "https://localhost:3003");
         approvedOriginStore.put("https://localhost:8888", "https://localhost:8888");
+        approvedOriginStore.put("http://localhost:3003", "http://localhost:3003");
+        approvedOriginStore.put("http://localhost:8888", "http://localhost:8888");
         approvedOriginStore.put("https://ccte-ccd-dev.epa.gov", "https://ccte-ccd-dev.epa.gov");
         approvedOriginStore.put("https://ccte-ccd-stg.epa.gov", "https://ccte-ccd-stg.epa.gov");
         approvedOriginStore.put("https://ccte-ccd-prod.epa.gov", "https://ccte-ccd-prod.epa.gov");
