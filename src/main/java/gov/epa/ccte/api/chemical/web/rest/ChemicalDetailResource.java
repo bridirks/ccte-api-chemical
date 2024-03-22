@@ -156,29 +156,29 @@ public class ChemicalDetailResource {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalDetail}.
      * chemicaldetailall, chemicaldetailstandard, chemicalidentifier, chemicalstructure, ntatoolkit
      */
-    @Operation(summary = "Get data by listname",
-            description = "Specify the listname as part of the path, and optionally user can also define projection (set of attributes to return).")
-    @ApiResponses(value= {
-            @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
-                    schema=@Schema(oneOf = {ChemicalDetailStandard.class, ChemicalIdentifier.class, ChemicalStructure.class, ChemicalDetailAll.class, NtaToolkit.class})))
-    })
-    @RequestMapping(value = "chemical/detail/search/by-listname/{listname}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    List detailsByListname(@Parameter(required = true, description = "Chemical list name", example = "ACSREAG")  @PathVariable("listname") String listname,
-                                       @RequestParam(value = "projection", required = false, defaultValue = "chemicaldetailall") ChemicalDetailProjection projection) {
-
-        log.debug("listname = {}", listname);
-
-        return switch (projection) {
-            case chemicaldetailall -> detailService.getChemicalDetailsForListName(listname, ChemicalDetailAll.class);
-            case chemicaldetailstandard ->
-                    detailService.getChemicalDetailsForListName(listname, ChemicalDetailStandard.class);
-            case chemicalidentifier -> detailService.getChemicalDetailsForListName(listname, ChemicalIdentifier.class);
-            case chemicalstructure -> detailService.getChemicalDetailsForListName(listname, ChemicalStructure.class);
-            case ntatoolkit -> detailService.getChemicalDetailsForListName(listname, NtaToolkit.class);
-            case ccdchemicaldetails -> detailService.getChemicalDetailsForListName(listname, CcdChemicalDetails.class);
-        };
-    }
+//    @Operation(summary = "Get data by listname",
+//            description = "Specify the listname as part of the path, and optionally user can also define projection (set of attributes to return).")
+//    @ApiResponses(value= {
+//            @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
+//                    schema=@Schema(oneOf = {ChemicalDetailStandard.class, ChemicalIdentifier.class, ChemicalStructure.class, ChemicalDetailAll.class, NtaToolkit.class})))
+//    })
+//    @RequestMapping(value = "chemical/detail/search/by-listname/{listname}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+//    public @ResponseBody
+//    List detailsByListname(@Parameter(required = true, description = "Chemical list name", example = "ACSREAG")  @PathVariable("listname") String listname,
+//                                       @RequestParam(value = "projection", required = false, defaultValue = "chemicaldetailall") ChemicalDetailProjection projection) {
+//
+//        log.debug("listname = {}", listname);
+//
+//        return switch (projection) {
+//            case chemicaldetailall -> detailService.getChemicalDetailsForListName(listname, ChemicalDetailAll.class);
+//            case chemicaldetailstandard ->
+//                    detailService.getChemicalDetailsForListName(listname, ChemicalDetailStandard.class);
+//            case chemicalidentifier -> detailService.getChemicalDetailsForListName(listname, ChemicalIdentifier.class);
+//            case chemicalstructure -> detailService.getChemicalDetailsForListName(listname, ChemicalStructure.class);
+//            case ntatoolkit -> detailService.getChemicalDetailsForListName(listname, NtaToolkit.class);
+//            case ccdchemicaldetails -> detailService.getChemicalDetailsForListName(listname, CcdChemicalDetails.class);
+//        };
+//    }
 }
 
 
