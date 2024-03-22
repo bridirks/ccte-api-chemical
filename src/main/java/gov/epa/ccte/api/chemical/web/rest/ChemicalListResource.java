@@ -177,6 +177,18 @@ public class ChemicalListResource {
 
     }
 
+    @RequestMapping(value = "chemical/list/chemicals/search/equal/{list}/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<String> exact(@PathVariable String list, @PathVariable String word){
+
+        log.debug("list={}, search word={}", list, word);
+
+        String searchWord = chemicalService.preprocessingSearchWord(word);
+
+        return chemicalListChemicalRepository.exact(searchWord, list);
+
+    }
+
     @Operation(hidden = true)
     @RequestMapping(value = "chemical/list/chemicals/search/by-dtxsid", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
