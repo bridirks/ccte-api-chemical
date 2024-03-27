@@ -27,7 +27,7 @@ public class IndigoResource {
         this.indigoService = indigoService;
     }
 
-    @Operation(summary = "Get InChI")
+    @Operation(summary = "Get InChI from mol")
     @RequestMapping(value = "chemical/indigo/to-inchi", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     String toInChI(@Parameter(required = true, description = "mol file") @RequestBody() String mol) throws IOException {
@@ -38,7 +38,7 @@ public class IndigoResource {
         return indigoService.mol2inchikey(mol);
     }
 
-    @Operation(summary = "Get Smiles")
+    @Operation(summary = "Get Smiles from mol")
     @RequestMapping(value = "chemical/indigo/to-smiles", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     String toSmiles(@Parameter(required = true, description = "mol file") @RequestBody() String mol) throws IOException {
@@ -49,7 +49,7 @@ public class IndigoResource {
         return indigoService.mol2smiles(mol);
     }
 
-    @Operation(summary = "Get Canonical Smiles")
+    @Operation(summary = "Get Canonical Smiles from mol")
     @RequestMapping(value = "chemical/indigo/to-canonicalsmiles", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     String toCanonicalSmiles(@Parameter(required = true, description = "mol file") @RequestBody() String mol) throws IOException {
@@ -61,7 +61,7 @@ public class IndigoResource {
         return indigoService.mol2name(mol);
     }
 
-    @Operation(summary = "Get molecular weight")
+    @Operation(summary = "Get molecular weight from mol")
     @RequestMapping(value = "chemical/indigo/to-molweight", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     Double toMolecularWeight(@Parameter(required = true, description = "mol file") @RequestBody() String mol) throws IOException {
@@ -73,7 +73,7 @@ public class IndigoResource {
         return indigoService.mol2molWeight(mol);
     }
 
-    @Operation(summary = "Get mol file v2000")
+    @Operation(summary = "Get mol file v2000 from mol")
     @RequestMapping(value = "chemical/indigo/to-mol2000", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     String toMol2000(@Parameter(required = true, description = "mol file") @RequestBody() String mol) throws IOException {
@@ -85,7 +85,7 @@ public class IndigoResource {
         return indigoService.mol2molv2000(mol);
     }
 
-    @Operation(summary = "Get mol file v3000")
+    @Operation(summary = "Get mol file v3000 from mol")
     @RequestMapping(value = "chemical/indigo/to-mol3000", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     String toMol3000(@Parameter(required = true, description = "mol file") @RequestBody() String mol) throws IOException {
