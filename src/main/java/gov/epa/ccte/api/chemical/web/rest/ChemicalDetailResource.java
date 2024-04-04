@@ -146,6 +146,7 @@ public class ChemicalDetailResource {
                     detailService.getChemicalDetailsForBatch(dtxsids, ChemicalStructure.class, type);
             case ntatoolkit -> detailService.getChemicalDetailsForBatch(dtxsids, NtaToolkit.class, type);
             case ccdchemicaldetails -> detailService.getChemicalDetailsForBatch(dtxsids, CcdChemicalDetails.class, type);
+            case compact -> detailService.getChemicalDetailsForBatch(dtxsids, Compact.class, type);
         };
     }
 
