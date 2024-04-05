@@ -15,4 +15,7 @@ public interface ChemicalSynonymRepository extends JpaRepository<ChemicalSynonym
     <T>
     Optional<T> findByDtxsid(String dtxsid, Class<T> type);
 
+    <T> Optional<T> findByDtxsidAndIsPublic(String dtxsid, Boolean isPublic, Class<T> type);
+
+
 }

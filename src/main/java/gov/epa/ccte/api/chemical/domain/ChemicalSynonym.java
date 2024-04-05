@@ -10,6 +10,8 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.time.OffsetDateTime;
+
 @Getter
 @Setter
 @Entity
@@ -47,5 +49,11 @@ public class ChemicalSynonym {
     @Column(name = "alternate_synonym")
     @JdbcTypeCode(SqlTypes.LONGVARCHAR)
     private String alternateSynonyms;
+
+    @Column(name = "is_public")
+    private Boolean isPublic;
+
+    @Column(name = "import_date")
+    private OffsetDateTime importDate;
 
 }

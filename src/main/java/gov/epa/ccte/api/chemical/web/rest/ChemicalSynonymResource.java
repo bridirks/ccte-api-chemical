@@ -41,7 +41,6 @@ public class ChemicalSynonymResource {
 
     /**
      * {@code GET  /chemical/Synonym/search/by-dtxsid/{dtxsid} : get ChemicalSynonymDto for the "dtxsid".
-     *
      * @param dtxsid the matching dtxsid of the Chemical Property data to retrieve.
      * @return the {@link ResponseEntity } with status {@code 200 (OK)} and with body the list of Chemical Property data}.
      */
@@ -56,13 +55,13 @@ public class ChemicalSynonymResource {
 
         log.info("dtxsid = {}", dtxsid);
 
-        List<ChemicalSynonymDto> synonymDtos;
+        // List<ChemicalSynonymDto> synonymDtos;
 
         //ChemicalSynonym synonym = repository.findByDtxsid(dtxsid, ChemicalSynonymAll.class).orElseThrow(()->new IdentifierNotFoundProblem("DTXSID", dtxsid));
 
         // return mapper.toDto(synonym);
 
-        return repository.findByDtxsid(dtxsid, ChemicalSynonymAll.class).orElseThrow(()->new IdentifierNotFoundException("DTXSID", dtxsid));
+        return repository.findByDtxsidAndIsPublic(dtxsid, true, ChemicalSynonymAll.class).orElseThrow(()->new IdentifierNotFoundException("DTXSID", dtxsid));
     }
 
 }
