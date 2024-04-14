@@ -33,21 +33,21 @@ public interface ChemicalListAll extends ChemicalListBase{
 //    @Value("#{DateTimeFormatter.ofPattern('dd.MM.yyyy').withZone(ZoneId.systemDefault()).format(target.createdAt)}")
 //    Instant getCreateDateAt();
 
-    default String getCreatedAtDate(){
-        try{
-            return DateTimeFormatter.ofPattern("yyyy.MM.dd").withZone(ZoneId.systemDefault()).format(getCreatedAt());
-        }catch (Exception e){
-            System.out.println(e.toString());
-            return "";
-        }
-    }
-
-    default String getUpdatedAtDate(){
-        try{
-            return DateTimeFormatter.ofPattern("yyyy.MM.dd").withZone(ZoneId.systemDefault()).format(getUpdatedAt());
-        }catch (Exception e){
-            System.out.println(e.toString());
-            return "";
-        }
-    }
+//    default String getCreatedAtDate(){
+//        try{
+//            return DateTimeFormatter.ofPattern("yyyy.MM.dd").withZone(ZoneId.systemDefault()).format(getCreatedAt());
+//        }catch (Exception e){
+//            System.out.println(e.toString());
+//            return "";
+//        }
+//    }
+//
+//    default String getUpdatedAtDate(){
+//        try{
+//            return DateTimeFormatter.ofPattern("yyyy.MM.dd").withZone(ZoneId.systemDefault()).format(getUpdatedAt());
+//        }catch (Exception e){
+//            System.out.println(e.toString());
+//            return "";
+//        }
+//    }
 }
