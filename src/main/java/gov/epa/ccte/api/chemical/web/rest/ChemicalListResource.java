@@ -143,9 +143,12 @@ public class ChemicalListResource {
 
         log.debug("dtxsid={}, projection={}", dtxsid, projection);
 
+        // Get chemical lists link to requested dtxsid
+        List chemicalLists = chemicalListChemicalRepository.getListNames(dtxsid, "PUBLIC");
+
         return switch (projection){
-            case chemicallistname -> chemicalListChemicalRepository.getListNames(dtxsid, "PUBLIC");
-            case chemicallistall -> listRepository.getListsByDtxsid(dtxsid, "PUBLIC");
+            case chemicallistname ->  listRepository.findByListNameInIgnoreCaseAndVisibilityAndIsVisibleOrderByListNameAsc(chemicalLists, "PUBLIC", true, ChemicalListName.class);
+            case chemicallistall -> listRepository.findByListNameInIgnoreCaseAndVisibilityAndIsVisibleOrderByListNameAsc(chemicalLists, "PUBLIC", true, ChemicalListAll.class);
            // case chemicalListwithdtxsids -> listRepository.getListsByDtxsidWithDtxsids(dtxsid, "PUBLIC");
             default -> null;
         };
