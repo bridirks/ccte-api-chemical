@@ -148,7 +148,8 @@ public class ChemicalListResource {
 
         return switch (projection){
             case chemicallistname ->  listRepository.findByListNameInIgnoreCaseAndVisibilityAndIsVisibleOrderByListNameAsc(chemicalLists, "PUBLIC", true, ChemicalListName.class);
-            case chemicallistall -> listRepository.findByListNameInIgnoreCaseAndVisibilityAndIsVisibleOrderByListNameAsc(chemicalLists, "PUBLIC", true, ChemicalListAll.class);
+            // case chemicallistall -> listRepository.findByListNameInIgnoreCaseAndVisibilityAndIsVisibleOrderByListNameAsc(chemicalLists, "PUBLIC", true, ChemicalListAll.class);
+            case chemicallistall -> listRepository.getListsByDtxsid(dtxsid, "PUBLIC");
            // case chemicalListwithdtxsids -> listRepository.getListsByDtxsidWithDtxsids(dtxsid, "PUBLIC");
             default -> null;
         };
