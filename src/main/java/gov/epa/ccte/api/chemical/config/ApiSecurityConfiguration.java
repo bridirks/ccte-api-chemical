@@ -52,6 +52,7 @@ public class ApiSecurityConfiguration {
         approvedOriginStore.put("https://ccte-ccd-dev.epa.gov", "https://ccte-ccd-dev.epa.gov");
         approvedOriginStore.put("https://ccte-ccd-stg.epa.gov", "https://ccte-ccd-stg.epa.gov");
         approvedOriginStore.put("https://ccte-ccd-prod.epa.gov", "https://ccte-ccd-prod.epa.gov");
+        approvedOriginStore.put("https://ccte-ccd.epa.gov", "https://ccte-ccd.epa.gov");
         approvedOriginStore.put("https://comptox.epa.gov", "https://comptox.epa.gov");
         approvedOriginStore.put("https://ccte-api-s.app.cloud.gov", "https://ccte-api-s.app.cloud.gov");
         approvedOriginStore.put("https://v2626umcth886.rtord.epa.gov:8888", "https://v2626umcth886.rtord.epa.gov:8888");
