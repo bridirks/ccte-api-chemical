@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 
@@ -148,13 +149,15 @@ public class ChemicalListResource {
 
         return switch (projection){
             case chemicallistname ->  listRepository.findByListNameInIgnoreCaseAndVisibilityAndIsVisibleOrderByListNameAsc(chemicalLists, "PUBLIC", true, ChemicalListName.class);
-            // case chemicallistall -> listRepository.findByListNameInIgnoreCaseAndVisibilityAndIsVisibleOrderByListNameAsc(chemicalLists, "PUBLIC", true, ChemicalListAll.class);
+            //case chemicallistall -> listRepository.findByListNameInIgnoreCaseAndVisibilityAndIsVisibleOrderByListNameAsc(chemicalLists, "PUBLIC", true, ChemicalListAll.class);
             case chemicallistall -> listRepository.getListsByDtxsid(dtxsid, "PUBLIC");
+            case ccdchemicaldetaillists -> listRepository.getListsByDtxsid(dtxsid, "PUBLIC");
            // case chemicalListwithdtxsids -> listRepository.getListsByDtxsidWithDtxsids(dtxsid, "PUBLIC");
             default -> null;
         };
        // return chemicalListChemicalRepository.getListNames(dtxsid);
     }
+
 
 
     @RequestMapping(value = "chemical/list/chemicals/search/start-with/{list}/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
