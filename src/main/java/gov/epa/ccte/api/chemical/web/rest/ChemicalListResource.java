@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 
@@ -145,7 +144,7 @@ public class ChemicalListResource {
         log.debug("dtxsid={}, projection={}", dtxsid, projection);
 
         // Get chemical lists link to requested dtxsid
-        List chemicalLists = chemicalListChemicalRepository.getListNames(dtxsid, "PUBLIC");
+        List<String> chemicalLists = chemicalListChemicalRepository.getListNames(dtxsid, "PUBLIC");
 
         return switch (projection){
             case chemicallistname ->  listRepository.findByListNameInIgnoreCaseAndVisibilityAndIsVisibleOrderByListNameAsc(chemicalLists, "PUBLIC", true, ChemicalListName.class);
@@ -204,6 +203,8 @@ public class ChemicalListResource {
         log.debug("dtxsids = {}, chemical lists = {}", request.getDtxsids().size(), request.getChemicalLists().size());
 
         List<String> result = chemicalListChemicalRepository.chemicalListsAndDtxsids(request.getChemicalLists(), request.getDtxsids());
+
+        log.info("result.size={}", result.size());
 
         return result;
 
