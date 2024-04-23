@@ -25,6 +25,8 @@ public interface CcdChemicalDetails extends ChemicalDetailBase {
 
     Double getMonoisotopicMass();
 
+    Double getAverageMass();
+
     Double getPercentAssays();
 
     Integer getPubchemCount();
