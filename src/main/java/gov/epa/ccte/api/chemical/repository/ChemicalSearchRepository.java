@@ -2,6 +2,7 @@ package gov.epa.ccte.api.chemical.repository;
 
 import gov.epa.ccte.api.chemical.domain.ChemicalSearch;
 import gov.epa.ccte.api.chemical.projection.search.CcdChemicalSearchResult;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,9 +15,7 @@ import java.util.List;
 @RepositoryRestResource(exported = false)
 public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, Long> {
 
-    <T> List<T> findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(String word, List<String> searchWords, Class<T> type);
-
-    <T> List<T> findTop20ByModifiedValueStartsWithAndSearchNameInOrderByRankAscSearchValueAsc(String modifiedValue, Collection<String> searchNames, Class<T> type);
+    <T> List<T> findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(String word, List<String> searchWords, Limit limit, Class<T> type);
 
     <T> List<T> findByModifiedValueOrderByRankAsc(String word, Class<T> type);
 
