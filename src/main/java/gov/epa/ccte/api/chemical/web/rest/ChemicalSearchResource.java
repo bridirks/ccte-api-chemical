@@ -21,7 +21,6 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -203,25 +202,10 @@ public class ChemicalSearchResource {
 
         log.debug("input search word = {} and process search word = {}. projection = {}", word, searchWord, projection);
 
-        List searchResult = null;
+        List searchResult;
 
-        switch (projection){
-            case "chemicalsearchall": {
-                searchResult = searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord, ChemicalSearchAll.class);
-                searchResult = chemicalService.removeDuplicates(searchResult);
-                break;
-            }
-            case "dtxsidonly":{
-                searchResult = searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord, DtxsidOnly.class);
-                searchResult = chemicalService.removeDuplicates(searchResult);
-                break;
-            }
-            case "ccdsearchresult":{
-                searchResult = searchRepository.containCcd(searchWord);
-                searchResult = chemicalService.removeDuplicates(searchResult);
-                break;
-            }
-        }
+        searchResult = chemicalService.getContain(projection, searchWord, top);
+        searchResult = chemicalService.removeDuplicates(searchResult);
 
         if(searchResult == null || searchResult.isEmpty())
             throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
@@ -247,6 +231,7 @@ public class ChemicalSearchResource {
 //        }else
 //            throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
     }
+
 
     /**
      * {@code GET  chemical/search/msready/formula/{formula} : get list of chemicalSearch containing the "formula".

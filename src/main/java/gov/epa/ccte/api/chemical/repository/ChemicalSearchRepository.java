@@ -24,7 +24,7 @@ public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, 
     <T> List<T> findByModifiedValueInAndSearchNameInOrderByRankAsc(Collection<String> modifiedValues, Collection<String> searchNames, Class<T> type);
 
 
-    <T> List<T> findByModifiedValueContainsOrderByRankAscDtxsid(String word, Class<T> type);
+    <T> List<T> findByModifiedValueContainsOrderByRankAscDtxsid(String word, Limit limit, Class<T> type);
 
     // Query for inchikey suggestion
     @Query("select distinct c.searchValue from ChemicalSearch c where c.modifiedValue like concat(:inchikey, '%')")

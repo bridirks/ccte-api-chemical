@@ -235,8 +235,9 @@ public class SearchChemicalService {
                 dtxsid = ((CcdChemicalSearchResult) chemical).getDtxsid();
             else if (chemical instanceof DtxsidOnly)
                 dtxsid = ((DtxsidOnly) chemical).getDtxsid();
-
-            if(dtxsidList.contains(dtxsid) == false){
+//            else if (chemical instanceof )
+//                dtxsid = ((DtxsidOnly) chemical).getDtxsid();
+            if(!dtxsidList.contains(dtxsid)){
                 dtxsidList.add(dtxsid);
                 returnList.add(chemical);
             } else{
@@ -275,15 +276,17 @@ public class SearchChemicalService {
         if(!isNumeric(word) && !isCasrn(word)) // 80057 - 000008057 (CASRN without dashes)
             suggestions = caffeineFixService.caffeineFix(word.toLowerCase());
 
-        if((suggestions == null || suggestions.isEmpty()) && isInchiKey(word))
-            suggestions = inchikeySuggestion(word);
-
-        // if search is systematic name, find the inchikey for it
-        if(suggestions == null || suggestions.isEmpty())
-            suggestions = opsinSuggestion(word);
-
-        if((suggestions == null || suggestions.isEmpty()) && !isCasrn(word))
-            suggestions = new ArrayList<>(Collections.singletonList(toCasrn(word)));
+        if(suggestions != null && !suggestions.isEmpty()){
+            return suggestions;
+        }else{
+            if(isInchiKey(word))
+                suggestions = inchikeySuggestion(word);
+            else if(isCasrn(word))
+                suggestions = new ArrayList<>(Collections.singletonList(toCasrn(word)));
+            else
+                // if search is systematic name, find the inchikey for it
+                suggestions = opsinSuggestion(word);
+        }
 
         return suggestions;
     }
@@ -417,6 +420,41 @@ public class SearchChemicalService {
         else
             return true;
     }
+
+    public List getContain(String projection, String searchWord, Integer top) {
+        switch (projection){
+            case "chemicalsearchall": {
+                 // ChemicalSearchAll.class
+                List result = getContainFromDB1(searchWord, top, ChemicalSearchAll.class);
+                return removeDuplicates(result);
+            }
+            case "dtxsidonly":{
+                // DtxsidOnly.class
+                List result =  getContainFromDB1(searchWord, top, DtxsidOnly.class);
+                return removeDuplicates(result);
+            }
+            case "ccdsearchresult":{
+                if(top != null && top > 0 ) {
+                    List result = searchRepository.containCcd(searchWord);
+                    return result.stream().limit(top).toList();
+                }else{
+                    return searchRepository.containCcd(searchWord);
+                }
+            }
+            default: return null;
+        }
+    }
+
+    private List getContainFromDB1(String searchWord, Integer top, Class aClass) {
+        if(top != null && top > 0 ) {
+            log.debug("picking up top {} records", top);
+            return searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord,Limit.of(top), aClass);
+        }else{
+            return searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord, Limit.unlimited(), aClass);
+        }
+
+    }
+
 
     // This will remove duplicates(same dtxsid number) from search result
 /*    public List<SearchResult> removeSearchResultDuplicates(List<SearchResult> results) {

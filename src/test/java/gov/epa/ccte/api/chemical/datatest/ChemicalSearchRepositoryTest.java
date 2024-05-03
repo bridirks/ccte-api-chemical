@@ -58,6 +58,6 @@ public class ChemicalSearchRepositoryTest {
 
     @Test
     void testFindByModifiedValueContainsOrderByRankAscDtxsidAsc(){
-        assertThat(repository.findByModifiedValueContainsOrderByRankAscDtxsid("BPA", ChemicalSearchAll.class).size()).isEqualTo(1);
+        assertThat(repository.findByModifiedValueContainsOrderByRankAscDtxsid("BPA", Limit.unlimited(), ChemicalSearchAll.class).size()).isEqualTo(1);
     }
 }
