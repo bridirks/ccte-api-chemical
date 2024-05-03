@@ -3,7 +3,7 @@ package gov.epa.ccte.api.chemical.web.rest;
 import gov.epa.ccte.api.chemical.domain.ChemicalDetail;
 import gov.epa.ccte.api.chemical.projection.chemicaldetail.*;
 import gov.epa.ccte.api.chemical.service.ChemicalDetailService;
-import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfDtxsidException;
+import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfIdsException;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -100,33 +100,33 @@ public class ChemicalDetailResource {
     }
 
     /**
-     * {@code POST  /chemical/detail/search/ : get list of chemicalDetail for the multiple "dtxsid".
-     * @param BatchRequest the matching dtxcid of the chemicalDetail to retrieve.
+     * {@code POST  chemical/detail/search/by-dtxsid/ : get list of chemicalDetail for the multiple "dtxsid".
+     * @param BatchRequest the matching dtxsid of the chemicalDetail to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalDetail}.
      */
     @Operation(summary = "Get data by the batch of dtxsids",
-            description = "Besides batch of the values, the user can also define projection (set of attributes to return). Note: Maximum 200 DTXSIDs per request")
+            description = "Besides batch of the values, the user can also define projection (set of attributes to return). Note: Maximum ${application.batch-size} DTXSIDs per request")
     @ApiResponses(value= {
             @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
                     schema=@Schema(oneOf = {ChemicalDetailStandard.class, ChemicalIdentifier.class, ChemicalStructure.class}))),
             @ApiResponse(responseCode = "400", description = "When user has submitted more then allowed number (${application.batch-size}) of DTXSID(s).",
                     content = @Content( mediaType = "application/problem+json",
-                    examples = {@ExampleObject(value = "{\"title\":\"Validation Error\",\"status\":400,\"detail\":\"System supports only '200' dtxsid at one time, '202' are submitted.\"}", description = "Validation error for more then allowed number of dtxsid(s).")},
-                    schema=@Schema(oneOf = {ProblemDetail.class})))
+                            examples = {@ExampleObject(value = "{\"title\":\"Validation Error\",\"status\":400,\"detail\":\"System supports only '200' dtxsid at one time, '202' are submitted.\"}", description = "Validation error for more then allowed number of dtxsid(s).")},
+                            schema=@Schema(oneOf = {ProblemDetail.class})))
     })
     @RequestMapping(value = "chemical/detail/search/by-dtxsid/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    List batchSearch( @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "JSON array of DSSTox Substance Identifier",
+    List batchDtxsidSearch( @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "JSON array of DSSTox Substance Identifier",
             content = {@Content (array = @ArraySchema(schema = @Schema(implementation = String.class)),
-                        examples = {@ExampleObject("\"[\\\"DTXSID7020182\\\",\\\"DTXSID9020112\\\"]\"")})})
-                      @RequestBody String[] dtxsids,
-                      @RequestParam(value = "projection", required = false, defaultValue = "chemicaldetailall")
-                      ChemicalDetailProjection projection) {
+                    examples = {@ExampleObject("\"[\\\"DTXSID7020182\\\",\\\"DTXSID9020112\\\"]\"")})})
+                            @RequestBody String[] dtxsids,
+                            @RequestParam(value = "projection", required = false, defaultValue = "chemicaldetailall")
+                            ChemicalDetailProjection projection) {
 
         log.debug("dtxsids = {}", dtxsids.length);
 
         if(dtxsids.length > batchSize)
-            throw new HigherNumberOfDtxsidException(dtxsids.length, batchSize);
+            throw new HigherNumberOfIdsException(dtxsids.length, batchSize, "dtxsid" );
 
         List data =  getChemicalDetails(dtxsids, "dtxsid", projection);
         log.debug("database return {}", data.size());
@@ -134,19 +134,54 @@ public class ChemicalDetailResource {
         return data;
     }
 
-    private List getChemicalDetails(String[] dtxsids, String type, ChemicalDetailProjection projection) {
+    /**
+     * {@code POST  chemical/detail/search/by-dtxcid/ : get list of chemicalDetail for the multiple "dtxcid".
+     * @param BatchRequest the matching dtxcid of the chemicalDetail to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalDetail}.
+     */
+    @Operation(summary = "Get data by the batch of dtxcids",
+            description = "Besides batch of the values, the user can also define projection (set of attributes to return). Note: Maximum ${application.batch-size} DTXCIDs per request")
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
+                    schema=@Schema(oneOf = {ChemicalDetailStandard.class, ChemicalIdentifier.class, ChemicalStructure.class}))),
+            @ApiResponse(responseCode = "400", description = "When user has submitted more then allowed number (${application.batch-size}) of DTXCID(s).",
+                    content = @Content( mediaType = "application/problem+json",
+                            examples = {@ExampleObject(value = "{\"title\":\"Validation Error\",\"status\":400,\"detail\":\"System supports only '${application.batch-size}' dtxsid at one time, '${application.batch-size+1}' are submitted.\"}", description = "Validation error for more then allowed number of dtxsid(s).")},
+                            schema=@Schema(oneOf = {ProblemDetail.class})))
+    })
+    @RequestMapping(value = "chemical/detail/search/by-dtxcid/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List batchDtxcidSearch( @io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "JSON array of DSSTox Compound Identifier",
+            content = {@Content (array = @ArraySchema(schema = @Schema(implementation = String.class)),
+                    examples = {@ExampleObject("\"[\\\"DTXCID505\\\",\\\"DTXSID9020112\\\"]\"")})})
+                            @RequestBody String[] dtxcids,
+                            @RequestParam(value = "projection", required = false, defaultValue = "chemicaldetailall")
+                            ChemicalDetailProjection projection) {
+
+        log.debug("dtxcids = {}", dtxcids.length);
+
+        if(dtxcids.length > batchSize)
+            throw new HigherNumberOfIdsException(dtxcids.length, batchSize, "dtxcid" );
+
+        List data =  getChemicalDetails(dtxcids, "dtxcid", projection);
+        log.debug("database return {}", data.size());
+
+        return data;
+    }
+
+    private List getChemicalDetails(String[] ids, String type, ChemicalDetailProjection projection) {
         return switch (projection) {
             case chemicaldetailall ->
-                    detailService.getChemicalDetailsForBatch(dtxsids, ChemicalDetailAll.class, type);
+                    detailService.getChemicalDetailsForBatch(ids, ChemicalDetailAll.class, type);
             case chemicaldetailstandard ->
-                    detailService.getChemicalDetailsForBatch(dtxsids, ChemicalDetailStandard.class, type);
+                    detailService.getChemicalDetailsForBatch(ids, ChemicalDetailStandard.class, type);
             case chemicalidentifier ->
-                    detailService.getChemicalDetailsForBatch(dtxsids, ChemicalIdentifier.class, type);
+                    detailService.getChemicalDetailsForBatch(ids, ChemicalIdentifier.class, type);
             case chemicalstructure ->
-                    detailService.getChemicalDetailsForBatch(dtxsids, ChemicalStructure.class, type);
-            case ntatoolkit -> detailService.getChemicalDetailsForBatch(dtxsids, NtaToolkit.class, type);
-            case ccdchemicaldetails -> detailService.getChemicalDetailsForBatch(dtxsids, CcdChemicalDetails.class, type);
-            case compact -> detailService.getChemicalDetailsForBatch(dtxsids, Compact.class, type);
+                    detailService.getChemicalDetailsForBatch(ids, ChemicalStructure.class, type);
+            case ntatoolkit -> detailService.getChemicalDetailsForBatch(ids, NtaToolkit.class, type);
+            case ccdchemicaldetails -> detailService.getChemicalDetailsForBatch(ids, CcdChemicalDetails.class, type);
+            case compact -> detailService.getChemicalDetailsForBatch(ids, Compact.class, type);
         };
     }
 

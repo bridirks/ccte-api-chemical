@@ -30,12 +30,12 @@ public class ChemicalDetailService {
         }
     }
 
-    public  <T> List<T> getChemicalDetailsForBatch(String[] dtxsids, Class<T> tClass, String type) {
+    public  <T> List<T> getChemicalDetailsForBatch(String[] ids, Class<T> tClass, String type) {
 
         if(type.equalsIgnoreCase("dtxsid"))
-            return detailRepository.findByDtxsidInOrderByDtxsidAsc(dtxsids, tClass);
+            return detailRepository.findByDtxsidInOrderByDtxsidAsc(ids, tClass);
         else
-            return detailRepository.findByDtxcidInOrderByDtxcidAsc(dtxsids, tClass);
+            return detailRepository.findByDtxcidInOrderByDtxcidAsc(ids, tClass);
     }
 
     public <T> List<T> getChemicalDetailsForListName(String listName, Class<T> tClass) {

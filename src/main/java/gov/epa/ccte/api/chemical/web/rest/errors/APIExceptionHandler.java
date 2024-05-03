@@ -14,8 +14,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class APIExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(HigherNumberOfDtxsidException.class)
-    ProblemDetail handleHigherNumberOfDtxsidException(HigherNumberOfDtxsidException ex){
+    @ExceptionHandler(HigherNumberOfIdsException.class)
+    ProblemDetail handleHigherNumberOfDtxsidException(HigherNumberOfIdsException ex){
         return ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 

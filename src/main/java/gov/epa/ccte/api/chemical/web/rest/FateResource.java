@@ -4,7 +4,7 @@ import gov.epa.ccte.api.chemical.domain.Fate;
 import gov.epa.ccte.api.chemical.dto.mapper.FateMapper;
 import gov.epa.ccte.api.chemical.projection.FateAll;
 import gov.epa.ccte.api.chemical.repository.FateRepository;
-import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfDtxsidException;
+import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfIdsException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -84,7 +84,7 @@ public class FateResource {
         log.debug("dtxsids = {}", dtxsids.length);
 
         if(dtxsids.length > batchSize)
-            throw new HigherNumberOfDtxsidException(dtxsids.length, batchSize);
+            throw new HigherNumberOfIdsException(dtxsids.length, batchSize, "dtxsid" );
 
         return repository.findByDtxsidInOrderByDtxsidAscEndpointNameAsc(dtxsids, FateAll.class);
     }

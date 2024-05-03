@@ -6,7 +6,7 @@ import gov.epa.ccte.api.chemical.dto.mapper.ChemicalPropertyMapper;
 import gov.epa.ccte.api.chemical.projection.ChemicalPropertyAll;
 import gov.epa.ccte.api.chemical.projection.ChemicalPropertyIds;
 import gov.epa.ccte.api.chemical.repository.ChemicalPropertyRepository;
-import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfDtxsidException;
+import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfIdsException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -136,7 +136,7 @@ public class ChemicalPropertyResource {
         log.debug("dtxsids = {}", dtxsids.length);
 
         if(dtxsids.length > batchSize)
-            throw new HigherNumberOfDtxsidException(dtxsids.length, batchSize);
+            throw new HigherNumberOfIdsException(dtxsids.length, batchSize, "dtxsid" );
 
         return repository.findByDtxsidInOrderByDtxsidAscPropTypeAscNameAsc(dtxsids, ChemicalPropertyAll.class);
     }
