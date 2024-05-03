@@ -28,11 +28,4 @@ public class ChemicalDetailService {
             return detailRepository.findByDtxcidInOrderByDtxcidAsc(ids, tClass);
     }
 
-    public <T> List<T> getChemicalDetailsForListName(String listName, Class<T> tClass) {
-
-        // first get list of dtxsids for chemical list members
-        ChemicalListWithDtxsids list = listRepository.getListWithDtxsidsByListName(listName, "PUBLIC").orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
-
-        return detailRepository.findByDtxsidInOrderByDtxsidAsc(list.getDtxsids().split(","), tClass);
-    }
 }
