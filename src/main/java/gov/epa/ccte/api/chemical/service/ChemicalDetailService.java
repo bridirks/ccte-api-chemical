@@ -1,7 +1,6 @@
 package gov.epa.ccte.api.chemical.service;
 
 import gov.epa.ccte.api.chemical.repository.ChemicalDetailRepository;
-import gov.epa.ccte.api.chemical.repository.ChemicalListRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
