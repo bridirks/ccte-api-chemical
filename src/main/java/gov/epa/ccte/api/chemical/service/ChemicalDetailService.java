@@ -19,16 +19,6 @@ public class ChemicalDetailService {
         this.detailRepository = detailRepository;
         this.listRepository = listRepository;    }
 
-    public <T> T getChemicalDetailsForId(String id, String type, Class<T> tClass) {
-
-        if(type.equals("dtxsid")) {
-            return detailRepository.findByDtxsid(id, tClass)
-                    .orElseThrow(() -> new IdentifierNotFoundException("dtxsid", id));
-        }else{
-            return detailRepository.findByDtxcid(id, tClass)
-                    .orElseThrow(() -> new IdentifierNotFoundException("dtxcid", id));
-        }
-    }
 
     public  <T> List<T> getChemicalDetailsForBatch(String[] ids, Class<T> tClass, String type) {
 
