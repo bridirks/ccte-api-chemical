@@ -2,7 +2,6 @@ package gov.epa.ccte.api.chemical.web.rest.errors;
 
 import org.springframework.http.*;
 import org.springframework.lang.NonNull;
-import org.springframework.lang.Nullable;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
