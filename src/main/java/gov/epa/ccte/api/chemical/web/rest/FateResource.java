@@ -4,7 +4,7 @@ import gov.epa.ccte.api.chemical.domain.Fate;
 import gov.epa.ccte.api.chemical.dto.mapper.FateMapper;
 import gov.epa.ccte.api.chemical.projection.FateAll;
 import gov.epa.ccte.api.chemical.repository.FateRepository;
-import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfDtxsidException;
+import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfIdsException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -71,7 +71,7 @@ public class FateResource {
                     schema=@Schema(oneOf = {FateAll.class}))),
             @ApiResponse(responseCode = "400", description = "When user has submitted more then allowed number (${application.batch-size}) of DTXSID(s).",
                     content = @Content( mediaType = "application/problem+json",
-                    examples = {@ExampleObject(name = "", value = "{\"title\":\"Validation Error\",\"status\":400,\"detail\":\"System supports only '200' dtxsid at one time, '202' are submitted.\"}", description = "Validation error for more then allowed number of dtxsid(s).")},
+                    examples = {@ExampleObject(value = "{\"title\":\"Validation Error\",\"status\":400,\"detail\":\"System supports only '200' dtxsid at one time, '202' are submitted.\"}", description = "Validation error for more then allowed number of dtxsid(s).")},
                     schema=@Schema(oneOf = {ProblemDetail.class})))
     })
     @RequestMapping(value = "chemical/fate/search/by-dtxsid/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -84,7 +84,7 @@ public class FateResource {
         log.debug("dtxsids = {}", dtxsids.length);
 
         if(dtxsids.length > batchSize)
-            throw new HigherNumberOfDtxsidException(dtxsids.length, batchSize);
+            throw new HigherNumberOfIdsException(dtxsids.length, batchSize, "dtxsid" );
 
         return repository.findByDtxsidInOrderByDtxsidAscEndpointNameAsc(dtxsids, FateAll.class);
     }
