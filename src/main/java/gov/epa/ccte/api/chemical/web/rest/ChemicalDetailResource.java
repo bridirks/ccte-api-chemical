@@ -185,7 +185,7 @@ public class ChemicalDetailResource {
         };
     }
 
-    /**
+    /*
      * {@code GET  /chemical/detail/search/by-listname/:listname} : get list of chemicalDetail for the "listname".
      *
      * @param listname chemicals defined in this list will return with chemical details.
