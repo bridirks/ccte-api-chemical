@@ -6,6 +6,8 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @RepositoryRestResource(collectionResourceRel = "chemicalSynonym", path = "chemical-synonym", itemResourceRel = "chemicalSynonym", exported = false)
@@ -17,5 +19,6 @@ public interface ChemicalSynonymRepository extends JpaRepository<ChemicalSynonym
 
     <T> Optional<T> findByDtxsidAndIsPublic(String dtxsid, Boolean isPublic, Class<T> type);
 
+    <T> List<T> findByDtxsidInAndIsPublicOrderByDtxsidAsc(Collection<String> dtxsids, Boolean isPublic, Class<T> type);
 
 }
