@@ -158,7 +158,7 @@ public class ChemicalListResource {
     }
 
 
-
+    @Operation(summary = "Get dtxsids for starting value", description = "Returns an array of DTXSIDs for chemicals whose names start with the given characters, restricted to the specified chemical list.")
     @RequestMapping(value = "chemical/list/chemicals/search/start-with/{list}/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<String> startWith(@PathVariable String list, @PathVariable String word){
@@ -171,6 +171,7 @@ public class ChemicalListResource {
 
     }
 
+    @Operation(summary = "Get dtxsids for contain value", description = "Returns an array of DTXSIDs for chemicals whose names contain the given characters, restricted to the specified chemical list.")
     @RequestMapping(value = "chemical/list/chemicals/search/contain/{list}/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<String> contain(@PathVariable String list, @PathVariable String word){
@@ -183,6 +184,7 @@ public class ChemicalListResource {
 
     }
 
+    @Operation(summary = "Get dtxsids for exact value", description = "Returns an array of DTXSIDs for chemicals whose names matches exactly with the given characters, restricted to the specified chemical list.")
     @RequestMapping(value = "chemical/list/chemicals/search/equal/{list}/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<String> exact(@PathVariable String list, @PathVariable String word){
