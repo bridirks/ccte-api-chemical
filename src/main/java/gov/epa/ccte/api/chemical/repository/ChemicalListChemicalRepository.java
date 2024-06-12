@@ -33,4 +33,8 @@ public interface ChemicalListChemicalRepository extends JpaRepository<ChemicalLi
     value = " select dtxsid || '-' || list_name from ch.v_chemical_list_chemicals where dtxsid in (:dtxsids) and list_name in (:chemicalLists) ")
     List<String> chemicalListsAndDtxsids( List<String> chemicalLists, List<String> dtxsids);
 
+    @Query("select (count(c) > 0) from ChemicalListChemical c where c.listName = 'LCSSPUBCHEM' and c.dtxsid = ?1")
+    boolean isGhsLinkExists(String dtxsid);
+
+
 }
