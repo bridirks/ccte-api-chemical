@@ -66,4 +66,9 @@ public interface ChemicalDetailRepository extends JpaRepository<ChemicalDetail, 
     @Query(value = "select c.mrvFile from ChemicalDetail c where c.dtxcid = :dtxcid")
     Optional<String> getMrvFileForDtxcid(@Param("dtxcid") String dtxcid);
 
+    @Transactional(readOnly = true)
+    @Query(value = "select c.inchikey from ChemicalDetail c where c.dtxsid = :dtxsid")
+    Optional<String> getInchikeyForDtxsid(@Param("dtxsid") String dtxsid);
+
+
 }
