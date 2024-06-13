@@ -1,6 +1,7 @@
 package gov.epa.ccte.api.chemical.repository;
 
 import gov.epa.ccte.api.chemical.domain.ChemicalListChemical;
+import gov.epa.ccte.api.chemical.web.rest.GhsLinkResponse;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
@@ -34,7 +35,12 @@ public interface ChemicalListChemicalRepository extends JpaRepository<ChemicalLi
     List<String> chemicalListsAndDtxsids( List<String> chemicalLists, List<String> dtxsids);
 
     @Query("select (count(c) > 0) from ChemicalListChemical c where c.listName = 'LCSSPUBCHEM' and c.dtxsid = ?1")
-    boolean isGhsLinkExists(String dtxsid);
+    boolean isGhsLinkExists1(String dtxsid);
 
+    @Query("select new gov.epa.ccte.api.chemical.web.rest.GhsLinkResponse(d.dtxsid, " +
+            "case when l.dtxsid is null then false else true end, " +
+            "case when l.dtxsid is null then null else 'https://pubchem.ncbi.nlm.nih.gov/' ||  d.inchikey || '#section=GHS-Classification' end ) " +
+            "from  ChemicalDetail d left join ChemicalListChemical l on l.dtxsid = d.dtxsid and l.listName = 'LCSSPUBCHEM' where d.dtxsid in (?1)")
+    List<GhsLinkResponse> isGhsLinkExists(String[] dtxsid);
 
 }
