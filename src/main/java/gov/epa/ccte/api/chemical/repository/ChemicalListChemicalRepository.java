@@ -12,6 +12,8 @@ import java.util.List;
 @RepositoryRestResource(exported = false)
 public interface ChemicalListChemicalRepository extends JpaRepository<ChemicalListChemical, Long> {
 
+
+
     @Query("select distinct c.listName from ChemicalListChemical c join ChemicalList l on c.listId = l.id and c.dtxsid = :dtxsid and l.visibility = :visibility ")
     List<String> getListNames(String dtxsid, String visibility);
 
@@ -43,4 +45,6 @@ public interface ChemicalListChemicalRepository extends JpaRepository<ChemicalLi
             "from  ChemicalDetail d left join ChemicalListChemical l on l.dtxsid = d.dtxsid and l.listName = 'LCSSPUBCHEM' where d.dtxsid in (?1)")
     List<GhsLinkResponse> isGhsLinkExists(String[] dtxsid);
 
+    @Query("select l.dtxsid from ChemicalListChemical l where upper(l.listName) = upper(:list) and l.isPublic = true ")
+    List<String> getDtxsids(String list);
 }
