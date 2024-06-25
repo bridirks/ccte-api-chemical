@@ -197,6 +197,17 @@ public class ChemicalListResource {
 
     }
 
+    @Operation(summary = "Get dtxsids for list name", description = "Returns an array of DTXSIDs for chemicals whose names matches exactly with the given characters, restricted to the specified chemical list.")
+    @RequestMapping(value = "chemical/list/chemicals/search/by-listname/{list}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<String> listDtxsids(@PathVariable String list){
+
+        log.debug("list={}", list);
+
+        return chemicalListChemicalRepository.getDtxsids(list);
+
+    }
+
     @Operation(hidden = true)
     @RequestMapping(value = "chemical/list/chemicals/search/by-dtxsid", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
