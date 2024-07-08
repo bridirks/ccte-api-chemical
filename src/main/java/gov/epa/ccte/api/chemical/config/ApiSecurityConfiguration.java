@@ -59,6 +59,8 @@ public class ApiSecurityConfiguration {
         approvedOriginStore.put("https://v2626umcth877.rtord.epa.gov:8001", "https://v2626umcth877.rtord.epa.gov:8001");
         approvedOriginStore.put("https://v2626umcth878.rtord.epa.gov:8001", "https://v2626umcth878.rtord.epa.gov:8001");
         approvedOriginStore.put("https://comptoxstaging.rtpnc.epa.gov", "https://comptoxstaging.rtpnc.epa.gov");
+        approvedOriginStore.put("https://v2626umcth875.rtord.epa.gov:8001", "https://v2626umcth875.rtord.epa.gov:8001");
+
 
         log.info("*** {} urls are loaded. *** ", approvedOriginStore.size());
 
