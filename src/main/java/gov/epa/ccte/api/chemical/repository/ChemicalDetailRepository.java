@@ -36,6 +36,12 @@ public interface ChemicalDetailRepository extends JpaRepository<ChemicalDetail, 
     List<T> findByDtxcidInOrderByDtxcidAsc(String[] dtxsid, Class<T> type);
 
     // Query for chemical files
+
+    @Transactional(readOnly = true)
+    @RestResource(path = "by-gsid",rel = "find-by-gsid",exported = true)
+    @Query(value = "select c.molImage from ChemicalDetail c where c.genericSubstanceId = :gsid")
+    byte[] getMolImageForGsid(@Param("gsid") String gsid);
+
     @Transactional(readOnly = true)
     @RestResource(path = "by-dtxsid",rel = "find-by-dtxsid",exported = true)
     @Query(value = "select c.molImage from ChemicalDetail c where c.dtxsid = :dtxsid")
@@ -45,6 +51,11 @@ public interface ChemicalDetailRepository extends JpaRepository<ChemicalDetail, 
     @RestResource(path = "by-dtxcid",rel = "find-by-dtxcid",exported = true)
     @Query(value = "select c.molImage from ChemicalDetail c where c.dtxcid = :dtxcid")
     byte[] getMolImageForDtxcid(@Param("dtxcid") String dtxcid);
+
+    @Transactional(readOnly = true)
+    @RestResource(path = "by-gsid",rel = "find-by-gsid",exported = true)
+    @Query(value = "select c.molFile from ChemicalDetail c where c.genericSubstanceId = :gsid")
+    Optional<String> getMolFileForGsid(@Param("gsid") String gsid);
 
     @Transactional(readOnly = true)
     @RestResource(path = "by-dtxsid",rel = "find-by-dtxsid",exported = true)
