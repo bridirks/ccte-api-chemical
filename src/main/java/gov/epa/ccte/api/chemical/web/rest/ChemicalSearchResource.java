@@ -5,6 +5,7 @@ import gov.epa.ccte.api.chemical.projection.search.*;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
 import gov.epa.ccte.api.chemical.web.rest.errors.ChemicalSearchNotFoundException;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -70,7 +71,7 @@ public class ChemicalSearchResource {
                                                         @ExampleObject(name="CASRN", value = "1912-24", description = "Starting part of CASRN"),
                                                         @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU", description = "For InChIKey starting 13 characters are needed")
                                                             })
-                                              @PathVariable("word") String word, @Parameter(description = "Limit number of records to return, default value is 500.", examples = @ExampleObject(value = "20"))
+                                              @PathVariable("word") String word, @Parameter(description = "Limit number of records to return.", examples = @ExampleObject(value = "20"))
                                               @RequestParam(value = "top", required = false, defaultValue = "500") Integer top) {
 
         List<ChemicalSearchAll> searchResult = chemicalService.getStartWith(word, top);
@@ -277,6 +278,7 @@ public class ChemicalSearchResource {
         return chemicalService.getMsReadyBatchResult(form);
     }
 
+    @Hidden
     @RequestMapping(value = "chemical/test/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     List<CcdChemicalSearchResult> testSearch( @PathVariable("word") String searchWord){
         return searchRepository.equalCcd(searchWord.toUpperCase());
