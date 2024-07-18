@@ -375,7 +375,7 @@ public class SearchChemicalService {
         // searchResult = searchRepository.findByModifiedValueInOrderByRankAsc(List.of(searchWord, removeSpaces),ChemicalSearchAll.class);
         searchResult = searchRepository.findByModifiedValueInAndSearchNameInOrderByRankAsc(List.of(searchWord, removeSpaces), searchNames4SingleSearch, ChemicalSearchAll.class);
 
-        log.debug("records {}",searchResult.size());
+        log.debug("exact search count {}",searchResult.size());
 
         if(shouldSearchMore(searchWord, searchResult)) {
             // avoid InChIKey
