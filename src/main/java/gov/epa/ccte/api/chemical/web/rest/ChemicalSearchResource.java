@@ -70,8 +70,8 @@ public class ChemicalSearchResource {
                                                         @ExampleObject(name="CASRN", value = "1912-24", description = "Starting part of CASRN"),
                                                         @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU", description = "For InChIKey starting 13 characters are needed")
                                                             })
-                                              @PathVariable("word") String word, @Parameter(description = "Limit number of records to return", examples = @ExampleObject(value = "20"))
-                                              @RequestParam(value = "top", required = false, defaultValue = "0") Integer top) {
+                                              @PathVariable("word") String word, @Parameter(description = "Limit number of records to return, default value is 500.", examples = @ExampleObject(value = "20"))
+                                              @RequestParam(value = "top", required = false, defaultValue = "500") Integer top) {
 
         List<ChemicalSearchAll> searchResult = chemicalService.getStartWith(word, top);
 
