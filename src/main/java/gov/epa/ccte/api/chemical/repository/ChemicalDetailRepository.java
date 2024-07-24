@@ -1,6 +1,8 @@
 package gov.epa.ccte.api.chemical.repository;
 
 import gov.epa.ccte.api.chemical.domain.ChemicalDetail;
+import gov.epa.ccte.api.chemical.projection.chemicaldetail.ChemicalDetailStandard2;
+import org.springframework.data.domain.Limit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -14,6 +16,7 @@ import java.util.Optional;
 @SuppressWarnings("unused")
 @RepositoryRestResource(collectionResourceRel = "chemicalDetails", path = "chemical-details", itemResourceRel = "chemicalDetail", exported = false)
 public interface ChemicalDetailRepository extends JpaRepository<ChemicalDetail, Long> {
+
 
     // Single chemical search
     @Transactional(readOnly = true)
@@ -81,5 +84,7 @@ public interface ChemicalDetailRepository extends JpaRepository<ChemicalDetail, 
     @Query(value = "select c.inchikey from ChemicalDetail c where c.dtxsid = :dtxsid")
     Optional<String> getInchikeyForDtxsid(@Param("dtxsid") String dtxsid);
 
+    @Transactional(readOnly = true)
+    List<ChemicalDetailStandard2> findByIdGreaterThanAndDtxsidNotNull(Long id, Limit limit);
 
 }
