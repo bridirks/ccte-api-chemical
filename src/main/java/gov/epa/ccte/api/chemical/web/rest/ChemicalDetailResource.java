@@ -5,6 +5,7 @@ import gov.epa.ccte.api.chemical.projection.chemicaldetail.*;
 import gov.epa.ccte.api.chemical.service.ChemicalDetailService;
 import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfIdsException;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
+import gov.epa.ccte.api.chemical.web.rest.requests.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.ArraySchema;
@@ -38,10 +39,22 @@ public class ChemicalDetailResource {
     @Value("${application.batch-size}")
     private Integer batchSize;
 
+    private Long totalChemicals;
+
     public ChemicalDetailResource(ChemicalDetailService detailService) {
         this.detailService = detailService;
+
+        totalChemicals = detailService.getTotalChemicals();
     }
 
+    @RequestMapping(value = "chemical/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    Page getAllChemicalDetails(@RequestParam(value = "next", required = false, defaultValue = "1") Long next) {
+
+        log.debug("nextCursor: {}, totalChemicals = {}", next, totalChemicals);
+
+        return detailService.getAllChemicals(next, batchSize, totalChemicals);
+    }
     /**
      * {@code GET  /chemical/detail/by-dtxsid/:dtxsid} : get list of chemicalDetail for the "dtxsid".
      *
