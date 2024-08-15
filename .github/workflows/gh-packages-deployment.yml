@@ -7,7 +7,7 @@ name: GH Packages Deployment
 
 on:
   push:
-    branches: [ "main", DEV-886 ]
+    branches: [ "main" ]
 
 jobs:
   maven-build-deploy:
