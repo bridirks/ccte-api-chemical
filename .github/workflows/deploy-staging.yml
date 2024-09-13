@@ -1,19 +1,17 @@
 name: deploy-staging
 
 on:
- push:
-    branches: [ DEV-87 ]
-  #workflow_dispatch:
-     # inputs:
-      #  logLevel:
-        #  description: 'Log level'
-        #  required: true
-        #  default: 'warning'
-        #  type: choice
-        #  options:
-         # - info
-         # - warning
-         # - debug
+  workflow_dispatch:
+      inputs:
+        logLevel:
+          description: 'Log level'
+          required: true
+          default: 'warning'
+          type: choice
+          options:
+          - info
+          - warning
+          - debug
 
 jobs:
   build:
