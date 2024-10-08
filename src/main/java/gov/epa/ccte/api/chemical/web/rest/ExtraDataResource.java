@@ -1,7 +1,6 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
 import gov.epa.ccte.api.chemical.domain.ExtraData;
-import gov.epa.ccte.api.chemical.projection.chemicaldetail.*;
 import gov.epa.ccte.api.chemical.repository.ExtraDataRepository;
 import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfIdsException;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
@@ -18,7 +17,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
