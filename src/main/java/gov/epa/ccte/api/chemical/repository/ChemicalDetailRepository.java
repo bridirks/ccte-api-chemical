@@ -36,7 +36,7 @@ public interface ChemicalDetailRepository extends JpaRepository<ChemicalDetail, 
 
     @Transactional(readOnly = true)
     <T>
-    List<T> findByDtxcidInOrderByDtxcidAsc(String[] dtxsid, Class<T> type);
+    List<T> findByDtxcidInOrderByDtxcidAsc(String[] dtxcid, Class<T> type);
 
     // Query for chemical files
 

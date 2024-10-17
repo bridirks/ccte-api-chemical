@@ -23,39 +23,40 @@ import java.util.List;
 @SecurityRequirement(name = "api_key") // no need for api_key for this endpoint
 @Slf4j
 @RestController
-public class GhsLinkResource {
+public class WikipediaLinkResource {
 
     final private ChemicalListChemicalRepository chemicalListChemicalRepository;
 
-    public GhsLinkResource(ChemicalListChemicalRepository chemicalListChemicalRepository) {
+    public WikipediaLinkResource(ChemicalListChemicalRepository chemicalListChemicalRepository) {
 
         this.chemicalListChemicalRepository = chemicalListChemicalRepository;
     }
 
-    @Operation(summary = "Check existence by dtxsid", description = "This endpoint will return Y if Pubchem has GHS Safety data otherwise it will return N.")
-    @RequestMapping(value = "chemical/ghslink/to-dtxsid/{dtxsid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Check existence by dtxsid", description = "This endpoint will return Y if Wikipedia has GHS Safety data otherwise it will return N.")
+    @RequestMapping(value = "chemical/wikipedia/by-dtxsid/{dtxsid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    GhsLinkResponse byDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID7020182") @PathVariable("dtxsid") String dtxsid) {
+    WikipediaLinkResponse byDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID7020182") @PathVariable("dtxsid") String dtxsid) {
 
         log.debug("Received request to check existence by dtxsid: {} ", dtxsid);
 
-        if(chemicalListChemicalRepository.isGhsLinkExists(new String[]{dtxsid}).isEmpty())
-            return new GhsLinkResponse(dtxsid, false, null);
+        if(chemicalListChemicalRepository.isWikipediaLinkExists(new String[]{dtxsid}).isEmpty())
+            return new WikipediaLinkResponse(dtxsid, null);
         else
-            return chemicalListChemicalRepository.isGhsLinkExists(new String[]{dtxsid}).get(0);
+            return chemicalListChemicalRepository.isWikipediaLinkExists(new String[]{dtxsid}).get(0);
     }
 
-    @Operation(summary = "Check existence for batch of dtxsid", description = "This endpoint will return Y if Pubchem has GHS Safety data otherwise it will return N.")
-    @RequestMapping(value = "chemical/ghslink/to-dtxsid/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @Operation(summary = "Check existence for batch of dtxsid", description = "This endpoint will return Y if Wikipedia has GHS Safety data otherwise it will return N.")
+    @RequestMapping(value = "chemical/wikipedia/by-dtxsid/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    List<GhsLinkResponse> byBatchDtxsid(@io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "JSON array of DSSTox Substance Identifier",
+    List<WikipediaLinkResponse> byBatchDtxsid(@io.swagger.v3.oas.annotations.parameters.RequestBody(required = true, description = "JSON array of DSSTox Substance Identifier",
             content = {@Content(array = @ArraySchema(schema = @Schema(implementation = String.class)),
                     examples = {@ExampleObject("\"[\\\"DTXSID7020182\\\",\\\"DTXSID9020112\\\"]\"")})})
-                                  @RequestBody String[] dtxsids) {
+                                        @RequestBody String[] dtxsids) {
 
         log.debug("Received request to check existence by {} dtxsid: ", dtxsids.length);
 
-        return chemicalListChemicalRepository.isGhsLinkExists(dtxsids);
+        return chemicalListChemicalRepository.isWikipediaLinkExists(dtxsids);
     }
 
 }
+
