@@ -93,22 +93,31 @@ public class SearchChemicalService {
         // Search word should be trim
         searchWord = searchWord.trim();
 
-        if(isCasrn(searchWord)){
-            log.debug("{} is casrn ", searchWord);
+        // Checking if it's an EC number first, to avoid removing leading zeros from EC numbers
+        if (isECNumber(searchWord)) {
+            log.debug("{} is EC number", searchWord);
             return searchWord;
-        } else if (isInchiKey (searchWord)) {
-            log.debug("{} is inchiKey ", searchWord);
+        }
+
+        // Checking if it's a CASRN-like format with or without dashes and removing leading zeros
+        if (searchWord.matches("^0*\\d{1,7}-?\\d{2}-?\\d$")) {
+            searchWord = searchWord.replaceFirst("^0+", "");
+        }
+
+        if (isCasrn(searchWord)) {
+            log.debug("{} is casrn", searchWord);
             return searchWord;
-        } else if (isCasrn(processCasrnDashes(searchWord))){
+        } else if (isInchiKey(searchWord)) {
+            log.debug("{} is inchiKey", searchWord);
+            return searchWord;
+        } else if (isCasrn(processCasrnDashes(searchWord))) {
             log.debug("{} is casrn with wrong dash", searchWord);
             return processCasrnDashes(searchWord);
-        }else if (isECNumber(searchWord)){
-            log.debug("{} is EC number ", searchWord);
+        } else if (StringUtils.isNumeric(searchWord.replaceAll("-", ""))) {
+            // Partial CASRN or EC Number
             return searchWord;
-        }else if(StringUtils.isNumeric(searchWord.replaceAll("-",""))) {
-            // partial CASRN or EC Number
-            return searchWord;
-        }else{
+        } else {
+
             // check for URLencoded value for Synonyms
 //            if(isUrlEncoded(searchWord)){
 //                try {
