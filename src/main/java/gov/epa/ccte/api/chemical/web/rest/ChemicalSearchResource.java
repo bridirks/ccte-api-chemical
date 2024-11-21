@@ -3,6 +3,7 @@ package gov.epa.ccte.api.chemical.web.rest;
 import gov.epa.ccte.api.chemical.domain.ChemicalSearch;
 import gov.epa.ccte.api.chemical.projection.search.*;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
+import gov.epa.ccte.api.chemical.service.ChemicalUtils;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
 import gov.epa.ccte.api.chemical.web.rest.errors.ChemicalSearchNotFoundException;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -142,6 +143,36 @@ public class ChemicalSearchResource {
         else
             return searchResult;
     }
+
+    /**
+     * {@code POST  /chemical/search/equal/:word} : get the list of chemicalSearch matching the batch of words.
+     *
+     * @param words the exact match of  chemicalSearch to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalSearch}.
+     */
+    @Operation(summary = "Search by exact batch of values", description = "NOTE: Search batch of values (values are separated by EOL character and maximum 200 values are allowed).")
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
+                    schema=@Schema(oneOf = {ChemicalSearchAll.class})))
+    })
+    @RequestMapping(value = "chemical/search/equal/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    List<ChemicalBatchSearchResult> chemicalBatchEqual (@Parameter(required = true, description = "Exact match of batch of search words (separated by end of line character)",
+            examples = {@ExampleObject(name="DSSTox Substance Identifier", value = "DTXSID7020182", description = "Exact match of DTXSID"),
+                    @ExampleObject(name="DSSTox Compound Identifier", value = "DTXCID505", description = "Exact match of DTXCID"),
+                    @ExampleObject(name="Synonym", value = "atrazine", description = "Exact match of URLencoded chemical name(including synonyms)"),
+                    @ExampleObject(name="CASRN", value = "1912-24-9", description = "Exact match of CASRN"),
+                    @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU-UHFFFAOYSA-N", description = "Exact match of InChIKey")})
+                                           @RequestBody String words) {
+
+        String[] searchWords = chemicalService.preprocessingSearchWord(words.split("\n"));
+
+        log.debug("input search words = {} and process search word count = {}. ", words, searchWords.length);
+
+        List<ChemicalSearchInternal> searchResult =  searchRepository.findByModifiedValueInOrderByRankAsc(List.of(searchWords), ChemicalSearchInternal.class);
+
+        return chemicalService.processBatchResult(searchResult, searchWords);
+
+     }
 
     /**
      * {@code POST  /chemical/search/equal/:word} : get the list of chemicalSearch matching the batch of words.
