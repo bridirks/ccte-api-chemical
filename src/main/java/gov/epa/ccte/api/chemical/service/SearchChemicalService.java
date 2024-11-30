@@ -454,14 +454,34 @@ public class SearchChemicalService {
         }
     }
 
-    private List getContainFromDB1(String searchWord, Integer top, Class aClass) {
-        if(top != null && top > 0 ) {
-            log.debug("picking up top {} records", top);
-            return searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord,Limit.of(top), aClass);
-        }else{
-            return searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord, Limit.unlimited(), aClass);
-        }
+//    private List getContainFromDB1(String searchWord, Integer top, Class aClass) {
+//        if(top != null && top > 0 ) {
+//            log.debug("picking up top {} records", top);
+//            return searchRepository.findByModifiedValueContainsAndSearchNameInOrderByRankAscDtxsidAsc(searchWord, searchMatchWithoutInchikey, Limit.of(top), aClass);
+//            //return searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord,Limit.of(top), aClass);
+//        }else{
+//            return searchRepository.findByModifiedValueContainsAndSearchNameInOrderByRankAscDtxsidAsc(searchWord, searchMatchWithInchikey, Limit.unlimited(), aClass);
+//            //return searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord, Limit.unlimited(), aClass);
+//        }
+//    }
 
+    private List getContainFromDB1(String searchWord, Integer top, Class aClass) {
+        // Determine if Inchikey logic should be included based on searchWord length
+        boolean useInchikey = searchWord != null && searchWord.length() >= 13;
+
+        // Determine the appropriate search match type
+        var searchMatch = useInchikey ? searchMatchWithInchikey : searchMatchWithoutInchikey;
+
+        // Determine the limit based on the 'top' parameter
+        var limit = (top != null && top > 0) ? Limit.of(top) : Limit.unlimited();
+
+        // Call the repository method with the appropriate parameters
+        return searchRepository.findByModifiedValueContainsAndSearchNameInOrderByRankAscDtxsidAsc(
+                searchWord,
+                searchMatch,
+                limit,
+                aClass
+        );
     }
 
 
