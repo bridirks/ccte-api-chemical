@@ -1,10 +1,10 @@
 package gov.epa.ccte.api.chemical.service;
 
-import gov.epa.ccte.api.chemical.projection.chemicallist.ChemicalListWithDtxsids;
+import gov.epa.ccte.api.chemical.projection.chemicaldetail.ChemicalDetailStandard2;
 import gov.epa.ccte.api.chemical.repository.ChemicalDetailRepository;
-import gov.epa.ccte.api.chemical.repository.ChemicalListRepository;
-import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
+import gov.epa.ccte.api.chemical.web.rest.requests.Page;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,36 +13,46 @@ import java.util.List;
 @Service
 public class ChemicalDetailService {
     private final ChemicalDetailRepository detailRepository;
-    private final ChemicalListRepository listRepository;
 
-    public ChemicalDetailService(ChemicalDetailRepository detailRepository, ChemicalListRepository listRepository) {
+    public ChemicalDetailService(ChemicalDetailRepository detailRepository) {
         this.detailRepository = detailRepository;
-        this.listRepository = listRepository;    }
+    }
 
-    public <T> T getChemicalDetailsForId(String id, String type, Class<T> tClass) {
 
-        if(type.equals("dtxsid")) {
-            return detailRepository.findByDtxsid(id, tClass)
-                    .orElseThrow(() -> new IdentifierNotFoundException("dtxsid", id));
+    public  <T> List<T> getChemicalDetailsForBatch(String[] ids, Class<T> tClass, String type) {
+
+        if(type.equalsIgnoreCase("dtxsid"))
+            return detailRepository.findByDtxsidInOrderByDtxsidAsc(ids, tClass);
+        else
+            return detailRepository.findByDtxcidInOrderByDtxcidAsc(ids, tClass);
+    }
+
+    public Page getAllChemicals(Long nextCursor, Integer batchSize, Long totalChemicals) {
+
+        log.debug("next cursor: " + nextCursor);
+
+        List<ChemicalDetailStandard2> data = detailRepository.findByIdGreaterThanAndDtxsidNotNull(nextCursor, Limit.of(batchSize));
+
+        log.debug("data size: {}", data.size());
+
+
+        return Page.builder()
+                .data(data)
+                .size(batchSize)
+                .total(totalChemicals)
+                .next(maximumId(data))
+                .build();
+    }
+
+    private Long maximumId(List<ChemicalDetailStandard2> data) {
+        if(!data.isEmpty()){
+            return (data.get(data.size()-1)).getId();
         }else{
-            return detailRepository.findByDtxcid(id, tClass)
-                    .orElseThrow(() -> new IdentifierNotFoundException("dtxcid", id));
+            return 1L;
         }
     }
 
-    public  <T> List<T> getChemicalDetailsForBatch(String[] dtxsids, Class<T> tClass, String type) {
-
-        if(type.equalsIgnoreCase("dtxsid"))
-            return detailRepository.findByDtxsidInOrderByDtxsidAsc(dtxsids, tClass);
-        else
-            return detailRepository.findByDtxcidInOrderByDtxcidAsc(dtxsids, tClass);
-    }
-
-    public <T> List<T> getChemicalDetailsForListName(String listName, Class<T> tClass) {
-
-        // first get list of dtxsids for chemical list members
-        ChemicalListWithDtxsids list = listRepository.getListWithDtxsidsByListName(listName, "PUBLIC").orElseThrow(() -> new IdentifierNotFoundException("List name", listName));
-
-        return detailRepository.findByDtxsidInOrderByDtxsidAsc(list.getDtxsids().split(","), tClass);
+    public Long getTotalChemicals() {
+        return detailRepository.count();
     }
 }

@@ -15,7 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
 
 import static org.springframework.http.MediaType.IMAGE_PNG;
 import static org.springframework.http.MediaType.TEXT_PLAIN;
@@ -42,6 +41,38 @@ public class ChemicalFileResource {
     public ChemicalFileResource(ChemicalDetailRepository detailRepository) {
 
         this.detailRepository = detailRepository;
+    }
+
+    /**
+     * {@code GET  /chemical/file/image/search/by-gsid/:gsid} : get the "gsid" chemical image.
+     *
+     * @param gsid the matching gsid of the chemical image to retrieve.
+     * @param format is enum with two values pgn and svg
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical image}.
+     */
+    @Operation(summary = "Get structure image by gsid")
+    @RequestMapping(value = "chemical/file/image/search/by-gsid/{gsid}", method = RequestMethod.GET)
+    public @ResponseBody
+    ResponseEntity<byte[]> imageByGsid(@Parameter(required = true, description = "DSSTox Generic Substance Identifier", example = "DTXSID7020182") @PathVariable("gsid") String gsid,
+                                         @Parameter(name = "Image Format", description = "In case of absence, it will return png image") @RequestParam(value = "format", required = false) ImageFormat format){
+
+        log.debug("dtxsid = {}, format = {}", gsid, format);
+
+
+        if(format == ImageFormat.PNG || format == null){
+            byte[] image = detailRepository.getMolImageForGsid(gsid);
+            return ResponseEntity.ok().contentType(IMAGE_PNG).body(image);
+        }else if(format == ImageFormat.SVG){
+            String mol = detailRepository.getMolFileForGsid(gsid)
+                    .orElseThrow(()->new IdentifierNotFoundException("GSID",gsid));
+
+            byte[] image = getSvgImage(mol);
+
+            return ResponseEntity.ok().contentType(MediaType.valueOf("image/svg+xml")).body(image);
+        }else{
+            return null;
+        }
     }
 
     /**

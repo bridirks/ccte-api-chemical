@@ -35,6 +35,17 @@ public class IndigoResource {
         log.debug("mol file size = {}", mol.length());
 
 
+        return indigoService.mol2inchi(mol);
+    }
+
+    @Operation(summary = "Get InChIkey from mol")
+    @RequestMapping(value = "chemical/indigo/to-inchikey", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    String toInChIkey(@Parameter(required = true, description = "mol file") @RequestBody() String mol) throws IOException {
+
+        log.debug("mol file size = {}", mol.length());
+
+
         return indigoService.mol2inchikey(mol);
     }
 

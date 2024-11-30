@@ -143,9 +143,14 @@ public class ChemicalListResource {
 
         log.debug("dtxsid={}, projection={}", dtxsid, projection);
 
+        // Get chemical lists link to requested dtxsid
+        List<String> chemicalLists = chemicalListChemicalRepository.getListNames(dtxsid, "PUBLIC");
+
         return switch (projection){
-            case chemicallistname -> chemicalListChemicalRepository.getListNames(dtxsid, "PUBLIC");
+            case chemicallistname ->  listRepository.findByListNameInIgnoreCaseAndVisibilityAndIsVisibleOrderByListNameAsc(chemicalLists, "PUBLIC", true, ChemicalListName.class);
+            //case chemicallistall -> listRepository.findByListNameInIgnoreCaseAndVisibilityAndIsVisibleOrderByListNameAsc(chemicalLists, "PUBLIC", true, ChemicalListAll.class);
             case chemicallistall -> listRepository.getListsByDtxsid(dtxsid, "PUBLIC");
+            case ccdchemicaldetaillists -> listRepository.getListsByDtxsid(dtxsid, "PUBLIC");
            // case chemicalListwithdtxsids -> listRepository.getListsByDtxsidWithDtxsids(dtxsid, "PUBLIC");
             default -> null;
         };
@@ -153,6 +158,7 @@ public class ChemicalListResource {
     }
 
 
+    @Operation(summary = "Get dtxsids for starting value", description = "Returns an array of DTXSIDs for chemicals whose names start with the given characters, restricted to the specified chemical list.")
     @RequestMapping(value = "chemical/list/chemicals/search/start-with/{list}/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<String> startWith(@PathVariable String list, @PathVariable String word){
@@ -165,6 +171,7 @@ public class ChemicalListResource {
 
     }
 
+    @Operation(summary = "Get dtxsids for contain value", description = "Returns an array of DTXSIDs for chemicals whose names contain the given characters, restricted to the specified chemical list.")
     @RequestMapping(value = "chemical/list/chemicals/search/contain/{list}/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<String> contain(@PathVariable String list, @PathVariable String word){
@@ -177,6 +184,7 @@ public class ChemicalListResource {
 
     }
 
+    @Operation(summary = "Get dtxsids for exact value", description = "Returns an array of DTXSIDs for chemicals whose names matches exactly with the given characters, restricted to the specified chemical list.")
     @RequestMapping(value = "chemical/list/chemicals/search/equal/{list}/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     List<String> exact(@PathVariable String list, @PathVariable String word){
@@ -189,6 +197,17 @@ public class ChemicalListResource {
 
     }
 
+    @Operation(summary = "Get dtxsids for list name", description = "Returns an array of DTXSIDs for chemicals whose names matches exactly with the given characters, restricted to the specified chemical list.")
+    @RequestMapping(value = "chemical/list/chemicals/search/by-listname/{list}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public @ResponseBody
+    List<String> listDtxsids(@PathVariable String list){
+
+        log.debug("list={}", list);
+
+        return chemicalListChemicalRepository.getDtxsids(list);
+
+    }
+
     @Operation(hidden = true)
     @RequestMapping(value = "chemical/list/chemicals/search/by-dtxsid", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
@@ -197,6 +216,8 @@ public class ChemicalListResource {
         log.debug("dtxsids = {}, chemical lists = {}", request.getDtxsids().size(), request.getChemicalLists().size());
 
         List<String> result = chemicalListChemicalRepository.chemicalListsAndDtxsids(request.getChemicalLists(), request.getDtxsids());
+
+        log.info("result.size={}", result.size());
 
         return result;
 

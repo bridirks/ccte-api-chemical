@@ -6,6 +6,7 @@ import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import gov.epa.ccte.api.chemical.service.ChemicalUtils;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
 import gov.epa.ccte.api.chemical.web.rest.errors.ChemicalSearchNotFoundException;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -22,7 +23,6 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,29 +39,13 @@ import java.util.stream.Collectors;
 public class ChemicalSearchResource {
     final private ChemicalSearchRepository searchRepository;
     final private SearchChemicalService chemicalService;
-    private final List<String> searchMatchWithoutInchikey;
-    private final List<String> searchMatchAll;
 
-    private final List<String> searchNames4SingleSearch;
-    
-    private final List<String> isThisCASRN;
+
+
 
     public ChemicalSearchResource(ChemicalSearchRepository searchRepository, SearchChemicalService chemicalService) {
         this.searchRepository = searchRepository;
         this.chemicalService = chemicalService;
-
-        searchMatchWithoutInchikey = Arrays.asList("Deleted CAS-RN","PC-Code","Substance_id","Approved Name","Alternate CAS-RN",
-                "CAS-RN","Synonym","Integrated Source CAS-RN","DSSTox_Compound_Id","Systematic Name","Integrated Source Name",
-                "Expert Validated Synonym","Synonym from Valid Source","FDA CAS-Like Identifier","DSSTox_Substance_Id", "EHCA Number", "EC Number");
-        searchMatchAll = Arrays.asList("Deleted CAS-RN","PC-Code","Substance_id","Approved Name","Alternate CAS-RN",
-                "CAS-RN","Synonym","Integrated Source CAS-RN","DSSTox_Compound_Id","Systematic Name","Integrated Source Name",
-                "Expert Validated Synonym","Synonym from Valid Source","FDA CAS-Like Identifier","DSSTox_Substance_Id",
-                "InChIKey", "Indigo InChIKey", "EHCA Number", "EC Number");
-        searchNames4SingleSearch = Arrays.asList("Deleted CAS-RN","PC-Code","Approved Name","Alternate CAS-RN",
-                "CASRN","Synonym","Integrated Source CAS-RN","DSSTox_Compound_Id","Systematic Name","Integrated Source Name",
-                "Expert Validated Synonym","Synonym from Valid Source","FDA CAS-Like Identifier","DSSTox_Substance_Id",
-                "EHCA Number", "EC Number", "InChIKey", "Indigo InChIKey");
-        isThisCASRN = Arrays.asList("Alternate CAS-RN","Integrated Source CAS-RN","CASRN","FDA CAS-Like Identifier","Deleted CAS-RN");
     }
 
     /**
@@ -88,39 +72,10 @@ public class ChemicalSearchResource {
                                                         @ExampleObject(name="CASRN", value = "1912-24", description = "Starting part of CASRN"),
                                                         @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU", description = "For InChIKey starting 13 characters are needed")
                                                             })
-                                              @PathVariable("word") String word, @Parameter(description = "Limit number of records to return", examples = @ExampleObject(value = "20"))
-                                              @RequestParam(value = "top", required = false) Integer top) {
+                                              @PathVariable("word") String word, @Parameter(description = "Limit number of records to return.", examples = @ExampleObject(value = "20"))
+                                              @RequestParam(value = "top", required = false, defaultValue = "500") Integer top) {
 
-        String searchWord = chemicalService.preprocessingSearchWord(word);
-
-
-        log.debug("input search word = {} and process search word = {}. ", word, searchWord);
-
-        List<ChemicalSearchAll> searchResult; // exact search and final results
-        List<ChemicalSearchAll> searchResult2; // start-with results
-
-        // for adding exact search on top of return result
-        String removeSpaces = searchWord.replaceAll(" ", "");
-
-        // searchResult = searchRepository.findByModifiedValueInOrderByRankAsc(List.of(searchWord, removeSpaces),ChemicalSearchAll.class);
-        searchResult = searchRepository.findByModifiedValueInAndSearchNameInOrderByRankAsc(List.of(searchWord, removeSpaces), searchNames4SingleSearch, ChemicalSearchAll.class);
-
-        log.debug("records {}",searchResult.size());
-
-        if(shouldSearchMore(searchWord, searchResult)) {
-            // avoid InChIKey
-            if (searchWord.length() > 13) {
-                searchResult2 = searchRepository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(searchWord, searchMatchAll, ChemicalSearchAll.class);
-            } else {
-                log.debug("searchWord = {}", searchWord);
-                searchResult2 = searchRepository.findByModifiedValueStartingWithAndSearchNameInOrderByRankAscSearchValue(searchWord, searchMatchWithoutInchikey, ChemicalSearchAll.class);
-            }
-
-            searchResult.addAll(searchResult2); // append start-with results
-        }
-        log.debug("{} records match for {}", searchResult.size(), word);
-
-        searchResult = chemicalService.removeDuplicates(searchResult);
+        List<ChemicalSearchAll> searchResult = chemicalService.getStartWith(word, top);
 
         if(!searchResult.isEmpty()) {
             if(top != null && top > 0 ){
@@ -130,54 +85,6 @@ public class ChemicalSearchResource {
                 return searchResult;
             }
         }else {
-            throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
-        }
-    }
-
-
-    // identify the condition if there is not more searching needed
-    private boolean shouldSearchMore(String searchWord, List<ChemicalSearchAll> searchResult) {
-        if(ChemicalUtils.isDtxsid(searchWord) || ChemicalUtils.isDtxcid(searchWord) || ChemicalUtils.isCasrn(searchWord))
-            return false;
-        // in case CASRN is in number format
-        else if (!searchResult.isEmpty() && isThisCASRN.contains(searchResult.get(0).getSearchName()))
-            return false;
-        else
-            return true;
-    }
-
-    @Operation(hidden = true)
-    @RequestMapping(value = "chemical/search/start-with2/{word}",  method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public @ResponseBody
-    List<ChemicalSearchAll> chemicalStartWith2(@Parameter(required = true, description = "Starting characters for search word",
-            examples = {@ExampleObject(name="DSSTox Substance Identifier", value = "DTXSID7020182", description = "Starting part of DTXSID"),
-                    @ExampleObject(name="DSSTox Compound Identifier", value = "DTXCID505", description = "Starting part of DTXCID"),
-                    @ExampleObject(name="Synonym Starting characters", value = "atraz", description = "URLencoded starting characters of chemical name"),
-                    @ExampleObject(name="CASRN", value = "1912-24", description = "Starting part of CASRN"),
-                    @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU", description = "For InChIKey starting 13 characters are needed")
-            })
-                                              @PathVariable("word") String word ) {
-
-        String searchWord = chemicalService.preprocessingSearchWord(word);
-
-        log.debug("input search word = {} and process search word = {}. ", word, searchWord);
-
-        List<ChemicalSearchAll> searchResult;
-
-        // avoid InChIKey
-        if(searchWord.length() > 13){
-            searchResult =  searchRepository.findTop20ByModifiedValueStartsWithAndSearchNameInOrderByRankAscSearchValueAsc(searchWord, searchMatchAll, ChemicalSearchAll.class);
-        }else{
-            log.debug("searchWord = {}", searchWord);
-            searchResult =  searchRepository.findTop20ByModifiedValueStartsWithAndSearchNameInOrderByRankAscSearchValueAsc(searchWord, searchMatchWithoutInchikey, ChemicalSearchAll.class);
-        }
-        log.debug("{} records match for {}", searchResult.size(), word);
-
-        searchResult = chemicalService.removeDuplicates(searchResult);
-
-        if(!searchResult.isEmpty())
-            return searchResult;
-        else {
             throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
         }
     }
@@ -268,6 +175,36 @@ public class ChemicalSearchResource {
      }
 
     /**
+     * {@code POST  /chemical/search/equal/:word} : get the list of chemicalSearch matching the batch of words.
+     *
+     * @param words the exact match of  chemicalSearch to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the list of chemicalSearch}.
+     */
+//    @Operation(summary = "Search by exact batch of values", description = "NOTE: Search batch of values (values are separated by EOL character and maximum 200 values are allowed).")
+//    @ApiResponses(value= {
+//            @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
+//                    schema=@Schema(oneOf = {ChemicalSearchAll.class})))
+//    })
+//    @RequestMapping(value = "chemical/search/equal/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+//    List<ChemicalBatchSearchResult> chemicalBatchEqual (@Parameter(required = true, description = "Exact match of batch of search words (separated by end of line character)",
+//            examples = {@ExampleObject(name="DSSTox Substance Identifier", value = "DTXSID7020182", description = "Exact match of DTXSID"),
+//                    @ExampleObject(name="DSSTox Compound Identifier", value = "DTXCID505", description = "Exact match of DTXCID"),
+//                    @ExampleObject(name="Synonym", value = "atrazine", description = "Exact match of URLencoded chemical name(including synonyms)"),
+//                    @ExampleObject(name="CASRN", value = "1912-24-9", description = "Exact match of CASRN"),
+//                    @ExampleObject(name="InChIKey", value = "MXWJVTOOROXGIU-UHFFFAOYSA-N", description = "Exact match of InChIKey")})
+//                                           @RequestBody String words) {
+//
+//        String[] searchWords = chemicalService.preprocessingSearchWord(words.split("\n"));
+//
+//        log.debug("input search words = {} and process search word count = {}. ", words, searchWords.length);
+//
+//        List<ChemicalSearchInternal> searchResult =  searchRepository.findByModifiedValueInOrderByRankAsc(List.of(searchWords), ChemicalSearchInternal.class);
+//
+//        return chemicalService.processBatchResult(searchResult, searchWords);
+//
+//     }
+
+    /**
      * {@code GET  /chemical/search/contain/:word} : get list of chemicalSearch containing the "word".
      *
      * @param word the containing word of the chemicalSearch to retrieve.
@@ -297,25 +234,10 @@ public class ChemicalSearchResource {
 
         log.debug("input search word = {} and process search word = {}. projection = {}", word, searchWord, projection);
 
-        List searchResult = null;
+        List searchResult;
 
-        switch (projection){
-            case "chemicalsearchall": {
-                searchResult = searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord, ChemicalSearchAll.class);
-                searchResult = chemicalService.removeDuplicates(searchResult);
-                break;
-            }
-            case "dtxsidonly":{
-                searchResult = searchRepository.findByModifiedValueContainsOrderByRankAscDtxsid(searchWord, DtxsidOnly.class);
-                searchResult = chemicalService.removeDuplicates(searchResult);
-                break;
-            }
-            case "ccdsearchresult":{
-                searchResult = searchRepository.containCcd(searchWord);
-                searchResult = chemicalService.removeDuplicates(searchResult);
-                break;
-            }
-        }
+        searchResult = chemicalService.getContain(projection, searchWord, top);
+        searchResult = chemicalService.removeDuplicates(searchResult);
 
         if(searchResult == null || searchResult.isEmpty())
             throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
@@ -341,6 +263,7 @@ public class ChemicalSearchResource {
 //        }else
 //            throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
     }
+
 
     /**
      * {@code GET  chemical/search/msready/formula/{formula} : get list of chemicalSearch containing the "formula".
@@ -386,6 +309,7 @@ public class ChemicalSearchResource {
         return chemicalService.getMsReadyBatchResult(form);
     }
 
+    @Hidden
     @RequestMapping(value = "chemical/test/{word}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     List<CcdChemicalSearchResult> testSearch( @PathVariable("word") String searchWord){
         return searchRepository.equalCcd(searchWord.toUpperCase());
