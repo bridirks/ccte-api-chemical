@@ -18,13 +18,10 @@ import java.math.BigInteger;
 public abstract class ChemicalDetails implements Serializable {
 
     @Id
-//    @Column(name = "h_chem_hash_key")
-//    private String id;
     @Column(name = "dtxsid")
     @JsonProperty("dtxsid")
     private String dtxsid;
 
-    // column for UI - it is not in table
     @Transient
     @JsonProperty(value = "selected", required = false, defaultValue = "false")
     private Boolean selected;
