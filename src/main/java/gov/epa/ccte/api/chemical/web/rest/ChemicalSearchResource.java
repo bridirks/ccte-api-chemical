@@ -299,6 +299,16 @@ public class ChemicalSearchResource {
 
         return searchRepository.searchMsReadyMass(start, end);
     }
+    
+    @Operation(summary = "Search mass using mass range")
+    @RequestMapping(value = "chemical/search/mass/{start}/{end}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    List<String> getChemicalsForMassBetween(@Parameter(required = true, description = "Starting mass value", example = "199.5") @PathVariable("start") Double start,
+                               @Parameter(required = true, description = "Ending mass value", example = "200.5") @PathVariable("end") Double end){
+
+    	log.debug("mass search start with {} to {}", start, end);
+
+        return searchRepository.getMassValues(start, end);
+    }
 
     @Operation(summary = "Search ms ready chemical using batch of mass range")
     @RequestMapping(value = "chemical/msready/search/by-mass/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
