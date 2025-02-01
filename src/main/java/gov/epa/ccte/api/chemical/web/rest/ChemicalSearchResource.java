@@ -346,26 +346,26 @@ public class ChemicalSearchResource {
         return searchRepository.getExactFormulaCount(formula);
     }
     
-    @Operation(summary = "Search chemicals by ms ready formula")
-    @RequestMapping(value = "chemical/search/by-msready-formula/{formula}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    List<String> getChemicalsForMsreadyFormula(@Parameter(required = true, description = "formula", example = "C15H16O2")
-                                 @PathVariable("formula") String formula) {
+	@Operation(summary = "Search chemicals by ms ready formula")
+	@RequestMapping(value = "chemical/search/by-msready-formula/{formula}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	List<String> getChemicalsForMsreadyFormula(
+			@Parameter(required = true, description = "formula", example = "C15H16O2") @PathVariable("formula") String formula) {
 
-        log.debug("input formula {} ", formula);
-        
-        return searchRepository.searchAllMsReadyFormula(formula);
-    }
-    
-    @Operation(summary = "Search chemicals Count by ms ready formula")
-    @RequestMapping(value = "/chemical/count/by-msready-formula/{formula}", method = RequestMethod.GET)
-    public @ResponseBody
-    Long getChemicalsCountForMsreadyFormula(@Parameter(required = true, description = "formula", example = "C15H16O2")
-    @PathVariable("formula") String formula,@RequestParam (value = "projection",required = false,defaultValue = "count") String projection) {
+		log.debug("input formula {} ", formula);
 
-        log.debug(" formula count for {} ", formula);
-        
-        return searchRepository.getMsReadyFormulaCount(formula);
-        }   
+		return searchRepository.searchAllMsReadyFormula(formula);
+	}
+
+	@Operation(summary = "Search chemicals Count by ms ready formula")
+	@RequestMapping(value = "/chemical/count/by-msready-formula/{formula}", method = RequestMethod.GET)
+	public @ResponseBody Long getChemicalsCountForMsreadyFormula(
+			@Parameter(required = true, description = "formula", example = "C15H16O2") @PathVariable("formula") String formula,
+			@RequestParam(value = "projection", required = false, defaultValue = "count") String projection) {
+
+		log.debug(" formula count for {} ", formula);
+
+		return searchRepository.getMsReadyFormulaCount(formula);
+	}   
     
 }
 
