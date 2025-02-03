@@ -60,6 +60,12 @@ public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, 
     
     @Query(value = "select count(distinct dtxsid) from ch.v_chemical_details where mol_formula = :formula", nativeQuery = true)
     Long getExactFormulaCount(String formula);
+    
+    @Query(value = "select distinct ms_ready_dtxsid from ch.v_msready_search where mol_formula = :formula ", nativeQuery = true)
+    List<String> searchAllMsReadyFormula(String formula);
+    
+    @Query(value = "select count(distinct ms_ready_dtxsid) from ch.v_msready_search where mol_formula = :formula ", nativeQuery = true)
+    Long getMsReadyFormulaCount(String formula);
 
 
 }
