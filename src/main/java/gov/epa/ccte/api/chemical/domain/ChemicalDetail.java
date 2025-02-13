@@ -128,7 +128,8 @@ public class ChemicalDetail {
     @Column(name = "qc_notes", length = 4000)
     private String qcNotes;
 
-    @Column(name = "qsar_ready_smiles", length = Integer.MAX_VALUE)
+    @Size(max = 510)
+    @Column(name = "qsar_ready_smiles", length = 510)
     private String qsarReadySmiles;
 
     @Column(name = "ms_ready_smiles", length = Integer.MAX_VALUE)
