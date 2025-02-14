@@ -8,7 +8,7 @@ import gov.epa.ccte.api.chemical.repository.ChemicalListChemicalRepository;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * REST controller for checking availability of data in Wikipedia for GHS Safety data
+ * REST controller for checking availability of data in Pubchem for GHS Safety data
  */
 @Slf4j
 @RestController
