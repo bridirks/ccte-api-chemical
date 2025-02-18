@@ -7,7 +7,7 @@ name: Docker-ghcr
 
 on:
   push:
-    branches: [ "dev", "staging", "main", dev-968 ]
+    branches: [ "dev", "staging", "main" ]
     # Publish semver tags as releases.
     tags: [ 'v*.*.*' ]
 
