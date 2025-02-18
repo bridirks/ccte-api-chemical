@@ -24,11 +24,8 @@ public class CaffeineFixSynonymService {
 
     @PostConstruct
     private void init() throws IOException {
-        // Create a temporary file
         File tempFile = File.createTempFile("synonym", ".cfx");
         tempFile.deleteOnExit(); // Ensure it gets deleted on exit
-
-        // Write the contents of the resource to the temporary file
         try (InputStream inputStream = dictionaryResource.getInputStream();
              FileOutputStream outputStream = new FileOutputStream(tempFile)) {
             byte[] buffer = new byte[1024];
@@ -38,7 +35,6 @@ public class CaffeineFixSynonymService {
             }
         }
 
-        // Initialize CaffeineFix with the path of the temporary file
         caffeineFix = new CaffeineFix(tempFile.getAbsolutePath());
     }
 
