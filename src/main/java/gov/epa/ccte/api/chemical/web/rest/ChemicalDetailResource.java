@@ -21,6 +21,8 @@ public class ChemicalDetailResource implements ChemicalDetailApi {
     private Integer batchSize;
     private Long totalChemicals;
 
+    private Long totalChemicals;
+
     public ChemicalDetailResource(ChemicalDetailService detailService) {
         this.detailService = detailService;
         totalChemicals = detailService.getTotalChemicals();
@@ -33,7 +35,6 @@ public class ChemicalDetailResource implements ChemicalDetailApi {
         
         return detailService.getAllChemicals(next, batchSize, totalChemicals);
     }
-
     
     @Override
     public ChemicalDetailBase detailByDtxsid( String dtxsid, ChemicalDetailProjection projection) {
@@ -59,10 +60,10 @@ public class ChemicalDetailResource implements ChemicalDetailApi {
         else
             return (ChemicalDetailBase) data.get(0);
     }
-
     
     @Override
     public List batchDtxsidSearch(String[] dtxsids, ChemicalDetailProjection projection) {
+
         log.debug("dtxsids = {}", dtxsids.length);
 
         if(dtxsids.length > batchSize)
@@ -73,10 +74,10 @@ public class ChemicalDetailResource implements ChemicalDetailApi {
 
         return data;
     }
-
-    
+   
     @Override
     public List batchDtxcidSearch(String[] dtxcids, ChemicalDetailProjection projection) {
+
         log.debug("dtxcids = {}", dtxcids.length);
 
         if(dtxcids.length > batchSize)
@@ -88,7 +89,6 @@ public class ChemicalDetailResource implements ChemicalDetailApi {
         return data;
     }
 
-    
     private List getChemicalDetails(String[] ids, String type, ChemicalDetailProjection projection) {
         return switch (projection) {
             case chemicaldetailall ->
@@ -104,7 +104,6 @@ public class ChemicalDetailResource implements ChemicalDetailApi {
             case compact -> detailService.getChemicalDetailsForBatch(ids, Compact.class, type);
         };
     }
-
 }
 
 
