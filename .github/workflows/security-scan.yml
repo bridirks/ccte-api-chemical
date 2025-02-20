@@ -12,6 +12,7 @@ jobs:
        run: |
         echo "x-api-key=${{ secrets.X_API_KEY }}" >> $GITHUB_ENV
      - name: perform passive scan
+       id: zap_scan
        uses: zaproxy/action-api-scan@v0.6.0
        with:
          token: ${{ secrets.GITHUB_TOKEN }}
@@ -21,3 +22,11 @@ jobs:
        env:
          ZAP_AUTH_HEADER_VALUE: "x-api-key=${{ secrets.X_API_KEY }}"
          
+     - name: Create Output Folder
+       run: mkdir output  
+       
+     - name: Upload scan results
+       uses: actions/upload-artifact@v4
+       with:
+          name: zap-scan-results  
+          path: output    
