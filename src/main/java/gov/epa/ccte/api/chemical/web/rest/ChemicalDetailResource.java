@@ -21,8 +21,6 @@ public class ChemicalDetailResource implements ChemicalDetailApi {
     private Integer batchSize;
     private Long totalChemicals;
 
-    private Long totalChemicals;
-
     public ChemicalDetailResource(ChemicalDetailService detailService) {
         this.detailService = detailService;
         totalChemicals = detailService.getTotalChemicals();
