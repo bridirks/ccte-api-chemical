@@ -19,7 +19,7 @@ public class ChemicalDetailResource implements ChemicalDetailApi {
 	private final ChemicalDetailService detailService;
     @Value("${application.batch-size}")
     private Integer batchSize;
-    
+
     private Long totalChemicals;
 
     public ChemicalDetailResource(ChemicalDetailService detailService) {
