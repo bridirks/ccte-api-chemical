@@ -1,8 +1,6 @@
 name: deploy-staging
 
 on:
-  push:
-    branches: [ "DEV-990" ]
   workflow_dispatch:
       inputs:
         logLevel:
@@ -22,7 +20,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        ref: DEV-990
+        ref: main
         lfs: true
     - run: git lfs pull
     - uses: actions/setup-java@v4
@@ -45,7 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: DEV-990
+          ref: main
           lfs: true
       - run: git lfs pull
       - uses: actions/download-artifact@master
