@@ -16,5 +16,5 @@ applications:
 #    services:
 #      - ccte-db-prod2
     env:
-      SPRING_PROFILES_ACTIVE: cloud,apikey,stg
+      SPRING_PROFILES_ACTIVE: cloud,apikey
       JBP_CONFIG_OPEN_JDK_JRE: '{ jre: { version: 17.+}}'
