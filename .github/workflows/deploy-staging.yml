@@ -22,7 +22,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        ref: staging
+        ref: DEV-990
         lfs: true
     - run: git lfs pull
     - uses: actions/setup-java@v4
