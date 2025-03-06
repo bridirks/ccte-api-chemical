@@ -49,5 +49,5 @@ public class ModelReports {
 
     @Column(name = "report_html")
     @JdbcTypeCode(SqlTypes.LONGVARCHAR)
-    private String reportJson;
+    private String reportHtml;
 }
