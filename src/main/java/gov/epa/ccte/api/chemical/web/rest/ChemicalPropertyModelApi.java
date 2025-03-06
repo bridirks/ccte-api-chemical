@@ -1,7 +1,6 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
 
-import gov.epa.ccte.api.chemical.domain.ChemicalDetail;
 import gov.epa.ccte.api.chemical.domain.ModelFiles;
 import gov.epa.ccte.api.chemical.domain.ModelReports;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -20,7 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * REST controller for getting the {@link ChemicalDetail}s.
+ * REST controller for getting the {@link ModelFiles, @link ModelReports}s.
  */
 @Hidden
 @Tag(name = "Chemical Property Model Resource",
