@@ -41,7 +41,7 @@ public interface ChemicalPropertyModelApi {
             @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "image/png",
                     schema=@Schema(oneOf = {ModelFiles.class}))),
     })
-    @RequestMapping(value = "/image/search/", method = RequestMethod.GET)
+    @RequestMapping(value = "/file/search/", method = RequestMethod.GET)
     ResponseEntity<byte[]> getModelFileByModelIdAndTypeId(@RequestParam(value = "modelId", required = true) Integer modelId,
     														@RequestParam(value = "typeId", required = true) Integer typeId);
 

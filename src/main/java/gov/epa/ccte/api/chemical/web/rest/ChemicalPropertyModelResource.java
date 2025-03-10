@@ -1,5 +1,7 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
+import static gov.epa.ccte.api.chemical.domain.MimeType.EXCEL_XLSX;
+import static org.springframework.http.MediaType.APPLICATION_PDF;
 import static org.springframework.http.MediaType.IMAGE_PNG;
 
 import java.util.*;
@@ -38,8 +40,14 @@ public class ChemicalPropertyModelResource implements ChemicalPropertyModelApi {
     public ResponseEntity<byte[]> getModelFileByModelIdAndTypeId(Integer modelId, Integer typeId) {
     	log.debug("model file image for modelId = {} and typeId = {}", modelId, typeId);
 
-    	byte[] image = filesRepository.getFileImageForModelIdAndTTypeId(modelId, typeId);
+    	byte[] image = filesRepository.getFileForModelIdAndTTypeId(modelId, typeId);
 
-    	return ResponseEntity.ok().contentType(IMAGE_PNG).body(image);
+        return switch (typeId) {
+            case 1 -> ResponseEntity.ok().contentType(APPLICATION_PDF).body(image);
+            case 2 -> ResponseEntity.ok().contentType(EXCEL_XLSX).body(image);
+            case 3 -> ResponseEntity.ok().contentType(IMAGE_PNG).body(image);
+            case 4 -> ResponseEntity.ok().contentType(IMAGE_PNG).body(image);
+            default -> null;
+        };
     }
 }
