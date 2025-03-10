@@ -6,8 +6,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import gov.epa.ccte.api.chemical.projection.search.ChemicalBatchSearchResult;
 import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchAll;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -86,4 +89,10 @@ public interface ChemicalSearchApi{
     @GetMapping(value = "chemical/count/by-msready-formula/{formula}")
     Long getChemicalsCountForMsreadyFormula(@Parameter(required = true, description = "Chemical formula", example = "C15H16O2") @PathVariable("formula") String formula,
                                             @RequestParam(value = "projection", required = false, defaultValue = "count") String projection);
+    @Operation(summary = "Search by exact batch of values", description = "NOTE: Search batch of values (values are separated by EOL character and maximum 200 values are allowed).")
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {ChemicalBatchSearchResult.class})))
+    })
+    @PostMapping(value = "chemical/search/equal/", produces = MediaType.APPLICATION_JSON_VALUE)
+    List<ChemicalBatchSearchResult> chemicalBatchEqual(@RequestBody String words);
 }

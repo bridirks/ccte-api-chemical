@@ -5,7 +5,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.RestController;
 
+import gov.epa.ccte.api.chemical.projection.search.ChemicalBatchSearchResult;
 import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchAll;
+import gov.epa.ccte.api.chemical.projection.search.ChemicalSearchInternal;
 import gov.epa.ccte.api.chemical.projection.search.DtxsidOnly;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
@@ -73,6 +75,14 @@ public class ChemicalSearchResource implements ChemicalSearchApi {
             throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
         else
             return searchResult;
+    }
+    
+    @Override
+    public List<ChemicalBatchSearchResult> chemicalBatchEqual(String words) {
+        String[] searchWords = chemicalService.preprocessingSearchWord(words.split("\n"));
+        log.debug("input search words = {} and process search word count = {}. ", words, searchWords.length);
+        List<ChemicalSearchInternal> searchResult = searchRepository.findByModifiedValueInOrderByRankAsc(List.of(searchWords), ChemicalSearchInternal.class);
+        return chemicalService.processBatchResult(searchResult, searchWords);
     }
 
     @Override
