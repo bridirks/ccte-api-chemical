@@ -42,7 +42,7 @@ public interface ChemicalPropertyModelApi {
                     schema=@Schema(oneOf = {ModelFiles.class}))),
     })
     @RequestMapping(value = "/file/search/", method = RequestMethod.GET)
-    ResponseEntity<byte[]> getModelFileByModelIdAndTypeId(@RequestParam(value = "modelId", required = true) Integer modelId,
-    														@RequestParam(value = "typeId", required = true) Integer typeId);
+    ResponseEntity<byte[]> getModelFileByModelIdAndTypeId(@RequestParam(value = "modelId") Integer modelId,
+    														@RequestParam(value = "typeId") Integer typeId);
 
 }
