@@ -1,7 +1,5 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
-
-import gov.epa.ccte.api.chemical.domain.ChemicalDetail;
 import gov.epa.ccte.api.chemical.domain.ModelFiles;
 import gov.epa.ccte.api.chemical.domain.ModelReports;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -20,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * REST controller for getting the {@link ChemicalDetail}s.
+ * REST controller for getting the {@link ModelFiles, @link ModelReports}s.
  */
 @Hidden
 @Tag(name = "Chemical Property Model Resource",
@@ -42,8 +40,9 @@ public interface ChemicalPropertyModelApi {
             @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "image/png",
                     schema=@Schema(oneOf = {ModelFiles.class}))),
     })
-    @RequestMapping(value = "/image/search/", method = RequestMethod.GET)
-    ResponseEntity<byte[]> getModelFileByModelIdAndTypeId(@RequestParam(value = "modelId", required = true) Integer modelId,
-    														@RequestParam(value = "typeId", required = true) Integer typeId);
+
+    @RequestMapping(value = "/file/search/", method = RequestMethod.GET)
+    ResponseEntity<byte[]> getModelFileByModelIdAndTypeId(@RequestParam(value = "modelId") Integer modelId,
+    														@RequestParam(value = "typeId") Integer typeId);
 
 }

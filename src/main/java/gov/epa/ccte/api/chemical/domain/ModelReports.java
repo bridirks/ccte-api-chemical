@@ -14,7 +14,8 @@ import org.hibernate.type.SqlTypes;
 @Getter
 @Setter
 @Entity
-@Table(name = "v_predicted_reports", schema = "chemprop")
+
+@Table(name = "mv_predicted_reports", schema = "chemprop")
 public class ModelReports {
     @Id
     @Column(name = "id")
@@ -27,6 +28,14 @@ public class ModelReports {
     @Size(max = 255)
     @Column(name = "dtxcid")
     private String dtxcid;
+
+    @Column(name = "model_id")
+    private Long modelId;
+
+    @Size(max = 255)
+    @Column(name = "model_name")
+    private String modelName;
+
     
     @Size(max = 255)
     @Column(name = "property_name")
@@ -36,7 +45,11 @@ public class ModelReports {
     @Column(name = "source_name")
     private String sourceName;
     
-    @Column(name = "report_string")
+    @Column(name = "report_json")
     @JdbcTypeCode(SqlTypes.LONGVARCHAR)
-    private String reportString;
+    private String reportJson;
+
+    @Column(name = "report_html")
+    @JdbcTypeCode(SqlTypes.LONGVARCHAR)
+    private String reportHtml;
 }

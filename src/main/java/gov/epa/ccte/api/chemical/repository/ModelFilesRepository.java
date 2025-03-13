@@ -11,5 +11,5 @@ public interface ModelFilesRepository extends JpaRepository<ModelFiles, Long>{
     
     @Transactional(readOnly = true)
     @Query(nativeQuery = true,value = "select c.file_bytes from chemprop.mv_model_files c where c.model_id = :modelId and c.file_type_id = :typeId")
-    byte[] getFileImageForModelIdAndTTypeId(@Param("modelId") Integer modelId, @Param("typeId") Integer typeId);
+    byte[] getFileForModelIdAndTTypeId(@Param("modelId") Integer modelId, @Param("typeId") Integer typeId);
 }
