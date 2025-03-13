@@ -1,6 +1,5 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
-
 import gov.epa.ccte.api.chemical.domain.ModelFiles;
 import gov.epa.ccte.api.chemical.domain.ModelReports;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -41,6 +40,7 @@ public interface ChemicalPropertyModelApi {
             @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "image/png",
                     schema=@Schema(oneOf = {ModelFiles.class}))),
     })
+
     @RequestMapping(value = "/file/search/", method = RequestMethod.GET)
     ResponseEntity<byte[]> getModelFileByModelIdAndTypeId(@RequestParam(value = "modelId") Integer modelId,
     														@RequestParam(value = "typeId") Integer typeId);

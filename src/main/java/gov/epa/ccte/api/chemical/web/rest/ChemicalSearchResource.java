@@ -127,3 +127,4 @@ public class ChemicalSearchResource implements ChemicalSearchApi {
         return searchRepository.getMsReadyFormulaCount(formula);
     }
 }
+

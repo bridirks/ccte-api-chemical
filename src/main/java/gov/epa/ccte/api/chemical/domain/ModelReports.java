@@ -14,6 +14,7 @@ import org.hibernate.type.SqlTypes;
 @Getter
 @Setter
 @Entity
+
 @Table(name = "mv_predicted_reports", schema = "chemprop")
 public class ModelReports {
     @Id
@@ -34,6 +35,7 @@ public class ModelReports {
     @Size(max = 255)
     @Column(name = "model_name")
     private String modelName;
+
     
     @Size(max = 255)
     @Column(name = "property_name")
