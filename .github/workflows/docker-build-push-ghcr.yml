@@ -25,14 +25,7 @@ jobs:
       id-token: write
 
     steps:
-    - name: Checkout Action Repository
-      uses: actions/checkout@v4
-      with:
-        repository: USEPA/ccte-docker-build
-        ref: main
-        token: ${{ secrets.ACTION_SECRET }}
-
-    - name: Use Docker Build Action
+    - name: Checkout code
       uses: USEPA/ccte-docker-build@main
       with:
         username: USEPA
