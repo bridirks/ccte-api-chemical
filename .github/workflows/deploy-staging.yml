@@ -20,7 +20,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        ref: main
+        ref: staging
         lfs: true
     - run: git lfs pull
     - uses: actions/setup-java@v4
@@ -43,7 +43,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: main
+          ref: staging
           lfs: true
       - run: git lfs pull
       - uses: actions/download-artifact@master
