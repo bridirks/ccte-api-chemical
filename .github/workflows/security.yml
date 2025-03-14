@@ -62,6 +62,6 @@ jobs:
         uses: USEPA/ccte-Zap-Scan@main 
         with:
           zap_token: ${{ secrets.GITHUB_TOKEN }}
-          zap_target: 'https://api-ccte-stg.epa.gov/docs/bioactivity.json'
+          zap_target: 'https://api-ccte-stg.epa.gov/docs/chemical.json'
           zap_format: 'openapi'
           zap_cmd_options: '-a'
