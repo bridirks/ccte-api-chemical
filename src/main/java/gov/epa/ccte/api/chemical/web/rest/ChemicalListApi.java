@@ -1,6 +1,7 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
 import gov.epa.ccte.api.chemical.projection.chemicallist.*;
+import gov.epa.ccte.api.chemical.web.rest.requests.ChemicalListsAndDtxsids;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 /**
@@ -55,5 +57,25 @@ public interface ChemicalListApi {
     @Operation(summary = "Get lists names by dtxsid")
     @GetMapping(value = "/search/by-dtxsid/{dtxsid}")
     List listByDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID1020560") @PathVariable String dtxsid,
-                       @RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection);
+                      @RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection);
+
+    @Operation(summary = "Get DTXSIDs for a starting value")
+    @GetMapping(value = "/chemicals/search/start-with/{list}/{word}")
+    List<String> startWith(@PathVariable String list, @PathVariable String word);
+
+    @Operation(summary = "Get DTXSIDs for a substring match")
+    @GetMapping(value = "/chemicals/search/contain/{list}/{word}")
+    List<String> contain(@PathVariable String list, @PathVariable String word);
+
+    @Operation(summary = "Get DTXSIDs for an exact match")
+    @GetMapping(value = "/chemicals/search/equal/{list}/{word}")
+    List<String> exact(@PathVariable String list, @PathVariable String word);
+
+    @Operation(summary = "Get DTXSIDs for a specific list name")
+    @GetMapping(value = "/chemicals/search/by-listname/{list}")
+    List<String> listDtxsids(@PathVariable String list);
+
+    @Operation(hidden = true)
+    @PostMapping(value = "/chemicals/search/by-dtxsid")
+    List<String> contain(@RequestBody ChemicalListsAndDtxsids request);
 }
