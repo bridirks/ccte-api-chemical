@@ -2,7 +2,7 @@ name: Security Workflows
 
 on:
   push:
-    branches: [ dev, staging ]
+    branches: [ dev, staging, dev-1008 ]
     tags: [ 'v*.*.*' ]
   #schedule:
   # - cron: '00 9 * * 1,3,5' 
@@ -67,3 +67,4 @@ jobs:
           zap_target: 'https://api-ccte-stg.epa.gov/docs/chemical.json'
           zap_format: 'openapi'
           zap_cmd_options: '-a'
+          x_api_key: ${{ secrets.X_API_KEY }}
