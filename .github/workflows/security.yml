@@ -27,6 +27,7 @@ jobs:
           dockerfile: Dockerfile
           output_path: ./output/bioactivity-report.html
           cleanup_path: /data/watchtower/ctx-API/container-results/api-chemical/chemical-report.html
+          watchtower_path: /data/watchtower/ctx-API/container-results/api-chemical/chemical-report.html
 
   trufflehog:
     runs-on: ubuntu-latest
