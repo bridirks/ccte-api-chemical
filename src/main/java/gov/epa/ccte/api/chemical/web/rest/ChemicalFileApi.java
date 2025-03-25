@@ -66,7 +66,6 @@ public interface ChemicalFileApi {
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the chemical mrv file}.
      */
     @Operation(summary = "Get mrv file by dtxsid",
-            deprecated = true,
             description = "This endpoint is deprecated. Please use /chemical-file/mrv/search/by-dtxsid/{dtxsid} instead.")
     @RequestMapping(value = "/mrv/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET)
     public @ResponseBody
