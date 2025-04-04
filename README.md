@@ -1,4 +1,4 @@
-# CTX Chemical APIs
+# CTX Chemical APIs (ccte-api-chemistry)
 
 ## Overview
 This project is a RESTful API for retrieving chemical structure data and related information.
@@ -29,3 +29,40 @@ To build and run the project locally, use the following Maven commands:
 ```sh
 mvn clean package
 mvn spring-boot:run
+```
+
+## Project Structure
+```plaintext
+src/
+├── main/
+│   ├── java/
+│   │   └── gov/epa/ccte/api/bioactivity/
+│   │       ├── projection/
+│   │       │   └── assay/
+│   │       ├── repository/
+│   │       ├── service/
+│   │       └── web/
+│   │           └── rest/
+│   └── resources/
+│       └── application.properties
+└── test/
+```
+
+## Dependencies
+- `spring-boot-starter-web`
+- `spring-boot-starter-data-rest`
+- `spring-boot-starter-data-jpa`
+- `postgresql`
+- `lombok`
+- `springdoc-openapi-starter-webmvc-ui`
+- `mapstruct`
+- `spring-boot-starter-test`
+- `spring-boot-testcontainers`
+- `testcontainers`
+- `jackson-datatype-hibernate6`
+
+## Contributing
+Contributions are welcome! Please read the `CONTRIBUTING.md` file for guidelines.
+
+## Contact
+For any inquiries, please contact the project maintainers.
