@@ -67,6 +67,10 @@ public interface ChemicalSearchApi{
     @GetMapping(value = "chemical/msready/search/by-dtxcid/{dtxcid}", produces = MediaType.APPLICATION_JSON_VALUE)
     List<String> msReadyByDtxcid(@Parameter(required = true, description = "DSSTox Compound Identifier", example = "DTXCID30182") @PathVariable("dtxcid") String dtxcid);
 
+    @Operation(summary = "Search ms ready chemicals by bacth of DTXCIDs")
+    @PostMapping(value = "chemical/msready/search/by-dtxcid/", produces = MediaType.APPLICATION_JSON_VALUE)
+    List msReadyByBatchDtxcid(@RequestBody String[] dtxcids);
+    
     @Operation(summary = "Search ms ready chemical using mass range")
     @GetMapping(value = "chemical/msready/search/by-mass/{start}/{end}", produces = MediaType.APPLICATION_JSON_VALUE)
     List<String> msReadyByMass(@Parameter(required = true, description = "Starting mass value", example = "200.90") @PathVariable("start") Double start,

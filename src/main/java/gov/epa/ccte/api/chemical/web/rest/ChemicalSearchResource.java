@@ -3,6 +3,7 @@ package gov.epa.ccte.api.chemical.web.rest;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RestController;
 
 import gov.epa.ccte.api.chemical.projection.search.ChemicalBatchSearchResult;
@@ -12,11 +13,15 @@ import gov.epa.ccte.api.chemical.projection.search.DtxsidOnly;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
 import gov.epa.ccte.api.chemical.web.rest.errors.ChemicalSearchNotFoundException;
+import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfIdsException;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 public class ChemicalSearchResource implements ChemicalSearchApi {
+    @Value("${application.batch-size}")
+    private Integer batchSize;
+    
     private final ChemicalSearchRepository searchRepository;
     private final SearchChemicalService chemicalService;
 
@@ -95,6 +100,17 @@ public class ChemicalSearchResource implements ChemicalSearchApi {
     public List<String> msReadyByDtxcid(String dtxcid) {
         log.debug("input dtxcid = {} ", dtxcid);
         return searchRepository.searchMsReadyDtxcid(dtxcid);
+    }
+    
+    @Override
+    public List msReadyByBatchDtxcid(String[] dtxcids) {
+        log.info("dtxcid size = {}", dtxcids.length);
+
+        if (dtxcids.length > batchSize) {
+            throw new HigherNumberOfIdsException(dtxcids.length, batchSize, "dtxcid");
+        }
+
+        return searchRepository.searchMsReadyByBatchDtxcid(dtxcids);
     }
 
     @Override
