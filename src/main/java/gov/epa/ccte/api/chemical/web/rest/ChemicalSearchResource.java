@@ -15,6 +15,7 @@ import gov.epa.ccte.api.chemical.service.SearchChemicalService;
 import gov.epa.ccte.api.chemical.web.rest.errors.ChemicalSearchNotFoundException;
 import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfIdsException;
 import gov.epa.ccte.api.chemical.web.rest.requests.SearchPage;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -102,6 +103,17 @@ public class ChemicalSearchResource implements ChemicalSearchApi {
     public List<String> msReadyByDtxcid(String dtxcid) {
         log.debug("input dtxcid = {} ", dtxcid);
         return searchRepository.searchMsReadyDtxcid(dtxcid);
+    }
+    
+    @Override
+    public List msReadyByBatchDtxcid(String[] dtxcids) {
+        log.info("dtxcid size = {}", dtxcids.length);
+
+        if (dtxcids.length > batchSize) {
+            throw new HigherNumberOfIdsException(dtxcids.length, batchSize, "dtxcid");
+        }
+
+        return searchRepository.searchMsReadyByBatchDtxcid(dtxcids);
     }
 
     @Override
