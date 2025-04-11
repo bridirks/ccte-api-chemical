@@ -105,5 +105,5 @@ public interface ChemicalSearchApi{
     
 
 	@GetMapping(value = "chemical/search/all-known")
-	SearchPage getAllKnownChemicalDtxsidAndDtxcid(@RequestParam(value = "page", required = true, defaultValue = "1")Long next);
+	SearchPage getAllKnownChemicalDtxsidAndDtxcid(@RequestParam(value = "next", required = false, defaultValue = "1")Long next);
 }
