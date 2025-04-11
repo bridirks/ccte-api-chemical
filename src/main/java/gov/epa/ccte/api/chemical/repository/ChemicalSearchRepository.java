@@ -26,7 +26,7 @@ public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, 
     <T> List<T> findByModifiedValueContainsAndSearchNameInOrderByRankAscDtxsidAsc(String modifiedValue, List<String> searchWords, Limit limit, Class<T> type);
 
     <T> List<T> findByModifiedValueContainsOrderByRankAscDtxsid(String word, Limit limit, Class<T> type);
-
+    
     // Query for inchikey suggestion
     @Query("select distinct c.searchValue from ChemicalSearch c where c.modifiedValue like concat(:inchikey, '%')")
     List<String> getInchiKey(@Param("inchikey") String inchikey);
@@ -47,6 +47,9 @@ public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, 
     @Query(value = "select distinct ms_ready_dtxsid from ch.v_msready_search where input_dtxcid = :dtxcid and substance_public is true", nativeQuery = true)
     List<String> searchMsReadyDtxcid(String dtxcid);
 
+    @Query(value = "select distinct ms_ready_dtxsid from ch.v_msready_search where input_dtxcid in :dtxcid and substance_public is true", nativeQuery = true)
+    List<String> searchMsReadyByBatchDtxcid(String[] dtxcid);
+    
     @Query(value = "select distinct ms_ready_dtxsid from ch.v_msready_search where monoisotopic_mass between :start and :end and substance_public is true", nativeQuery = true)
 
     List<String> searchMsReadyMass(Double start, Double end);
