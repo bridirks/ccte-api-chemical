@@ -3,7 +3,6 @@ import gov.epa.ccte.api.chemical.domain.ChemicalSearch;
 import gov.epa.ccte.api.chemical.projection.search.CcdChemicalSearchResult;
 import gov.epa.ccte.api.chemical.projection.search.KnownChemAll;
 
-import org.springdoc.core.converters.models.Pageable;
 import org.springframework.data.domain.Limit;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
