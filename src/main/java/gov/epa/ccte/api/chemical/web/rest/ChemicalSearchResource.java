@@ -114,16 +114,6 @@ public class ChemicalSearchResource implements ChemicalSearchApi {
         return searchRepository.searchMsReadyByBatchDtxcid(dtxcids);
     }
 
-    @Override
-    public List msReadyByBatchDtxcid(String[] dtxcids) {
-        log.info("dtxcid size = {}", dtxcids.length);
-
-        if (dtxcids.length > batchSize) {
-            throw new HigherNumberOfIdsException(dtxcids.length, batchSize, "dtxcid");
-        }
-
-        return searchRepository.searchMsReadyByBatchDtxcid(dtxcids);
-    }
 
     @Override
     public List<String> msReadyByMass(Double start, Double end) {
