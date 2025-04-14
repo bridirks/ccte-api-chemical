@@ -14,6 +14,8 @@ import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
 import gov.epa.ccte.api.chemical.web.rest.errors.ChemicalSearchNotFoundException;
 import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfIdsException;
+import gov.epa.ccte.api.chemical.web.rest.requests.SearchPage;
+
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -21,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ChemicalSearchResource implements ChemicalSearchApi {
     @Value("${application.batch-size}")
     private Integer batchSize;
+    private Long totalChemicals;
     
     private final ChemicalSearchRepository searchRepository;
     private final SearchChemicalService chemicalService;
@@ -28,8 +31,9 @@ public class ChemicalSearchResource implements ChemicalSearchApi {
     public ChemicalSearchResource(ChemicalSearchRepository searchRepository, SearchChemicalService chemicalService) {
         this.searchRepository = searchRepository;
         this.chemicalService = chemicalService;
+        totalChemicals = chemicalService.getTotalChemicals();
     }
-
+    
     @Override
     public List<ChemicalSearchAll> chemicalStartWith(String word, Integer top) {
         List<ChemicalSearchAll> searchResult = chemicalService.getStartWith(word, top);
@@ -44,7 +48,7 @@ public class ChemicalSearchResource implements ChemicalSearchApi {
             throw new ChemicalSearchNotFoundException(chemicalService.getErrorMsgs(word), chemicalService.getSuggestions(word));
         }
     }
-
+    
     @Override
     public List chemicalEqual(String word, String projection) {
         String searchWord = chemicalService.preprocessingSearchWord(word);
@@ -69,7 +73,6 @@ public class ChemicalSearchResource implements ChemicalSearchApi {
         else
             return searchResult;
     }
-
     @Override
     public List chemicalContain(String word, Integer top, String projection) {
         String searchWord = chemicalService.preprocessingSearchWord(word);
@@ -89,13 +92,13 @@ public class ChemicalSearchResource implements ChemicalSearchApi {
         List<ChemicalSearchInternal> searchResult = searchRepository.findByModifiedValueInOrderByRankAsc(List.of(searchWords), ChemicalSearchInternal.class);
         return chemicalService.processBatchResult(searchResult, searchWords);
     }
-
+    
     @Override
     public List<String> msReadyByFormula(String formula) {
         log.debug("input formula = {} ", formula);
         return searchRepository.searchMsReadyFormula(formula);
     }
-
+    
     @Override
     public List<String> msReadyByDtxcid(String dtxcid) {
         log.debug("input dtxcid = {} ", dtxcid);
@@ -114,33 +117,45 @@ public class ChemicalSearchResource implements ChemicalSearchApi {
     }
 
     @Override
+    public List msReadyByBatchDtxcid(String[] dtxcids) {
+        log.info("dtxcid size = {}", dtxcids.length);
+
+        if (dtxcids.length > batchSize) {
+            throw new HigherNumberOfIdsException(dtxcids.length, batchSize, "dtxcid");
+        }
+
+        return searchRepository.searchMsReadyByBatchDtxcid(dtxcids);
+    }
+
+    @Override
     public List<String> msReadyByMass(Double start, Double end) {
         log.debug("input mass = {} - {} ", start, end);
         return searchRepository.searchMsReadyMass(start, end);
     }
-
+    
     @Override
     public List<String> getChemicalsForExactFormula(String formula) {
         log.debug("exact formula search for {} ", formula);
         return searchRepository.getExactFormula(formula);
     }
-
+    
     @Override
     public Long getChemicalsCountForExactFormula(String formula, String projection) {
         log.debug("exact formula count for {} ", formula);
         return searchRepository.getExactFormulaCount(formula);
     }
-
+    
     @Override
     public List<String> getChemicalsForMsreadyFormula(String formula) {
         log.debug("input formula {} ", formula);
         return searchRepository.searchAllMsReadyFormula(formula);
     }
-
+    
     @Override
     public Long getChemicalsCountForMsreadyFormula(String formula, String projection) {
         log.debug("formula count for {} ", formula);
         return searchRepository.getMsReadyFormulaCount(formula);
     }
+    
 }
 

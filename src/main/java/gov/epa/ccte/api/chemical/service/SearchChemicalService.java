@@ -4,10 +4,12 @@ package gov.epa.ccte.api.chemical.service;
 import gov.epa.ccte.api.chemical.projection.search.*;
 import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import gov.epa.ccte.api.chemical.web.rest.BatchMsReadyMassForm;
+import gov.epa.ccte.api.chemical.web.rest.requests.SearchPage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Limit;
 import org.springframework.stereotype.Service;
+
 
 import java.util.*;
 import java.util.regex.Pattern;
@@ -501,6 +503,7 @@ public class SearchChemicalService {
         }
         return returnList;
     }*/
+    
 }
 
 

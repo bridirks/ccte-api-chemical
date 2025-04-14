@@ -27,24 +27,42 @@ public class ChemicalDetailService {
             return detailRepository.findByDtxcidInOrderByDtxcidAsc(ids, tClass);
     }
 
-    public Page getAllChemicals(Long nextCursor, Integer batchSize, Long totalChemicals) {
+    public Page getAllChemicals(Long nextCursor, Integer batchSize, Long totalChemicals, String projection) {
 
         log.debug("next cursor: " + nextCursor);
-
-        List<ChemicalDetailStandard2> data = detailRepository.findByIdGreaterThanAndDtxsidNotNull(nextCursor, Limit.of(batchSize));
-
-        log.debug("data size: {}", data.size());
-
-
-        return Page.builder()
+        if (projection == null || projection.isEmpty()) {
+        	List<ChemicalDetailStandard2> data = detailRepository.findByIdGreaterThanAndDtxsidNotNull(nextCursor, Limit.of(batchSize), ChemicalDetailStandard2.class);
+        	log.debug("data size: {}", data.size());        
+        	Page results = Page.builder()
                 .data(data)
                 .size(batchSize)
                 .total(totalChemicals)
                 .next(maximumId(data))
                 .build();
-    }
+        	return results;
+        }else {
+        	List<ChemicalDetailAllIds> data = detailRepository.findByIdGreaterThanAndDtxsidNotNull(nextCursor, Limit.of(batchSize), ChemicalDetailAllIds.class);
+        	log.debug("data size: {}", data.size());
+        	Page results = Page.builder()
+                .data(data)
+                .size(batchSize)
+                .total(totalChemicals)
+                .next(maximumId2(data))
+                .build();
+        	return results; 
+        	}
+
+    	}
 
     private Long maximumId(List<ChemicalDetailStandard2> data) {
+        if(!data.isEmpty()){
+            return (data.get(data.size()-1)).getId();
+        }else{
+            return 1L;
+        }
+    }
+
+    private Long maximumId2(List<ChemicalDetailAllIds> data) {
         if(!data.isEmpty()){
             return (data.get(data.size()-1)).getId();
         }else{
