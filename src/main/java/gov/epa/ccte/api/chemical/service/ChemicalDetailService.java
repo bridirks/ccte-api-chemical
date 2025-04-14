@@ -1,5 +1,6 @@
 package gov.epa.ccte.api.chemical.service;
 
+import gov.epa.ccte.api.chemical.projection.chemicaldetail.ChemicalDetailAllIds;
 import gov.epa.ccte.api.chemical.projection.chemicaldetail.ChemicalDetailStandard2;
 import gov.epa.ccte.api.chemical.repository.ChemicalDetailRepository;
 import gov.epa.ccte.api.chemical.web.rest.requests.Page;
