@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ChemicalSearchResource implements ChemicalSearchApi {
     @Value("${application.batch-size}")
     private Integer batchSize;
-    private Long totalChemicals;
     
     private final ChemicalSearchRepository searchRepository;
     private final SearchChemicalService chemicalService;
@@ -30,7 +29,6 @@ public class ChemicalSearchResource implements ChemicalSearchApi {
     public ChemicalSearchResource(ChemicalSearchRepository searchRepository, SearchChemicalService chemicalService) {
         this.searchRepository = searchRepository;
         this.chemicalService = chemicalService;
-        totalChemicals = chemicalService.getTotalChemicals();
     }
     
     @Override
@@ -115,16 +113,6 @@ public class ChemicalSearchResource implements ChemicalSearchApi {
         return searchRepository.searchMsReadyByBatchDtxcid(dtxcids);
     }
 
-    @Override
-    public List msReadyByBatchDtxcid(String[] dtxcids) {
-        log.info("dtxcid size = {}", dtxcids.length);
-
-        if (dtxcids.length > batchSize) {
-            throw new HigherNumberOfIdsException(dtxcids.length, batchSize, "dtxcid");
-        }
-
-        return searchRepository.searchMsReadyByBatchDtxcid(dtxcids);
-    }
 
     @Override
     public List<String> msReadyByMass(Double start, Double end) {
