@@ -14,7 +14,6 @@ import gov.epa.ccte.api.chemical.repository.ChemicalSearchRepository;
 import gov.epa.ccte.api.chemical.service.SearchChemicalService;
 import gov.epa.ccte.api.chemical.web.rest.errors.ChemicalSearchNotFoundException;
 import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfIdsException;
-import gov.epa.ccte.api.chemical.web.rest.requests.SearchPage;
 
 import lombok.extern.slf4j.Slf4j;
 
