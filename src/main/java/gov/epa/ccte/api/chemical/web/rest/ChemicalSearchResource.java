@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ChemicalSearchResource implements ChemicalSearchApi {
     @Value("${application.batch-size}")
     private Integer batchSize;
-    private Long totalChemicals;
     
     private final ChemicalSearchRepository searchRepository;
     private final SearchChemicalService chemicalService;
@@ -31,7 +30,6 @@ public class ChemicalSearchResource implements ChemicalSearchApi {
     public ChemicalSearchResource(ChemicalSearchRepository searchRepository, SearchChemicalService chemicalService) {
         this.searchRepository = searchRepository;
         this.chemicalService = chemicalService;
-        totalChemicals = chemicalService.getTotalChemicals();
     }
     
     @Override
