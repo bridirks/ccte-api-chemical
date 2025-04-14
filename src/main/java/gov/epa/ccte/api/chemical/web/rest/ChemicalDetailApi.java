@@ -52,7 +52,10 @@ public interface ChemicalDetailApi {
                     schema=@Schema(oneOf = {ChemicalDetailStandard2.class}))),
     })
 	@RequestMapping(value = "/all", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	Page getAllChemicalDetails(@RequestParam(value = "next", required = false, defaultValue = "1")Long next);
+	Page getAllChemicalDetails(@RequestParam(value = "next", required = false, defaultValue = "1")Long next,
+     				        @Parameter(description = "Specifies if projection is used. Option: all-ids, " +
+     				        "If omitted, the default ChemicalDetailStandard2 data is returned.")
+     					@RequestParam(value = "projection", required = false) String projection);
 
 	/**
 	 * {@code GET  /chemical/detail/by-dtxsid/:dtxsid} : get list of chemicalDetail for the "dtxsid".

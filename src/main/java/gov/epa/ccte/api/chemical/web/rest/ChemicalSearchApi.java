@@ -102,8 +102,5 @@ public interface ChemicalSearchApi{
     
     @PostMapping(value = "chemical/search/equal/", produces = MediaType.APPLICATION_JSON_VALUE)
     List<ChemicalBatchSearchResult> chemicalBatchEqual(@RequestBody String words);
-    
 
-	@GetMapping(value = "chemical/search/all-known")
-	SearchPage getAllKnownChemicalDtxsidAndDtxcid(@RequestParam(value = "next", required = false, defaultValue = "1")Long next);
 }

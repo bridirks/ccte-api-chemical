@@ -503,33 +503,6 @@ public class SearchChemicalService {
         }
         return returnList;
     }*/
-
-    public SearchPage getAllChemicals(Long nextCursor, Integer batchSize, Long totalChemicals) {
-
-        log.debug("next cursor: " + nextCursor);
-
-        List<KnownChemAll> data = searchRepository.findKnownChemAllByIdGreaterThanOrderByIdAsc(nextCursor, Limit.of(batchSize));
-
-        log.debug("data size: {}", data.size());
-
-
-        return SearchPage.builder()
-                .data(data)
-                .totalChemicals(totalChemicals)
-                .size(batchSize)
-                .next(maximumId(data))
-                .build();
-    }
-    private Long maximumId(List<KnownChemAll> data) {
-        if(!data.isEmpty()){
-            return (data.get(data.size()-1)).getId();
-        }else{
-            return 1L;
-        }
-    }
-    public Long getTotalChemicals() {
-        return searchRepository.count();
-    }
     
 }
 

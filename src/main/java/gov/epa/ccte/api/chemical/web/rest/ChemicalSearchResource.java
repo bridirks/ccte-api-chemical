@@ -157,12 +157,5 @@ public class ChemicalSearchResource implements ChemicalSearchApi {
         return searchRepository.getMsReadyFormulaCount(formula);
     }
     
-    @Override
-    public SearchPage getAllKnownChemicalDtxsidAndDtxcid(Long next){
-        log.debug("nextCursor: {}, totalChemicals = {}", next, totalChemicals);
-        
-        return chemicalService.getAllChemicals(next, batchSize, totalChemicals);
-    }
-    
 }
 

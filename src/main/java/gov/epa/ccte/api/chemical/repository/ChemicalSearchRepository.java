@@ -1,7 +1,6 @@
 package gov.epa.ccte.api.chemical.repository;
 import gov.epa.ccte.api.chemical.domain.ChemicalSearch;
 import gov.epa.ccte.api.chemical.projection.search.CcdChemicalSearchResult;
-import gov.epa.ccte.api.chemical.projection.search.KnownChemAll;
 
 import org.springframework.data.domain.Limit;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -65,15 +64,5 @@ public interface ChemicalSearchRepository extends JpaRepository<ChemicalSearch, 
     
     @Query(value = "select count(distinct ms_ready_dtxsid) from ch.v_msready_search where mol_formula = :formula ", nativeQuery = true)
     Long getMsReadyFormulaCount(String formula);
-    
-    @Query(value = """
-			    SELECT
-			        search.id,
-			        search.dtxsid, 
-			        search.dtxcid
-			    FROM ch.v_chemical_search search
-    		""", nativeQuery = true)
-    List<KnownChemAll> findKnownChemAllByIdGreaterThanOrderByIdAsc(Long id, Limit limit); 
-    
 
 }
