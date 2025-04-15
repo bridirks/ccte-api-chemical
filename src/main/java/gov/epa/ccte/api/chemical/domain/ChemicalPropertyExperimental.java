@@ -35,13 +35,6 @@ public class ChemicalPropertyExperimental {
     @Column(name = "prop_name")
     private String propName;
     
-    @Column(name = "prop_type")
-    private String propType;
-    
-    @Size(max = 255)
-    @Column(name = "prop_category")
-    private String propCategory;
-    
     @Size(max = 255)
     @Column(name = "dataset")
     private String dataset;
@@ -79,7 +72,7 @@ public class ChemicalPropertyExperimental {
     
     @Size(max = 255)
     @Column(name = "exp_details_species_latin")
-    private String expDetailsResponseLatin;
+    private String expDetailsSpeciesLatin;
     
     @Size(max = 255)
     @Column(name = "exp_details_species_common")
