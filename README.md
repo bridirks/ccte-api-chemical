@@ -3,7 +3,7 @@
 ## Overview
 This project is a RESTful API for retrieving chemical structure data and related information.
 
-# Available Data 
+## Available Data 
 Data underlying the Chemical API include:
 - Chemical structures, 
 - nomenclature, 
