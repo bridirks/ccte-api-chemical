@@ -22,6 +22,9 @@
         ],
         "tags": [
           "chemical data",
+          "cheminformatics",
+          "environmental fate",
+          "computational toxicology",          
           "toxicity",
           "REST API",
           "Spring Boot",
