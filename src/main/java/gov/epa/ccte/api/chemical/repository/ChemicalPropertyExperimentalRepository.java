@@ -3,7 +3,6 @@ package gov.epa.ccte.api.chemical.repository;
 import gov.epa.ccte.api.chemical.domain.ChemicalPropertyExperimental;
 import gov.epa.ccte.api.chemical.projection.chemicalproperty.ChemicalPropertyAll;
 import gov.epa.ccte.api.chemical.projection.chemicalproperty.ChemicalPropertyNames;
-import gov.epa.ccte.api.chemical.projection.chemicalproperty.ChemicalPropertySummary;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
