@@ -1,7 +1,7 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
-import gov.epa.ccte.api.chemical.domain.ChemicalPropertyExperimental;
 import gov.epa.ccte.api.chemical.domain.ChemicalPropertyPredicted;
+import gov.epa.ccte.api.chemical.projection.chemicalproperty.ChemicalPropertyAll;
 import gov.epa.ccte.api.chemical.projection.chemicalproperty.ChemicalPropertyNames;
 import gov.epa.ccte.api.chemical.repository.ChemicalPropertyExperimentalRepository;
 import gov.epa.ccte.api.chemical.repository.ChemicalPropertyPredictedRepository;
@@ -30,20 +30,20 @@ public class ChemicalPropertyResource implements ChemicalPropertyApi {
 
  // *********************** Experimental - start *************************************
     @Override
-    public List<ChemicalPropertyExperimental> experimentalPropertyByDtxsid(String dtxsid) {
+    public List<ChemicalPropertyAll> experimentalPropertyByDtxsid(String dtxsid) {
         log.info("dtxsid = {}", dtxsid);
 
-        List<ChemicalPropertyExperimental> data =  experimentalRepository.findByDtxsid(dtxsid, ChemicalPropertyExperimental.class);
+        List<ChemicalPropertyAll> data =  experimentalRepository.findExperimentalByDtxsid(dtxsid);
             
         return data;
 
     }
 
     @Override
-    public List<ChemicalPropertyExperimental> experimentalPropertyByRange(String propertyName, Double start, Double end) {
+    public List<ChemicalPropertyAll> experimentalPropertyByRange(String propertyName, Double start, Double end) {
         log.debug("property = {}, start = {}, end = {}", propertyName, start, end);
         
-        List<ChemicalPropertyExperimental> data = experimentalRepository.findByPropNameAndPropValueBetweenOrderByDtxsidAsc(propertyName, start, end, ChemicalPropertyExperimental.class);
+        List<ChemicalPropertyAll> data = experimentalRepository.findByPropNameAndPropValueBetweenOrderByDtxsidAsc(propertyName, start, end, ChemicalPropertyAll.class);
     
         return data;
     }
@@ -57,17 +57,39 @@ public class ChemicalPropertyResource implements ChemicalPropertyApi {
 
 
     @Override
-    public List<ChemicalPropertyExperimental> experimentalBatchSearch(String[] dtxsids) throws HigherNumberOfIdsException {
+    public List<ChemicalPropertyAll> experimentalBatchSearch(String[] dtxsids) throws HigherNumberOfIdsException {
         log.debug("dtxsids = {}", dtxsids.length);
         if (dtxsids.length > batchSize)
             throw new HigherNumberOfIdsException(dtxsids.length, batchSize, "dtxsid");
-        List<ChemicalPropertyExperimental> data = experimentalRepository.findByDtxsidInOrderByDtxsidAsc(dtxsids, ChemicalPropertyExperimental.class);
+        List<ChemicalPropertyAll> data = experimentalRepository.findExperimentalByDtxsidInOrderByDtxsidAsc(dtxsids);
         
         return data;
     }
     
     // *********************** Experimental - End *************************************
+    // *********************** Fate - Start *************************************
+    
+    @Override
+    public List<ChemicalPropertyAll> fateByDtxsid(String dtxsid) {
+        log.info("dtxsid = {}", dtxsid);
 
+        List<ChemicalPropertyAll> data =  experimentalRepository.findFateByDtxsid(dtxsid);
+            
+        return data;
+
+    }
+    
+    @Override
+    public List<ChemicalPropertyAll> fateBatchSearch(String[] dtxsids) throws HigherNumberOfIdsException {
+        log.debug("dtxsids = {}", dtxsids.length);
+        if (dtxsids.length > batchSize)
+            throw new HigherNumberOfIdsException(dtxsids.length, batchSize, "dtxsid");
+        List<ChemicalPropertyAll> data = experimentalRepository.findFateByDtxsidInOrderByDtxsidAsc(dtxsids);
+        
+        return data;
+    }
+
+    // *********************** Fate - End *************************************
     // *********************** Predicted - start *************************************
     
     @Override
@@ -106,4 +128,5 @@ public class ChemicalPropertyResource implements ChemicalPropertyApi {
         
         return data;
     }
+    
 }

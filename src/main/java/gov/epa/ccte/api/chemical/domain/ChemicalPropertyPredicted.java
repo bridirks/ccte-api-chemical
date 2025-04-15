@@ -44,9 +44,6 @@ public class ChemicalPropertyPredicted {
     @Column(name = "prop_name")
     private String propName;
     
-    @Column(name = "prop_type")
-    private String propType;
-    
     @Size(max = 255)
     @Column(name = "prop_category")
     private String propCategory;
