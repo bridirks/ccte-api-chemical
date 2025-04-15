@@ -45,7 +45,7 @@ By participating in this project, you agree to abide by the [Code of Conduct](CO
 If you encounter any issues or bugs, please report them by creating a new issue in the repository. Provide as much detail as possible, including steps to reproduce the issue, expected behavior, and any relevant error messages.
 
 ## License
-This project is licensed under the [MIT License](LICENSE). By contributing to this project, you agree that your contributions will be licensed under the same license.
+This project is licensed under the [MIT License](LICENSE.md). By contributing to this project, you agree that your contributions will be licensed under the same license.
 
 ## Acknowledgments
 - Thank you for your interest in contributing to this project! Your contributions help make this project better for everyone.
