@@ -36,9 +36,8 @@ public class ModelReports {
     @Column(name = "model_name")
     private String modelName;
 
-    
     @Size(max = 255)
-    @Column(name = "property_name")
+    @Column(name = "prop_name")
     private String propertyName;
 
     @Size(max = 255)
