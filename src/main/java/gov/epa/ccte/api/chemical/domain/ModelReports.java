@@ -42,6 +42,10 @@ public class ModelReports {
     private String propertyName;
 
     @Size(max = 255)
+    @Column(name = "prop_category")
+    private String propertyCategory;
+
+    @Size(max = 255)
     @Column(name = "source_name")
     private String sourceName;
     
