@@ -4,6 +4,7 @@ import gov.epa.ccte.api.chemical.domain.ChemicalPropertyExperimental;
 import gov.epa.ccte.api.chemical.domain.ChemicalPropertyPredicted;
 import gov.epa.ccte.api.chemical.projection.chemicalproperty.ChemicalPropertyAll;
 import gov.epa.ccte.api.chemical.projection.chemicalproperty.ChemicalPropertyNames;
+import gov.epa.ccte.api.chemical.projection.chemicalproperty.ChemicalPropertySummary;
 import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfIdsException;
 import io.swagger.v3.oas.annotations.*;
 import io.swagger.v3.oas.annotations.media.*;
@@ -47,26 +48,6 @@ public interface ChemicalPropertyApi {
     List<ChemicalPropertyAll> experimentalBatchSearch(@RequestBody String[] dtxsids) throws HigherNumberOfIdsException;
     
     // *********************** Experimental - End *************************************
-    // *********************** Fate - Start *************************************
-    
-    @Operation(summary = "Get fate by dtxsid")
-    @GetMapping(value = "chemical/fate/search/by-dtxsid/{dtxsid}", produces = MediaType.APPLICATION_JSON_VALUE)
-    List<ChemicalPropertyAll> fateByDtxsid(@PathVariable("dtxsid") String dtxsid);
-    
-    @Operation(summary = "Get fate by the batch of dtxsid(s)", description = "Note: Maximum ${application.batch-size} DTXSIDs per request")
-    @ApiResponses(value= {
-            @ApiResponse(responseCode = "200", description = "Successfull",  content = @Content( mediaType = "application/json",
-                    schema=@Schema(oneOf = {ChemicalPropertyAll.class}))),
-            @ApiResponse(responseCode = "400", description = "When user has submitted more then allowed number (${application.batch-size}) of DTXSID(s).",
-                    content = @Content( mediaType = "application/json",
-                    examples = {@ExampleObject(value = "{\"title\":\"Validation Error\",\"status\":400,\"detail\":\"System supports only '200' dtxsid at one time, '202' are submitted.\"}", description = "Validation error for more then allowed number of dtxsid(s).")},
-                    schema=@Schema(oneOf = {ProblemDetail.class})))
-    }) 
-    @PostMapping(value = "chemical/fate/search/by-dtxsid/", produces = MediaType.APPLICATION_JSON_VALUE)
-    List<ChemicalPropertyAll> fateBatchSearch(@RequestBody String[] dtxsids) throws HigherNumberOfIdsException;
-
-    
-    // *********************** Fate - End *************************************
     // *********************** Predicted - start *************************************
     
 	
@@ -93,5 +74,48 @@ public interface ChemicalPropertyApi {
     })          
     @PostMapping(value = "chemical/property/predicted/search/by-dtxsid/", produces = MediaType.APPLICATION_JSON_VALUE)
     List<ChemicalPropertyPredicted> predictedBatchSearch(@RequestBody String[] dtxsids) throws HigherNumberOfIdsException;
+    
+    // *********************** Predicted - End *************************************
+    // *********************** Property Summary - start *************************************
+    
+    @Operation(summary = "Get summary by dtxsid")
+    @GetMapping(value = "chemical/property/summary/search/by-dtxsid/{dtxsid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    List<ChemicalPropertySummary> propertySummaryByDtxsid(@PathVariable("dtxsid") String dtxsid);
+    
+    @Operation(summary = "Get summary by dtxsid and property name")
+    @GetMapping(value = "chemical/property/summary/search/", produces = MediaType.APPLICATION_JSON_VALUE)
+    List<ChemicalPropertySummary> propertySummaryByDtxsidAndName(@RequestParam(value ="dtxsid", required = true) String dtxsid,
+    															@RequestParam(value ="propName", required = true) String propName);
+    
+    // *********************** Property Summary - end *************************************
+    // *********************** Fate - Start *************************************
+    
+    @Operation(summary = "Get fate by dtxsid")
+    @GetMapping(value = "chemical/fate/search/by-dtxsid/{dtxsid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    List<ChemicalPropertyAll> fateByDtxsid(@PathVariable("dtxsid") String dtxsid);
+    
+    @Operation(summary = "Get fate by the batch of dtxsid(s)", description = "Note: Maximum ${application.batch-size} DTXSIDs per request")
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "200", description = "Successfull",  content = @Content( mediaType = "application/json",
+                    schema=@Schema(oneOf = {ChemicalPropertyAll.class}))),
+            @ApiResponse(responseCode = "400", description = "When user has submitted more then allowed number (${application.batch-size}) of DTXSID(s).",
+                    content = @Content( mediaType = "application/json",
+                    examples = {@ExampleObject(value = "{\"title\":\"Validation Error\",\"status\":400,\"detail\":\"System supports only '200' dtxsid at one time, '202' are submitted.\"}", description = "Validation error for more then allowed number of dtxsid(s).")},
+                    schema=@Schema(oneOf = {ProblemDetail.class})))
+    }) 
+    @PostMapping(value = "chemical/fate/search/by-dtxsid/", produces = MediaType.APPLICATION_JSON_VALUE)
+    List<ChemicalPropertyAll> fateBatchSearch(@RequestBody String[] dtxsids) throws HigherNumberOfIdsException;
+    
+    // *********************** Fate - End *************************************
+    // *********************** Fate Summary - start *************************************
+    
+    @Operation(summary = "Get summary by dtxsid")
+    @GetMapping(value = "chemical/fate/summary/search/by-dtxsid/{dtxsid}", produces = MediaType.APPLICATION_JSON_VALUE)
+    List<ChemicalPropertySummary> fateSummaryByDtxsid(@PathVariable("dtxsid") String dtxsid);
+    
+    @Operation(summary = "Get summary by dtxsid and property name")
+    @GetMapping(value = "chemical/fate/summary/search/", produces = MediaType.APPLICATION_JSON_VALUE)
+    List<ChemicalPropertySummary> fateSummaryByDtxsidAndName(@RequestParam(value ="dtxsid", required = true) String dtxsid,
+    															@RequestParam(value ="propName", required = true) String propName);
 
 }
