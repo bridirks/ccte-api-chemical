@@ -1,12 +1,14 @@
 package gov.epa.ccte.api.chemical.web.rest;
 
 import gov.epa.ccte.api.chemical.projection.chemicaldetail.*;
+import gov.epa.ccte.api.chemical.repository.ChemicalDetailRepository;
 import gov.epa.ccte.api.chemical.service.ChemicalDetailService;
 import gov.epa.ccte.api.chemical.web.rest.errors.HigherNumberOfIdsException;
 import gov.epa.ccte.api.chemical.web.rest.errors.IdentifierNotFoundException;
 import gov.epa.ccte.api.chemical.web.rest.requests.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,13 +19,15 @@ import java.util.List;
 public class ChemicalDetailResource implements ChemicalDetailApi {
     
 	private final ChemicalDetailService detailService;
+	private final ChemicalDetailRepository detailRepository;
     @Value("${application.batch-size}")
     private Integer batchSize;
 	
     private Long totalChemicals;
 	
-    public ChemicalDetailResource(ChemicalDetailService detailService) {
+    public ChemicalDetailResource(ChemicalDetailService detailService, ChemicalDetailRepository detailRepository) {
         this.detailService = detailService;
+        this.detailRepository = detailRepository;
         totalChemicals = detailService.getTotalChemicals();
     }
 
@@ -103,6 +107,16 @@ public class ChemicalDetailResource implements ChemicalDetailApi {
             case compact -> detailService.getChemicalDetailsForBatch(ids, Compact.class, type);
         };
     }
+    
+    @Override
+    public List<CcdIris> irisLinkByDtxsid(String dtxsid) {
+        log.debug("dtxsid = {}", dtxsid);
+        
+        List<CcdIris> data = detailRepository.findIrisLinkByDtxsid(dtxsid);
+        
+        return data;
+    }
+    
 }
 
 

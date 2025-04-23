@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import gov.epa.ccte.api.chemical.domain.ChemicalDetail;
+import gov.epa.ccte.api.chemical.projection.chemicaldetail.CcdIris;
 import gov.epa.ccte.api.chemical.projection.chemicaldetail.ChemicalDetailAll;
 import gov.epa.ccte.api.chemical.projection.chemicaldetail.ChemicalDetailBase;
 import gov.epa.ccte.api.chemical.projection.chemicaldetail.ChemicalDetailProjection;
@@ -135,5 +136,20 @@ public interface ChemicalDetailApi {
                     @RequestBody String[] dtxcids,
                     @RequestParam(value = "projection", required = false, defaultValue = "chemicaldetailall")
                     ChemicalDetailProjection projection);
+
+	/**
+	 * {@code GET  /chemical/detail/iris/search/by-dtxsid/:dtxsid} : iris link information by dtxsid.
+	 *
+	 * @param dtxsid the matching dtxsid of the chemicalDetail to retrieve.
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the iris link information}.
+	 */
+	@Operation(summary = "Get iris link information by dtxsid",
+            description = "Specify the dtxsid as part of the path.")
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
+                    schema=@Schema(oneOf = {CcdIris.class})))
+    })
+    @RequestMapping(value = "/detail/iris/search/by-dtxsid/{dtxsid}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	List<CcdIris> irisLinkByDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID7020182")  @PathVariable("dtxsid") String dtxsid);
 
 }

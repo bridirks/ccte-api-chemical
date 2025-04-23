@@ -1,6 +1,7 @@
 package gov.epa.ccte.api.chemical.repository;
 
 import gov.epa.ccte.api.chemical.domain.ChemicalDetail;
+import gov.epa.ccte.api.chemical.projection.chemicaldetail.CcdIris;
 import gov.epa.ccte.api.chemical.projection.chemicaldetail.ChemicalDetailStandard2;
 import org.springframework.data.domain.Limit;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -86,5 +87,22 @@ public interface ChemicalDetailRepository extends JpaRepository<ChemicalDetail, 
 
     @Transactional(readOnly = true)
     <T>List<T> findByIdGreaterThanAndDtxsidNotNull(Long id, Limit limit, Class<T> type);
-
+    
+    @Query(value = """
+    			SELECT
+    			    details.dtxsid AS dtxsid,
+    			    details.iris_link AS irisLink,
+    			CASE
+    			    WHEN details.iris_link IS NOT NULL THEN TRUE
+    			    ELSE FALSE
+    			END AS irisIndicator,
+    			CASE
+    			    WHEN details.iris_link IS NOT NULL THEN CONCAT('https://iris.epa.gov/ChemicalLanding/&substance_nmbr=', details.iris_link)
+    			END AS irisUrl
+    			FROM
+    			    ch.v_chemical_details details
+    			WHERE
+    			    details.dtxsid = :dtxsid    		
+    		""", nativeQuery = true)
+    List<CcdIris> findIrisLinkByDtxsid(@Param("dtxsid")String dtxsid);
 }
