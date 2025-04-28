@@ -86,8 +86,7 @@ public interface IndigoApi {
 	 */
     @Operation(summary = "Get molecular weight from mol", description = "return molecular weight for given mol file.")
     @ApiResponses(value= {
-            @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json",
-            		examples = {@ExampleObject(name = "molecular weight")})),
+            @ApiResponse(responseCode = "200", description = "OK",  content = @Content( mediaType = "application/json"))
     })
     @PostMapping(value = "/to-molweight", produces = MediaType.APPLICATION_JSON_VALUE)
     Double toMolecularWeight(@Parameter(required = true, description = "mol file") @RequestBody String mol) throws IOException;
