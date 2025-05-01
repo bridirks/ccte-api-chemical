@@ -27,7 +27,7 @@ public interface ChemicalListApi {
     @Operation(summary = "Get all public lists")
     @ApiResponses(value= {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json",
-                    schema=@Schema(oneOf = {ChemicalListName.class, ChemicalListAll.class})))
+                    schema=@Schema(oneOf = {ChemicalListAll.class, ChemicalListName.class})))
     })
     @GetMapping(value = "/")
     List listAll(@RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection);
@@ -39,37 +39,44 @@ public interface ChemicalListApi {
     @Operation(summary = "Get public lists by type")
     @ApiResponses(value= {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json",
-                    schema=@Schema(oneOf = {ChemicalListName.class, ChemicalListAll.class})))
+                    schema=@Schema(oneOf = {ChemicalListAll.class, ChemicalListName.class})))
     })
     @GetMapping(value = "/search/by-type/{type}")
     List listByType(@Parameter(required = true, description = "Chemical List Type", example = "other") @PathVariable String type,
                     @RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection);
 
-    @Operation(summary = "Get public list by name")
+    @Operation(summary = "Get public lists by name")
     @ApiResponses(value= {
             @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json",
-                    schema=@Schema(oneOf = {ChemicalListName.class, ChemicalListAll.class})))
+                    schema=@Schema(oneOf = {ChemicalListAll.class, ChemicalListName.class})))
     })
     @GetMapping(value = "/search/by-name/{listName}")
     ChemicalListBase listByName(@Parameter(required = true, description = "Chemical List Name", example = "40CFR1164") @PathVariable String listName,
                                 @RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection);
 
-    @Operation(summary = "Get lists names by dtxsid")
+    @Operation(summary = "Get public lists by dtxsid")
+    @ApiResponses(value= {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json",
+                    schema=@Schema(oneOf = {ChemicalListAll.class, ChemicalListName.class})))
+    })
     @GetMapping(value = "/search/by-dtxsid/{dtxsid}")
     List listByDtxsid(@Parameter(required = true, description = "DSSTox Substance Identifier", example = "DTXSID1020560") @PathVariable String dtxsid,
                       @RequestParam(value = "projection", required = false, defaultValue = "chemicallistall") ChemicalListProjection projection);
 
-    @Operation(summary = "Get DTXSIDs for a starting value")
+    @Operation(summary = "Get DTXSIDs for a list name and starting value of chemical name")
     @GetMapping(value = "/chemicals/search/start-with/{list}/{word}")
-    List<String> startWith(@PathVariable String list, @PathVariable String word);
+    List<String> startWith(@Parameter(required = true, description = "List Name", example = "40CFR1164") @PathVariable String list, 
+    						@Parameter(required = true, description = "Chemical Name", example = "ammo") @PathVariable String word);
 
-    @Operation(summary = "Get DTXSIDs for a substring match")
+    @Operation(summary = "Get DTXSIDs for a list name and substring match of chemical name")
     @GetMapping(value = "/chemicals/search/contain/{list}/{word}")
-    List<String> contain(@PathVariable String list, @PathVariable String word);
+    List<String> contain(@Parameter(required = true, description = "List Name", example = "ANTMIC") @PathVariable String list, 
+							@Parameter(required = true, description = "Chemical Name", example = "PHOSPHORIC ACID") @PathVariable String word);
 
-    @Operation(summary = "Get DTXSIDs for an exact match")
+    @Operation(summary = "Get DTXSIDs for a list name and exact match of chemical name")
     @GetMapping(value = "/chemicals/search/equal/{list}/{word}")
-    List<String> exact(@PathVariable String list, @PathVariable String word);
+    List<String> exact(@Parameter(required = true, description = "List Name", example = "ANTMIC") @PathVariable String list, 
+						@Parameter(required = true, description = "Chemical Name", example = "PHOSPHORIC ACID") @PathVariable String word);
 
     @Operation(summary = "Get DTXSIDs for a specific list name")
     @GetMapping(value = "/chemicals/search/by-listname/{list}")

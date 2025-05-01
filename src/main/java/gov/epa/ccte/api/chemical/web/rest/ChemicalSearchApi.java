@@ -40,7 +40,12 @@ public interface ChemicalSearchApi{
             @PathVariable("word") String word,
             @RequestParam(value = "top", required = false, defaultValue = "500") Integer top);
     
-    @Operation(summary = "Search by exact value")
+    @Operation(summary = "Search by exact value", description = "NOTE: Search value needs to be URL encoded for synonyms")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {ChemicalSearchAll.class}))),
+            @ApiResponse(responseCode = "400", description = "Data not found.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(oneOf = {ProblemDetail.class})))
+    })
     @GetMapping(value = "chemical/search/equal/{word}", produces = MediaType.APPLICATION_JSON_VALUE)
     List chemicalEqual(
             @Parameter(required = true, description = "Exact match of search word",
@@ -49,12 +54,17 @@ public interface ChemicalSearchApi{
             @PathVariable("word") String word,
             @RequestParam(value = "projection", required = false, defaultValue = "chemicalsearchall") String projection);
     
-    @Operation(summary = "Search by substring value")
+    @Operation(summary = "Search by substring value", description = "NOTE: Search value needs to be URL encoded for synonyms")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "OK", content = @Content(mediaType = "application/json", schema = @Schema(oneOf = {ChemicalSearchAll.class}))),
+            @ApiResponse(responseCode = "400", description = "Data not found.",
+                    content = @Content(mediaType = "application/problem+json", schema = @Schema(oneOf = {ProblemDetail.class})))
+    })
     @GetMapping(value = "chemical/search/contain/{word}", produces = MediaType.APPLICATION_JSON_VALUE)
     List chemicalContain(
             @Parameter(required = true, description = "Substring of search word",
                     examples = {@ExampleObject(name="DSSTox Compound Identifier", value = "DTXCID505"),
-                            @ExampleObject(name="Synonym", value = "razine")})
+                            	@ExampleObject(name="Synonym", value = "razine")})
             @PathVariable("word") String word,
             @RequestParam(value = "top", required = false, defaultValue = "0") Integer top,
             @RequestParam(value = "projection", required = false, defaultValue = "chemicalsearchall") String projection);
@@ -71,7 +81,7 @@ public interface ChemicalSearchApi{
     @PostMapping(value = "chemical/msready/search/by-dtxcid/", produces = MediaType.APPLICATION_JSON_VALUE)
     List msReadyByBatchDtxcid(@RequestBody String[] dtxcids);
 
-    @Operation(summary = "Search ms ready chemical using mass range")
+    @Operation(summary = "Search ms ready chemicals using mass range")
     @GetMapping(value = "chemical/msready/search/by-mass/{start}/{end}", produces = MediaType.APPLICATION_JSON_VALUE)
     List<String> msReadyByMass(@Parameter(required = true, description = "Starting mass value", example = "200.90") @PathVariable("start") Double start,
                                @Parameter(required = true, description = "Ending mass value", example = "200.95") @PathVariable("end") Double end);
