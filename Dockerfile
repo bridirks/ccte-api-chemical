@@ -19,4 +19,4 @@ COPY --from=build /build/target/chemical-1.0-SNAPSHOT.jar /usr/local/lib/chemica
 
 RUN java --version
 
-CMD ["java", "-jar", "/usr/local/lib/chemical-1.0-SNAPSHOT.jar"]
+CMD ["java", "-jar", "/usr/local/lib/chemical-2.0.0.jar"]
