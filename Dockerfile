@@ -15,7 +15,7 @@ RUN mvn -Denvironment=${APP_SERVER_ENVIRONMENT} -f pom.xml clean package -DskipT
 ##################
 FROM ghcr.io/usepa/jdk-17:latest
 
-COPY --from=build /build/target/chemical-1.0-SNAPSHOT.jar /usr/local/lib/chemical-1.0-SNAPSHOT.jar
+COPY --from=build /build/target/chemical-2.0.0.jar /usr/local/lib/chemical-2.0.0.jar
 
 RUN java --version
 
